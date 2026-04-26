@@ -126,7 +126,7 @@
             <span>Tổng cộng</span>
             <span id="totalPrice">0 ₫</span>
           </div>
-          <button class="btn btn-primary" style="width: 100%; height: 56px; margin-top: 2rem; font-size: 1.1rem;">Thanh toán ngay</button>
+          <button class="btn btn-primary" onclick="proceedCheckout()" style="width: 100%; height: 56px; margin-top: 2rem; font-size: 1.1rem;">Thanh toán ngay</button>
           
           <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">
             <span>🛡️ Thanh toán an toàn 100%</span>
@@ -285,6 +285,38 @@
     function removeFromCart(id) {
       cart = cart.filter(i => i.id !== id);
       localStorage.setItem('emobox_cart', JSON.stringify(cart));
+      updateCartBadge();
+      renderCart();
+    }
+
+    function proceedCheckout() {
+      if (cart.length === 0) return;
+
+      let events = JSON.parse(localStorage.getItem('emobox_events') || '[]');
+      let eventsUpdated = false;
+
+      cart.forEach(item => {
+        if (item.isPkg && item.id.startsWith('evt_')) {
+          const evt = events.find(e => e.id === item.id);
+          if (evt) {
+            evt.paid = true;
+            eventsUpdated = true;
+          }
+        }
+      });
+
+      if (eventsUpdated) {
+        localStorage.setItem('emobox_events', JSON.stringify(events));
+      }
+
+      if (typeof showToast === 'function') {
+        showToast('Thanh toán thành công! Đơn hàng đang được xử lý.');
+      } else {
+        alert('Thanh toán thành công! Đơn hàng đang được xử lý.');
+      }
+      
+      localStorage.setItem('emobox_cart', '[]');
+      cart = [];
       updateCartBadge();
       renderCart();
     }
