@@ -56,6 +56,7 @@
     .modal-footer { padding: 1.25rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.75rem; }
     .btn-cancel { background: #f1f5f9; color: var(--text-muted); border: none; font-weight: 600; padding: 0.8rem 1.2rem; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
     .btn-cancel:hover { background: #e2e8f0; }
+    #eventForm { display: flex; flex-direction: column; overflow: hidden; flex: 1; }
 
     /* Custom Calendar inside Modal */
     .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
@@ -68,6 +69,15 @@
     .cal-day:hover { background: #e0f2fe; color: var(--primary); font-weight: 600; }
     .cal-day.empty { cursor: default; }
     .cal-day.empty:hover { background: none; }
+
+    /* Pick Options (from occasion-gifts) */
+    .pick-option { display: flex; align-items: center; gap: 0.875rem; padding: 0.85rem 1rem; border: 2px solid var(--border); border-radius: 12px; margin-bottom: 0.65rem; cursor: pointer; transition: all 0.18s; user-select: none; }
+    .pick-option:hover { border-color: #bae6fd; background: #f0f9ff; }
+    .pick-option.selected { border-color: var(--primary); background: #e0f2fe; }
+    .pick-option.disabled { opacity: 0.4; cursor: not-allowed; }
+    .pick-checkbox { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.18s; }
+    .pick-option.selected .pick-checkbox { background: var(--primary); border-color: var(--primary); color: white; font-size: 0.75rem; }
+    .pick-label { font-size: 0.92rem; font-weight: 500; }
   </style>
 </head>
 <body>
@@ -141,46 +151,8 @@
 
     <div class="calendar-layout">
       <!-- Main List -->
-      <div class="event-list">
-        <div class="month-header">Tháng 5, 2026</div>
-        
-        <div class="event-card">
-          <div class="event-date">
-            <span class="day">15</span>
-            <span class="month">Th5</span>
-          </div>
-          <div class="event-info">
-            <h4>Sinh nhật Mẹ</h4>
-            <p>Người nhận: Mẹ • Cảm xúc: Yêu thương</p>
-          </div>
-          <div class="event-status status-pending">Đang chuẩn bị</div>
-        </div>
-
-        <div class="event-card">
-          <div class="event-date">
-            <span class="day">22</span>
-            <span class="month">Th5</span>
-          </div>
-          <div class="event-info">
-            <h4>Kỷ niệm 2 năm yêu nhau</h4>
-            <p>Người nhận: Linh Chi • Cảm xúc: Lãng mạn</p>
-          </div>
-          <div class="event-status status-pending">Chưa đặt quà</div>
-        </div>
-
-        <div class="month-header">Tháng 6, 2026</div>
-        
-        <div class="event-card">
-          <div class="event-date">
-            <span class="day">01</span>
-            <span class="month">Th6</span>
-          </div>
-          <div class="event-info">
-            <h4>Quốc tế thiếu nhi</h4>
-            <p>Người nhận: Bé Bo • Cảm xúc: Vui vẻ</p>
-          </div>
-          <div class="event-status status-pending">Chưa đặt quà</div>
-        </div>
+      <div class="event-list" id="eventsContainer">
+        <!-- Rendered by JS -->
       </div>
 
       <!-- Sidebar -->
@@ -263,9 +235,45 @@
             <label class="form-label">Email</label>
             <input type="email" class="form-input" id="eventEmail" placeholder="Nhập email">
           </div>
+          
+          <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+          <h4 style="margin-bottom: 1rem; font-size: 1.1rem;">Cấu hình Gói Quà</h4>
+
           <div class="form-group">
-            <label class="form-label">Số tiền thanh toán</label>
-            <input type="number" class="form-input" id="eventAmount" placeholder="VD: 500000" required>
+            <label class="form-label">Loại quà (Chủ đề)</label>
+            <select class="form-input" id="eventCat" onchange="handleEventPkgChange()">
+              <option value="tet">Tết</option>
+              <option value="valentine">Valentine</option>
+              <option value="8-3-20-10">8/3 & 20/10</option>
+              <option value="20-11">20/11 (Nhà Giáo)</option>
+              <option value="trung-thu">Trung Thu</option>
+              <option value="noel">Giáng Sinh (Noel)</option>
+              <option value="cam-xuc">Quà Cảm Xúc</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Gói quà (Mức giá)</label>
+            <select class="form-input" id="eventTier" onchange="handleEventPkgChange()">
+              <option value="mini">Gói Mini (99.000 ₫)</option>
+              <option value="basic">Gói Basic (199.000 ₫)</option>
+              <option value="standard">Gói Standard (399.000 ₫)</option>
+              <option value="premium">Gói Premium Plus (599.000 ₫)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" id="eventPicksLabel">Quà đi kèm</label>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;" id="eventFixedLabel">🔒 Cố định: ...</p>
+            <div id="eventPicksContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem;">
+              <!-- Checkboxes rendered here -->
+            </div>
+            <p id="eventPicksWarning" style="font-size: 0.8rem; color: #b45309; margin-top: 0.5rem; display: none;">Vui lòng chọn đủ món!</p>
+          </div>
+
+          <div class="form-group" style="background: #f8fafc; padding: 1rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+            <span style="font-weight: 600;">Tổng tiền gói quà:</span>
+            <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;" id="eventPriceDisplay">99.000 ₫</span>
           </div>
         </div>
         <div class="modal-footer">
@@ -324,6 +332,111 @@
   <script src="data.js"></script>
   <script src="app.js"></script>
   <script>
+    /* EVENT DATA MANAGEMENT */
+    const DEFAULT_EVENTS = [
+      { id: '1', date: '2026-05-15', title: 'Sinh nhật Mẹ', recipient: 'Mẹ', emotion: 'Yêu thương', status: 'Đang chuẩn bị', pkgName: 'Gói Standard (Tết)', price: '399.000 ₫' },
+      { id: '2', date: '2026-05-22', title: 'Kỷ niệm 2 năm yêu nhau', recipient: 'Linh Chi', emotion: 'Lãng mạn', status: 'Chưa đặt quà', pkgName: 'Gói Basic (Valentine)', price: '199.000 ₫' },
+      { id: '3', date: '2026-06-01', title: 'Quốc tế thiếu nhi', recipient: 'Bé Bo', emotion: 'Vui vẻ', status: 'Chưa đặt quà', pkgName: 'Gói Mini (Cảm Xúc)', price: '99.000 ₫' }
+    ];
+
+    /* ===== PACKAGE DATA BY CATEGORY ===== */
+    const PKG_DATA_BY_CAT = {
+      tet: {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Lịch để bàn (nhỏ)', 'Hộp mứt (nhỏ)'], options: ['Lì xì mini', 'Kẹo Tết', 'Bookmark lộc', 'Charm may mắn', 'Trà túi lọc'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 1, fixedItems: ['Hộp mứt (vừa)', 'Trà'], options: ['Lì xì set', 'Tất đỏ', 'Hoa khô mini', 'Lịch để bàn'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 3, fixedItems: ['Rượu vang', 'Mứt', 'Trà'], options: ['Trà Tết', 'Gấu bông mini', 'Tinh dầu', 'Bookmark', 'Pouch', 'Lịch để bàn'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 4, fixedItems: ['Rượu vang', 'Mứt', 'Trà'], options: ['Gấu bông', 'Đèn ngủ', 'Bath items', 'Trà / Cà phê set', 'Chocolate premium', 'Lịch để bàn', 'Mứt'] }
+      },
+      valentine: {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Thiếp', 'Chocolate'], options: ['Sticker', 'Charm tim', 'Hoa khô mini'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 1, fixedItems: ['Thiếp', 'Chocolate', 'Hoa'], options: ['Chocolate', 'Trà hoa', 'Tất đôi', 'Bookmark', 'Móc khóa', 'Tinh dầu'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Chocolate', 'Hoa', 'Tinh dầu'], options: ['Gấu bông mini', 'Tinh dầu', 'Vòng tay', 'Ảnh in', 'Thiếp'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 3, fixedItems: ['Chocolate', 'Hoa', 'Tinh dầu', 'Nến thơm'], options: ['Gấu bông', 'Đèn ngủ', 'Sleep mask', 'Bath set', 'Phụ kiện đôi'] }
+      },
+      '8-3-20-10': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Cốc sứ', 'Gương cầm tay'], options: ['Hoa khô mini', 'Sticker', 'Kẹo', 'Bookmark', 'Scrunchies'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Cốc sứ', 'Gương cầm tay'], options: ['Hoa khô bó nhỏ', 'Trà túi lọc', 'Son dưỡng mini', 'Tất / Vớ', 'Bộ mặt nạ', 'Scrunchies'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 1, fixedItems: ['Bình giữ nhiệt', 'Gương cầm tay', 'Scrunchies'], options: ['Tinh dầu', 'Gấu mini', 'Pouch', 'Bookmark', 'Bộ mặt nạ', 'Scrunchies', 'Son dưỡng'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 2, fixedItems: ['Bình giữ nhiệt', 'Gương cầm tay', 'Tinh dầu'], options: ['Bath set', 'Sleep mask', 'Hoa khô', 'Phụ kiện', 'Chocolate', 'Scrunchies'] }
+      },
+      '20-11': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Sổ tay', 'Thiệp thiết kế viết tay'], options: ['Bút bi', 'Bút máy', 'Trà xanh', 'Trà hoa cúc', 'Trà lài'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Sổ tay', 'Thiệp viết tay', 'Bút cao cấp'], options: ['Lịch để bàn tự thiết kế', 'Bookmark', 'Tinh dầu thư giãn', 'Trà xanh', 'Trà hoa cúc', 'Trà lài'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Sổ tay', 'Thiệp viết tay', 'Bút cao cấp', 'Lịch để bàn'], options: ['Bookmark', 'Tinh dầu thư giãn', 'Trà ô long', 'Hồng trà', 'Trà phổ nhĩ'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 2, fixedItems: ['Sổ tay', 'Thiệp', 'Bút cao cấp', 'Lịch để bàn', 'Nến thơm'], options: ['Bookmark', 'Tinh dầu thư giãn', 'Trà ô long', 'Hồng trà', 'Trà phổ nhĩ'] }
+      },
+      noel: {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 2, fixedItems: ['Nến thơm mùi quế'], options: ['Bột Hot Chocolate', 'Kẹo gậy', 'Bánh quy gừng', 'Socola dạng thanh'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Nến thơm quế', 'Tất Noel'], options: ['Bột Hot Chocolate', 'Kẹo gậy', 'Bánh quy gừng', 'Socola dạng thanh'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Nến thơm gỗ thông', 'Tất Noel'], options: ['Bột Hot Chocolate', 'Kẹo gậy', 'Bánh quy gừng', 'Socola dạng thanh'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 2, fixedItems: ['Rượu vang mini', 'Nến thơm gỗ thông', 'Tất Noel', 'Chocolate nghệ thuật'], options: ['Bột Hot Chocolate', 'Kẹo gậy', 'Bánh quy gừng', 'Socola dạng thanh'] }
+      },
+      'trung-thu': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 2, fixedItems: ['Bánh trung thu (1 cái)'], options: ['Mật ong nhỏ', 'Trà xanh', 'Trà hoa cúc', 'Trà lài', 'Yến nhỏ (1 chai)'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Bánh trung thu (1 cái)'], options: ['Mật ong vừa', 'Trà xanh', 'Trà hoa cúc', 'Trà lài', 'Yến vừa (1 chai)'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Bánh trung thu (4 cái)'], options: ['Trà xanh', 'Trà hoa cúc', 'Trà lài', 'Mật ong', 'Yến nhỏ (2 chai)'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 2, fixedItems: ['Bánh trung thu (4 cái)'], options: ['Trà ô long', 'Hồng trà', 'Trà phổ nhĩ', 'Mật ong', 'Yến vừa (2 chai)'] }
+      },
+      'cam-xuc': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'], options: ['Sticker pack', 'Bookmark', 'Kẹo / Chocolate nhỏ', 'Bút', 'Charm nhỏ', 'Hoa khô mini'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'], options: ['Snack / Chocolate', 'Trà / Cà phê gói', 'Bookmark', 'Bút', 'Sticky notes', 'Sticker', 'Hoa khô mini', 'Móc khóa', 'Tất / Vớ basic'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'], options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 4, fixedItems: ['Thiệp cá nhân hóa', 'Tinh dầu cao cấp', 'Ly giữ nhiệt', 'Snack / Trà set nhỏ'], options: ['Gấu bông mini', 'Hoa khô', 'Sleep mask', 'Bath items', 'Túi chườm bụng', 'Ly giữ nhiệt', 'Móc khóa', 'Phụ kiện nhỏ', 'Đèn ngủ mini', 'Bookmark', 'Bút premium', 'Sticker / Charm', 'Chocolate premium', 'Cà phê / Trà set', 'Tất / Vớ', 'Pouch', 'Túi chườm'] }
+      }
+    };
+
+    function loadEvents() {
+      let events = JSON.parse(localStorage.getItem('emobox_events'));
+      if (!events) {
+        events = DEFAULT_EVENTS;
+        localStorage.setItem('emobox_events', JSON.stringify(events));
+      }
+      return events;
+    }
+
+    function renderEventsList() {
+      const events = loadEvents();
+      events.sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+      const container = document.getElementById('eventsContainer');
+      container.innerHTML = '';
+      
+      let currentMonth = '';
+      
+      events.forEach(evt => {
+        const d = new Date(evt.date);
+        const m = d.getMonth() + 1;
+        const y = d.getFullYear();
+        const monthKey = `Tháng ${m}, ${y}`;
+        
+        if (monthKey !== currentMonth) {
+          container.innerHTML += `<div class="month-header">${monthKey}</div>`;
+          currentMonth = monthKey;
+        }
+        
+        const day = String(d.getDate()).padStart(2, '0');
+        const monthStr = 'Th' + m;
+        
+        const statusClass = evt.status === 'Đang chuẩn bị' || evt.status === 'Chưa đặt quà' ? 'status-pending' : 'status-done';
+        
+        const pkgSubtext = evt.pkgName ? `<br><span style="font-size: 0.8rem; color: var(--primary);">🎁 ${evt.pkgName} - ${evt.price}</span>` : '';
+        
+        container.innerHTML += `
+          <div class="event-card">
+            <div class="event-date">
+              <span class="day">${day}</span>
+              <span class="month">${monthStr}</span>
+            </div>
+            <div class="event-info">
+              <h4>${evt.title}</h4>
+              <p>Người nhận: ${evt.recipient} ${evt.emotion ? '• Cảm xúc: ' + evt.emotion : ''} ${pkgSubtext}</p>
+            </div>
+            <div class="event-status ${statusClass}">${evt.status}</div>
+          </div>
+        `;
+      });
+    }
+
     /* CALENDAR MODAL LOGIC */
     let currDate = new Date();
 
@@ -375,8 +488,82 @@
     }
 
     /* FORM MODAL LOGIC */
+    let eventCurrentPkg = null;
+    let eventSelectedPicks = [];
+
+    function handleEventPkgChange() {
+      const cat = document.getElementById('eventCat').value;
+      const tier = document.getElementById('eventTier').value;
+      
+      eventCurrentPkg = PKG_DATA_BY_CAT[cat][tier];
+      eventSelectedPicks = [];
+      
+      const pkg = eventCurrentPkg;
+      document.getElementById('eventPriceDisplay').textContent = pkg.price;
+      document.getElementById('eventFixedLabel').textContent = '🔒 Cố định: ' + pkg.fixedItems.join(', ');
+      
+      const picksContainer = document.getElementById('eventPicksContainer');
+      picksContainer.innerHTML = pkg.options.map((opt, idx) => `
+        <label class="pick-option" id="evt-opt-${idx}">
+          <div class="pick-checkbox" id="evt-chk-${idx}"></div>
+          <span class="pick-label">${opt}</span>
+          <input type="checkbox" style="display:none;" onchange="toggleEventPick('${opt}', ${idx})">
+        </label>
+      `).join('');
+      
+      updateEventProgress();
+    }
+
+    function toggleEventPick(optName, idx) {
+      const idxInArr = eventSelectedPicks.indexOf(optName);
+      if (idxInArr > -1) {
+        eventSelectedPicks.splice(idxInArr, 1);
+        document.getElementById('evt-opt-' + idx).classList.remove('selected');
+        document.getElementById('evt-chk-' + idx).textContent = '';
+      } else {
+        if (eventSelectedPicks.length >= eventCurrentPkg.picks) {
+          if (typeof showToast === 'function') showToast('Bạn đã chọn đủ số lượng món tự chọn!');
+          const input = document.querySelector(`#evt-opt-${idx} input`);
+          if (input) input.checked = false;
+          return;
+        }
+        eventSelectedPicks.push(optName);
+        document.getElementById('evt-opt-' + idx).classList.add('selected');
+        document.getElementById('evt-chk-' + idx).textContent = '✓';
+      }
+      
+      const allLabels = document.querySelectorAll('#eventPicksContainer .pick-option');
+      if (eventSelectedPicks.length >= eventCurrentPkg.picks) {
+        allLabels.forEach(lbl => {
+          if (!lbl.classList.contains('selected')) lbl.classList.add('disabled');
+        });
+      } else {
+        allLabels.forEach(lbl => lbl.classList.remove('disabled'));
+      }
+      
+      updateEventProgress();
+    }
+
+    function updateEventProgress() {
+      if (!eventCurrentPkg) return;
+      const count = eventSelectedPicks.length;
+      const max = eventCurrentPkg.picks;
+      const lbl = document.getElementById('eventPicksLabel');
+      lbl.textContent = `Quà đi kèm (Đã chọn ${count}/${max})`;
+      
+      const warning = document.getElementById('eventPicksWarning');
+      if (count < max) {
+        lbl.style.color = '#b45309';
+        warning.style.display = 'block';
+      } else {
+        lbl.style.color = 'var(--text-main)';
+        warning.style.display = 'none';
+      }
+    }
+
     function openEventModal() {
       document.getElementById('eventModalOverlay').classList.add('active');
+      handleEventPkgChange(); // Init package fields
     }
 
     function closeEventModal() {
@@ -390,8 +577,41 @@
     function addEvent(e) {
       e.preventDefault();
       
+      if (eventSelectedPicks.length < eventCurrentPkg.picks) {
+        if (typeof showToast === 'function') showToast(`Vui lòng chọn đủ ${eventCurrentPkg.picks} món quà đi kèm!`);
+        return;
+      }
+      
+      const date = document.getElementById('eventDate').value;
+      const recipient = document.getElementById('eventRecipient').value;
+      const address = document.getElementById('eventAddress').value;
+      const phone = document.getElementById('eventPhone').value;
+      const email = document.getElementById('eventEmail').value;
+      
+      const catSelect = document.getElementById('eventCat');
+      const catText = catSelect.options[catSelect.selectedIndex].text;
+      const pkgName = `${eventCurrentPkg.name} (${catText})`;
+
+      const newEvt = {
+        id: 'evt_' + Date.now(),
+        date: date,
+        title: 'Tặng quà cho ' + recipient,
+        recipient: recipient,
+        emotion: 'Quan tâm',
+        status: 'Chưa đặt quà',
+        pkgName: pkgName,
+        price: eventCurrentPkg.price,
+        selectedPicks: [...eventSelectedPicks],
+        address, phone, email, amount: eventCurrentPkg.priceNum
+      };
+
+      let events = loadEvents();
+      events.push(newEvt);
+      localStorage.setItem('emobox_events', JSON.stringify(events));
+      
       document.getElementById('eventForm').reset();
       closeEventModal();
+      renderEventsList();
       
       if (typeof showToast === 'function') {
         showToast('Đã thêm sự kiện thành công!');
@@ -399,6 +619,10 @@
         alert('Đã thêm sự kiện thành công!');
       }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderEventsList();
+    });
   </script>
 </body>
 </html>
