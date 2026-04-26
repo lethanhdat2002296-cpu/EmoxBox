@@ -257,7 +257,7 @@
       <div class="pkg-modal-body" id="modalBody"></div>
       <div class="pkg-modal-footer">
         <button class="btn-cancel" onclick="closePkgModal()">Huỷ</button>
-        <button class="btn-add" id="btnAddCart" disabled onclick="addPkgToCart()">🛍️ Thêm vào giỏ</button>
+        <button class="btn-add" id="btnAddCart" onclick="addPkgToCart()">🛍️ Thêm vào giỏ</button>
       </div>
     </div>
   </div>
@@ -388,6 +388,7 @@
 
       document.getElementById('pkgOverlay').classList.add('active');
       document.body.style.overflow = 'hidden';
+      document.getElementById('btnAddCart').disabled = false;
     }
 
     function closePkgModal() {
@@ -426,7 +427,7 @@
       });
 
       updateProgress();
-      document.getElementById('btnAddCart').disabled = selectedPicks.length < currentPkg.picks;
+      document.getElementById('btnAddCart').disabled = selectedPicks.length > currentPkg.picks;
     }
 
     function updateProgress() {
@@ -434,26 +435,30 @@
       const n = selectedPicks.length;
       const max = currentPkg.picks;
       document.getElementById('modalProgress').innerHTML =
-        `Đã chọn <strong>${n}/${max}</strong> món tự chọn` +
-        (n < max ? ` — còn <strong>${max - n}</strong> món nữa` : ' ✅ Đủ rồi!');
+        (n === 0
+          ? `Có thể chọn tối đa <strong>${max}</strong> món — hoặc bấm thêm vào giỏ ngay`
+          : `Đã chọn <strong>${n}/${max}</strong> món` + (n < max ? ` — còn <strong>${max - n}</strong> món nữa` : ' ✅ Đủ rồi!'));
     }
 
     function addPkgToCart() {
-      if (!currentPkg || selectedPicks.length < currentPkg.picks) return;
-      const summary = currentPkg.name + ' [' + [...currentPkg.fixedItems, ...selectedPicks].join(', ') + ']';
-      // Save to localStorage cart
-      let cart = JSON.parse(localStorage.getItem('emobox_cart') || '[]');
-      cart.push({ id: 'pkg_' + Date.now(), name: summary, price: currentPkg.price, qty: 1 });
+      if (!currentPkg) return;
+      const pkgId = 'pkg_' + Date.now();
+
+      // Lưu dữ liệu đầy đủ để cart.html hiển thị
+      cart.push({
+        id: pkgId,
+        isPkg: true,
+        name: currentPkg.name,
+        pkgPrice: currentPkg.price,
+        fixedItems: [...currentPkg.fixedItems],
+        selectedPicks: [...selectedPicks],
+        quantity: 1
+      });
       localStorage.setItem('emobox_cart', JSON.stringify(cart));
-      if (typeof updateCartBadge === 'function') updateCartBadge();
+      updateCartBadge();
+
       closePkgModal();
-      // Show toast
-      const toast = document.getElementById('toast');
-      if (toast) {
-        toast.textContent = '✅ Đã thêm ' + currentPkg.name + ' vào giỏ hàng!';
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-      }
+      showToast('✅ Đã thêm ' + currentPkg.name + ' vào giỏ hàng!');
     }
   </script>
 </body>
