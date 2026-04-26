@@ -421,7 +421,28 @@
         const day = String(d.getDate()).padStart(2, '0');
         const monthStr = 'Th' + m;
         
-        const statusClass = evt.status === 'Đang chuẩn bị' || evt.status === 'Chưa đặt quà' ? 'status-pending' : 'status-done';
+        // Compute dynamic status based on payment and date
+        if (evt.paid) {
+          const evtDate = new Date(evt.date);
+          evtDate.setHours(0,0,0,0);
+          const today = new Date();
+          today.setHours(0,0,0,0);
+          
+          const diffTime = evtDate - today;
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays <= 4 && diffDays >= 0) {
+            evt.status = 'Đang chuẩn bị quà';
+          } else if (diffDays < 0) {
+            evt.status = 'Đã hoàn thành';
+          } else {
+            evt.status = 'Đã xác nhận thanh toán';
+          }
+        } else {
+          evt.status = 'Chờ thanh toán';
+        }
+        
+        const statusClass = (evt.status === 'Đang chuẩn bị quà' || evt.status === 'Chờ thanh toán') ? 'status-pending' : 'status-done';
         
         const pkgSubtext = evt.pkgName ? `<br><span style="font-size: 0.8rem; color: var(--primary);">🎁 ${evt.pkgName} - ${evt.price}</span>` : '';
         
@@ -661,15 +682,22 @@
       events.push(newEvt);
       localStorage.setItem('emobox_events', JSON.stringify(events));
       
-      document.getElementById('eventForm').reset();
-      closeEventModal();
-      renderEventsList();
+      const cartItem = {
+        id: newEvt.id, 
+        isPkg: true, 
+        name: newEvt.pkgName,
+        pkgPrice: eventCurrentPkg.price,
+        priceNum: eventCurrentPkg.priceNum,
+        fixedItems: eventCurrentPkg.fixedItems,
+        selectedPicks: [...eventSelectedPicks],
+        quantity: 1
+      };
       
-      if (typeof showToast === 'function') {
-        showToast('Đã thêm sự kiện thành công!');
-      } else {
-        alert('Đã thêm sự kiện thành công!');
-      }
+      let cartList = JSON.parse(localStorage.getItem('emobox_cart') || '[]');
+      cartList.push(cartItem);
+      localStorage.setItem('emobox_cart', JSON.stringify(cartList));
+      
+      window.location.href = 'cart.html';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
