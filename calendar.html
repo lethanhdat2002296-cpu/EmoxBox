@@ -262,6 +262,10 @@
             </select>
           </div>
 
+          <div class="form-group" id="eventImageContainer" style="display: none; text-align: center; margin-top: 1rem;">
+            <img id="eventImage" src="" style="width: 100%; max-height: 250px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); object-fit: contain; background: #f8fafc;">
+          </div>
+
           <div class="form-group">
             <label class="form-label" id="eventPicksLabel">Quà đi kèm</label>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;" id="eventFixedLabel">🔒 Cố định: ...</p>
@@ -501,6 +505,24 @@
       const pkg = eventCurrentPkg;
       document.getElementById('eventPriceDisplay').textContent = pkg.price;
       document.getElementById('eventFixedLabel').textContent = '🔒 Cố định: ' + pkg.fixedItems.join(', ');
+      
+      const PKG_IMAGES = {
+        '8-3-20-10': {
+          'mini': '1. Mini 20-10 & 8-3.png',
+          'basic': '2. Basic 20-10 & 8-3.png',
+          'standard': '3. Standard 20-10 & 8-3.png',
+          'premium': '4. Premium 20-10 & 8-3.png'
+        }
+      };
+
+      const imgContainer = document.getElementById('eventImageContainer');
+      const imgEl = document.getElementById('eventImage');
+      if (PKG_IMAGES[cat] && PKG_IMAGES[cat][tier]) {
+        imgEl.src = PKG_IMAGES[cat][tier];
+        imgContainer.style.display = 'block';
+      } else {
+        imgContainer.style.display = 'none';
+      }
       
       const picksContainer = document.getElementById('eventPicksContainer');
       picksContainer.innerHTML = pkg.options.map((opt, idx) => `
