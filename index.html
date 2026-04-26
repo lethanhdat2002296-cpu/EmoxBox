@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EmoBox – Chọn đúng quà, trao đúng cảm xúc</title>
+  <meta name="description" content="EmoBox - Nền tảng quà tặng cảm xúc hàng đầu Việt Nam. Chọn quà theo cảm xúc, dịp tặng, người nhận." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">🎁</div>
+        <span>EmoBox</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" class="nav-link active">Trang Chủ</a>
+        <div class="nav-dropdown">
+          <a href="emotion-gifts.html" class="nav-link">Quà Cảm Xúc <span class="chevron">▾</span></a>
+          <div class="dropdown-menu">
+            <a href="emotion-gifts.html?cat=an-ui-dong-vien" class="dropdown-item">An ủi và động viên</a>
+            <a href="emotion-gifts.html?cat=xin-loi-lam-hoa" class="dropdown-item">Xin lỗi và làm hòa</a>
+            <a href="emotion-gifts.html?cat=tiep-suc-truyen-dong-luc" class="dropdown-item">Tiếp sức và truyền động lực</a>
+            <a href="emotion-gifts.html?cat=yeu-thuong-quan-tam" class="dropdown-item">Yêu thương và quan tâm</a>
+            <a href="emotion-gifts.html?cat=chuc-mung-an-mung" class="dropdown-item">Chúc mừng và ăn mừng</a>
+            <a href="emotion-gifts.html?cat=healing-self-care" class="dropdown-item">Healing & Self-care</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="occasion-gifts.html" class="nav-link">Quà Theo Dịp <span class="chevron">▾</span></a>
+          <div class="dropdown-menu">
+            <a href="occasion-gifts.html?cat=tet" class="dropdown-item">Tết</a>
+            <a href="occasion-gifts.html?cat=valentine" class="dropdown-item">Valentine</a>
+            <a href="occasion-gifts.html?cat=8-3-20-10" class="dropdown-item">8/3 + 20/10</a>
+            <a href="occasion-gifts.html?cat=trung-thu" class="dropdown-item">Trung Thu</a>
+            <a href="occasion-gifts.html?cat=20-11" class="dropdown-item">20/11</a>
+            <a href="occasion-gifts.html?cat=noel" class="dropdown-item">Noel</a>
+          </div>
+        </div>
+        <a href="plans.html" class="nav-link">Subscription</a>
+        <a href="calendar.html" class="nav-link">Đặt Lịch</a>
+        <a href="contact.html" class="nav-link">Liên Hệ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="cart.html" class="btn-icon" id="cartBtn" title="Giỏ hàng">
+          🛍️
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+        <button class="btn-icon" onclick="toggleUserMenu()" id="userBtn" title="Tài khoản">👤</button>
+        <div class="user-menu" id="userMenu">
+          <div class="user-menu-header">
+            <div class="user-avatar-sm">U</div>
+            <div>
+              <p class="user-name">Tài Khoản</p>
+              <p class="user-sub">Xem thông tin của bạn</p>
+            </div>
+          </div>
+          <div class="user-menu-body">
+            <a href="account.html" class="user-menu-item">📋 Hồ sơ</a>
+            <a href="cart.html" class="user-menu-item">📦 Đơn hàng</a>
+            <a href="plans.html" class="user-menu-item">💳 Subscription</a>
+            <a href="calendar.html" class="user-menu-item">📅 Lịch tặng quà</a>
+            <a href="wallet.html" class="user-menu-item">💰 Ví EmoBox</a>
+          </div>
+        </div>
+        <button class="hamburger" id="hamburger" onclick="toggleNav()">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-badge">✨ Nền tảng quà tặng cảm xúc #1 Việt Nam</div>
+      <h1 class="hero-title">
+        Chọn một món quà đúng với<br/>
+        <span class="hero-highlight">cảm xúc</span> của bạn
+      </h1>
+      <p class="hero-subtitle">
+        Hãy nói cho EmoBox biết bạn muốn họ cảm thấy thế nào, họ là ai, và chúng tôi sẽ gợi ý trải nghiệm cảm xúc hoàn hảo nhất nằm gọn trong một chiếc hộp.
+      </p>
+      <div class="hero-actions">
+        <a href="finder.html" class="btn btn-primary btn-lg">🎯 Bắt Đầu Tìm Quà</a>
+        <a href="plans.html" class="btn btn-outline btn-lg">Xem Các Gói Đăng Ký</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num">10,000+</span><span class="stat-label">Hộp đã giao</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">4.9★</span><span class="stat-label">Đánh giá TB</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-num">98%</span><span class="stat-label">Khách hài lòng</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMOTION QUICK ENTRY -->
+  <section class="section bg-white">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Đang tìm nguồn cảm hứng?</h2>
+        <p class="section-subtitle">Chọn ngay một cảm xúc để bắt đầu hành trình tìm quà</p>
+      </div>
+      <div class="emotion-grid" id="emotionGrid">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED BOXES -->
+  <section class="section bg-cream">
+    <div class="container">
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-title">Được chọn lọc bằng cả trái tim</h2>
+          <p class="section-subtitle">Những hộp quà chứa đựng trải nghiệm đáng nhớ nhất</p>
+        </div>
+        <a href="finder.html" class="btn btn-ghost">Xem tất cả →</a>
+      </div>
+      <div class="gifts-grid" id="featuredGrid">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section bg-white">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Cách EmoBox Hoạt Động</h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-icon">🎯</div>
+          <div class="step-num">1</div>
+          <h3 class="step-title">Cung cấp bối cảnh</h3>
+          <p class="step-desc">Chọn lựa cảm xúc, dịp tặng quà, người nhận, và mức ngân sách của bạn.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-card">
+          <div class="step-icon">✨</div>
+          <div class="step-num">2</div>
+          <h3 class="step-title">Chúng tôi gợi ý</h3>
+          <p class="step-desc">Hệ thống thông minh đề xuất 3–5 hộp quà phù hợp nhất không chệch đi đâu.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-card">
+          <div class="step-icon">🎁</div>
+          <div class="step-num">3</div>
+          <h3 class="step-title">Tùy chỉnh & Gửi đi</h3>
+          <p class="step-desc">Thêm thiệp tay, thay đổi đồ kèm, và chúng tôi sẽ lo liệu mọi thứ thật chỉn chu.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section bg-sky">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Hàng ngàn cảm xúc đã được trao đi</h2>
+        <p class="section-subtitle">Đừng chỉ nghe chúng tôi nói, hãy xem khách hàng cảm nhận thế nào</p>
+      </div>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Chiếc hộp thực sự đã cứu vãn mối quan hệ của mình. Cách các bạn sắp xếp và gợi ý thiệp viết tay quá tinh tế. Người ấy đã rất xúc động khi nhận được."</p>
+          <div class="review-author">
+            <div class="review-avatar">H</div>
+            <div>
+              <p class="review-name">Hương Trà</p>
+              <p class="review-role">Khách hàng mua Quà Xin Lỗi</p>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Đóng gói siêu đẹp và xịn xò. Nhờ EmoBox tư vấn chọn bộ 'Chữa Lành' mà bạn ấy khen mãi. Chắc chắn sẽ quay lại!"</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background: linear-gradient(135deg,#38bdf8,#0284c7)">M</div>
+            <div>
+              <p class="review-name">Minh Tuấn</p>
+              <p class="review-role">Khách hàng mua Quà Sinh Nhật</p>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Mua cho bản thân sau một dự án lớn. Mở hộp ra cảm giác như đang được ôm vào lòng vậy. Một trải nghiệm chữa lành tuyệt vời."</p>
+          <div class="review-author">
+            <div class="review-avatar" style="background: linear-gradient(135deg,#a78bfa,#7c3aed)">L</div>
+            <div>
+              <p class="review-name">Lê Nga</p>
+              <p class="review-role">Khách hàng mua Quà Tự Thưởng</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <div class="container cta-inner">
+      <div>
+        <h2 class="cta-title">Bắt đầu trải nghiệm EmoBox ngay hôm nay</h2>
+        <p class="cta-sub">Gói Subscription từ 350.000đ/tháng · Giao hàng miễn phí · Hủy bất cứ lúc nào</p>
+      </div>
+      <a href="plans.html" class="btn btn-white btn-lg">Xem Gói Subscription →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <span class="footer-logo">🎁 EmoBox</span>
+        <p class="footer-tagline">Chọn đúng quà, trao đúng cảm xúc, đúng sự kiện và đúng người.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn">f</a>
+          <a href="#" class="social-btn">in</a>
+          <a href="#" class="social-btn">ig</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Khám phá</h4>
+        <ul>
+          <li><a href="finder.html">Tìm Khám Phá Quà</a></li>
+          <li><a href="plans.html">Gói Đăng Ký</a></li>
+          <li><a href="calendar.html">Lịch Tặng Quà</a></li>
+          <li><a href="wallet.html">Ví EmoBox</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hỗ trợ</h4>
+        <ul>
+          <li><a href="#">Câu Hỏi Thường Gặp</a></li>
+          <li><a href="#">Vận chuyển & Đổi trả</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+          <li><a href="#">Theo dõi Đơn hàng</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Chính sách</h4>
+        <ul>
+          <li><a href="#">Chính sách Bảo mật</a></li>
+          <li><a href="#">Điều khoản Dịch vụ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 EmoBox. Đã đăng ký bản quyền.</p>
+    </div>
+  </footer>
+
+  <!-- CART TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    renderEmotionGrid();
+    renderFeaturedBoxes();
+  </script>
+</body>
+</html>

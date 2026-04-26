@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tìm Kiếm Quà Tặng – EmoBox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .finder-container { padding-top: 4rem; padding-bottom: 6rem; }
+    .filter-section { background: white; padding: 2rem; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 3rem; }
+    .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .filter-group label { display: block; font-weight: 600; margin-bottom: 1rem; color: var(--text-main); }
+    .filter-select { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 10px; font-family: inherit; color: var(--text-muted); outline: none; }
+    .filter-select:focus { border-color: var(--primary); }
+    .results-count { margin-bottom: 2rem; font-weight: 500; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">🎁</div>
+        <span>EmoBox</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" class="nav-link">Trang Chủ</a>
+        <div class="nav-dropdown">
+          <a href="emotion-gifts.html" class="nav-link">Quà Cảm Xúc <span class="chevron">▾</span></a>
+          <div class="dropdown-menu">
+            <a href="emotion-gifts.html?cat=an-ui-dong-vien" class="dropdown-item">An ủi và động viên</a>
+            <a href="emotion-gifts.html?cat=xin-loi-lam-hoa" class="dropdown-item">Xin lỗi và làm hòa</a>
+            <a href="emotion-gifts.html?cat=tiep-suc-truyen-dong-luc" class="dropdown-item">Tiếp sức và truyền động lực</a>
+            <a href="emotion-gifts.html?cat=yeu-thuong-quan-tam" class="dropdown-item">Yêu thương và quan tâm</a>
+            <a href="emotion-gifts.html?cat=chuc-mung-an-mung" class="dropdown-item">Chúc mừng và ăn mừng</a>
+            <a href="emotion-gifts.html?cat=healing-self-care" class="dropdown-item">Healing & Self-care</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="occasion-gifts.html" class="nav-link">Quà Theo Dịp <span class="chevron">▾</span></a>
+          <div class="dropdown-menu">
+            <a href="occasion-gifts.html?cat=tet" class="dropdown-item">Tết</a>
+            <a href="occasion-gifts.html?cat=valentine" class="dropdown-item">Valentine</a>
+            <a href="occasion-gifts.html?cat=8-3-20-10" class="dropdown-item">8/3 + 20/10</a>
+            <a href="occasion-gifts.html?cat=trung-thu" class="dropdown-item">Trung Thu</a>
+            <a href="occasion-gifts.html?cat=20-11" class="dropdown-item">20/11</a>
+            <a href="occasion-gifts.html?cat=noel" class="dropdown-item">Noel</a>
+          </div>
+        </div>
+        <a href="plans.html" class="nav-link">Subscription</a>
+        <a href="calendar.html" class="nav-link">Đặt Lịch</a>
+        <a href="contact.html" class="nav-link">Liên Hệ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="cart.html" class="btn-icon" id="cartBtn" title="Giỏ hàng">
+          🛍️
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+        <button class="btn-icon" onclick="toggleUserMenu()" id="userBtn" title="Tài khoản">👤</button>
+        <div class="user-menu" id="userMenu">
+          <div class="user-menu-header">
+            <div class="user-avatar-sm">U</div>
+            <div>
+              <p class="user-name">Tài Khoản</p>
+              <p class="user-sub">Xem thông tin của bạn</p>
+            </div>
+          </div>
+          <div class="user-menu-body">
+            <a href="account.html" class="user-menu-item">📋 Hồ sơ</a>
+            <a href="cart.html" class="user-menu-item">📦 Đơn hàng</a>
+            <a href="plans.html" class="user-menu-item">💳 Subscription</a>
+            <a href="calendar.html" class="user-menu-item">📅 Lịch tặng quà</a>
+            <a href="wallet.html" class="user-menu-item">💰 Ví EmoBox</a>
+          </div>
+        </div>
+        <button class="hamburger" id="hamburger" onclick="toggleNav()">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container finder-container">
+    <div class="section-header" style="text-align: left;">
+      <h1 class="section-title">Tìm quà tặng hoàn hảo</h1>
+      <p class="section-subtitle">Dựa trên cảm xúc và đối tượng bạn muốn gửi trao</p>
+    </div>
+
+    <section class="filter-section">
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label>Tôi muốn họ cảm thấy...</label>
+          <select class="filter-select" id="emotionFilter">
+            <option value="all">Tất cả cảm xúc</option>
+            <option value="birthday">🎂 Sinh Nhật</option>
+            <option value="apology">🙏 Xin Lỗi</option>
+            <option value="comfort">🤗 Ủi An</option>
+            <option value="thank_you">💛 Cảm Ơn</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Người nhận là...</label>
+          <select class="filter-select" id="recipientFilter">
+            <option value="all">Mọi đối tượng</option>
+            <option value="best_friend">Bạn Thân</option>
+            <option value="lover">Người Yêu</option>
+            <option value="family">Gia Đình</option>
+            <option value="colleague">Đồng Nghiệp</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Ngân sách khoảng...</label>
+          <select class="filter-select" id="budgetFilter">
+            <option value="all">Mọi mức giá</option>
+            <option value="under_300k">Dưới 300K</option>
+            <option value="300_500k">300K – 500K</option>
+            <option value="above_500k">Trên 500K</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <div class="results-count" id="resultsCount">Đang tải các hộp quà...</div>
+    
+    <div class="gifts-grid" id="finderResults">
+      <!-- Filled by JS -->
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <span class="footer-logo">🎁 EmoBox</span>
+        <p class="footer-tagline">Chọn đúng quà, trao đúng cảm xúc, đúng sự kiện và đúng người.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn">f</a>
+          <a href="#" class="social-btn">in</a>
+          <a href="#" class="social-btn">ig</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Khám phá</h4>
+        <ul>
+          <li><a href="finder.html">Tìm Khám Phá Quà</a></li>
+          <li><a href="plans.html">Gói Đăng Ký</a></li>
+          <li><a href="calendar.html">Lịch Tặng Quà</a></li>
+          <li><a href="wallet.html">Ví EmoBox</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hỗ trợ</h4>
+        <ul>
+          <li><a href="#">Câu Hỏi Thường Gặp</a></li>
+          <li><a href="#">Vận chuyển & Đổi trả</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+          <li><a href="#">Theo dõi Đơn hàng</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Chính sách</h4>
+        <ul>
+          <li><a href="#">Chính sách Bảo mật</a></li>
+          <li><a href="#">Điều khoản Dịch vụ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 EmoBox. Đã đăng ký bản quyền.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Giả lập render kết quả tìm kiếm
+    function renderFinderResults() {
+      const grid = document.getElementById('finderResults');
+      const count = document.getElementById('resultsCount');
+      if (!grid || typeof FEATURED_BOXES === 'undefined') return;
+      
+      // Giả lập lặp lại dữ liệu để trông nhiều hơn
+      const allBoxes = [...FEATURED_BOXES, ...FEATURED_BOXES, ...FEATURED_BOXES];
+      
+      count.textContent = `Tìm thấy ${allBoxes.length} hộp quà phù hợp`;
+      
+      grid.innerHTML = allBoxes.map((box, idx) => `
+        <div class="gift-card">
+          <a href="box-detail.html?id=${box.id}" class="gift-img-wrap">
+            ${box.badge ? `<span class="gift-badge">${box.badge}</span>` : ''}
+            <img src="${box.image}" alt="${box.name}" class="gift-img">
+          </a>
+          <div class="gift-content">
+            <a href="box-detail.html?id=${box.id}"><h3 class="gift-title">${box.name}</h3></a>
+            <p class="gift-desc">${box.desc}</p>
+            <div class="gift-footer">
+              <span class="gift-price">${formatPrice(box.price)}</span>
+              <button class="btn btn-primary" onclick="addToCart('${box.id}')">Thêm giỏ</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', renderFinderResults);
+  </script>
+</body>
+</html>
