@@ -149,6 +149,9 @@
         </div>
         <button class="pkg-modal-close" onclick="closePkgModal()">✕</button>
       </div>
+      <div class="pkg-modal-image-container" id="pkgImageContainer" style="display:none; text-align:center; padding: 1rem 1.5rem 0;">
+        <img id="pkgImage" src="" style="width:100%; max-height:200px; object-fit:contain; border-radius:12px; background:#f8fafc; border:1px solid var(--border);">
+      </div>
       <div class="pkg-modal-progress" id="modalProgress"></div>
       <div class="pkg-modal-body" id="modalBody"></div>
       <div class="pkg-modal-footer">
@@ -311,6 +314,57 @@
       document.getElementById('modalTitle').textContent = pkg.name + ' – ' + pkg.price;
       document.getElementById('modalSub').textContent =
         '🔒 Cố định: ' + pkg.fixedItems.join(', ');
+
+      const PKG_IMAGES = {
+        'an-ui-dong-vien': {
+          'mini': '1. Mini Support.png',
+          'basic': '2. Basic Support.png',
+          'standard': '3. Standard Support.png',
+          'premium': '4. Premium Support.png'
+        },
+        'chuc-mung-an-mung': {
+          'mini': '1. Mini Celebration.png',
+          'basic': '2. Basic Celebration.png',
+          'standard': '3. Standard Celebration.png',
+          'premium': '4. Premium Celebration.png'
+        },
+        'tiep-suc-truyen-dong-luc': {
+          'mini': '1. Mini Motivation.png',
+          'basic': '2. Basic Motivation.png',
+          'standard': '3. Standard Motivation.png',
+          'premium': '4. Premium Motivation.png'
+        },
+        'yeu-thuong-quan-tam': {
+          'mini': '1. Mini Love.png',
+          'basic': '2. Basic Love.png',
+          'standard': '3. Standard Love.png',
+          'premium': '4. Premium Love.png'
+        },
+        'xin-loi-lam-hoa': {
+          'mini': '1. Mini Sorry.png',
+          'basic': '2. Basic Sorry.png',
+          'standard': '3. Standard Sorry.png',
+          'premium': '4. Premium Sorry.png'
+        },
+        'healing-self-care': {
+          'mini': '1. Mini Healing.png',
+          'basic': '2. Basic Healing.png',
+          'standard': '3. Standard Healing.png',
+          'premium': '4. Premium Healing.png'
+        }
+      };
+
+      const imgContainer = document.getElementById('pkgImageContainer');
+      const imgEl = document.getElementById('pkgImage');
+      const currentCat = cat || 'an-ui-dong-vien'; // fallback if no cat in URL
+
+      if (PKG_IMAGES[currentCat] && PKG_IMAGES[currentCat][pkgKey]) {
+        imgEl.src = PKG_IMAGES[currentCat][pkgKey];
+        imgContainer.style.display = 'block';
+      } else {
+        imgContainer.style.display = 'none';
+      }
+
       updateProgress();
 
       const body = document.getElementById('modalBody');
