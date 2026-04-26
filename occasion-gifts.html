@@ -141,7 +141,7 @@
         <div class="pkg-accent" style="background: linear-gradient(90deg,#bae6fd,#7dd3fc);"></div>
         <div class="pkg-header">
           <p class="pkg-name">Mini</p>
-          <p class="pkg-price">&lt; 99.000 ₫</p>
+          <p class="pkg-price">99.000 ₫</p>
         </div>
         <hr class="pkg-divider">
         <p class="pkg-section-label">🔒 Sản phẩm cố định (2 món)</p>
@@ -166,7 +166,7 @@
         <div class="pkg-accent" style="background: linear-gradient(90deg,#6ee7b7,#34d399);"></div>
         <div class="pkg-header">
           <p class="pkg-name">Basic</p>
-          <p class="pkg-price">&lt; 199.000 ₫</p>
+          <p class="pkg-price">199.000 ₫</p>
         </div>
         <hr class="pkg-divider">
         <p class="pkg-section-label">🔒 Sản phẩm cố định (2 món)</p>
@@ -190,7 +190,7 @@
         <div class="pkg-accent" style="background: linear-gradient(90deg,#0284c7,#38bdf8);"></div>
         <div class="pkg-header">
           <p class="pkg-name">Standard <span class="pkg-badge">Phổ biến</span></p>
-          <p class="pkg-price">&lt; 399.000 ₫</p>
+          <p class="pkg-price">399.000 ₫</p>
         </div>
         <hr class="pkg-divider">
         <p class="pkg-section-label">🔒 Sản phẩm cố định (3 món)</p>
@@ -217,7 +217,7 @@
         <div class="pkg-accent" style="background: linear-gradient(90deg,#a78bfa,#7c3aed);"></div>
         <div class="pkg-header">
           <p class="pkg-name">Premium <span class="pkg-badge" style="background:#7c3aed;">Plus</span></p>
-          <p class="pkg-price">&lt; 599.000 ₫+</p>
+          <p class="pkg-price">599.000 ₫</p>
         </div>
         <hr class="pkg-divider">
         <p class="pkg-section-label">🔒 Sản phẩm cố định (3 món)</p>
@@ -336,28 +336,32 @@
     const PKG_DATA = {
       mini: {
         name: 'Gói Mini',
-        price: '< 99.000 ₫',
+        price: '99.000 ₫',
+        priceNum: 99000,
         picks: 1,
         fixedItems: ['Lịch để bàn (nhỏ)', 'Hộp mứt (nhỏ)'],
         options: ['Lì xì mini', 'Kẹo Tết', 'Bookmark lộc', 'Charm may mắn', 'Trà túi lọc']
       },
       basic: {
         name: 'Gói Basic',
-        price: '< 199.000 ₫',
+        price: '199.000 ₫',
+        priceNum: 199000,
         picks: 2,
         fixedItems: ['Hộp mứt (vừa)', 'Trà'],
         options: ['Lì xì set', 'Tất đỏ', 'Hoa khô mini', 'Lịch để bàn']
       },
       standard: {
         name: 'Gói Standard',
-        price: '< 399.000 ₫',
+        price: '399.000 ₫',
+        priceNum: 399000,
         picks: 3,
         fixedItems: ['Rượu vang', 'Mứt', 'Trà'],
         options: ['Trà Tết', 'Gấu bông mini', 'Tinh dầu', 'Bookmark', 'Pouch', 'Lịch để bàn']
       },
       premium: {
         name: 'Gói Premium Plus',
-        price: '< 599.000 ₫+',
+        price: '599.000 ₫',
+        priceNum: 599000,
         picks: 4,
         fixedItems: ['Rượu vang', 'Mứt', 'Trà'],
         options: ['Gấu bông', 'Đèn ngủ', 'Bath items', 'Trà / Cà phê set', 'Chocolate premium', 'Lịch để bàn', 'Mứt']
@@ -450,6 +454,7 @@
         isPkg: true,
         name: currentPkg.name,
         pkgPrice: currentPkg.price,
+        priceNum: currentPkg.priceNum,
         fixedItems: [...currentPkg.fixedItems],
         selectedPicks: [...selectedPicks],
         quantity: 1
