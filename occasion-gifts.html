@@ -12,6 +12,30 @@
     .cat-container { padding-top: 4rem; padding-bottom: 6rem; }
     .cat-banner { background: #fef2f2; padding: 4rem; border-radius: 32px; margin-bottom: 4rem; text-align: center; }
     .cat-title { font-family: var(--font-serif); font-size: 3rem; margin-bottom: 1rem; }
+
+    /* Package Cards */
+    .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; margin-top: 1rem; }
+    .pkg-card { background: white; border-radius: 24px; border: 1px solid var(--border); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all 0.3s; position: relative; overflow: hidden; }
+    .pkg-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.12); }
+    .pkg-card.highlight { border: 2px solid var(--primary); box-shadow: 0 8px 24px rgba(2,132,199,0.12); }
+    .pkg-accent { position: absolute; top: 0; left: 0; right: 0; height: 5px; border-radius: 24px 24px 0 0; }
+    .pkg-header { margin-bottom: 1.25rem; }
+    .pkg-name { font-weight: 800; font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .pkg-price { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+    .pkg-badge { display: inline-block; background: var(--primary); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px; margin-left: 0.5rem; vertical-align: middle; letter-spacing: 0.5px; }
+    .pkg-divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+    .pkg-section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .pkg-items { list-style: none; padding: 0; margin: 0 0 1rem 0; }
+    .pkg-items li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem; color: #475569; margin-bottom: 0.4rem; }
+    .pkg-items li .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 0.4rem; }
+    .dot-fix { background: var(--primary); }
+    .dot-pick { background: #f59e0b; }
+    .pkg-pick-note { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-bottom: 1.25rem; }
+    .pkg-btn { margin-top: auto; padding: 0.75rem; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; transition: all 0.2s; }
+    .pkg-btn-primary { background: var(--primary); color: white; }
+    .pkg-btn-primary:hover { background: var(--primary-hover); }
+    .pkg-btn-outline { background: transparent; border: 2px solid #bae6fd; color: var(--primary); }
+    .pkg-btn-outline:hover { background: #f0f9ff; }
   </style>
 </head>
 <body>
@@ -83,8 +107,112 @@
       <p class="section-subtitle" id="catDesc">Dành riêng cho những cột mốc ý nghĩa trong năm</p>
     </div>
 
-    <div class="gifts-grid" id="catResults">
-      <!-- Filled by JS -->
+    <div class="packages-grid">
+
+      <!-- MINI -->
+      <div class="pkg-card">
+        <div class="pkg-accent" style="background: linear-gradient(90deg,#bae6fd,#7dd3fc);"></div>
+        <div class="pkg-header">
+          <p class="pkg-name">Mini</p>
+          <p class="pkg-price">&lt; 99.000 ₫</p>
+        </div>
+        <hr class="pkg-divider">
+        <p class="pkg-section-label">🔒 Sản phẩm cố định (2 món)</p>
+        <ul class="pkg-items">
+          <li><span class="dot dot-fix"></span>Lịch để bàn (nhỏ)</li>
+          <li><span class="dot dot-fix"></span>Hộp mứt (nhỏ)</li>
+        </ul>
+        <p class="pkg-section-label">✨ Tự chọn thêm (1 món)</p>
+        <ul class="pkg-items">
+          <li><span class="dot dot-pick"></span>Lì xì mini</li>
+          <li><span class="dot dot-pick"></span>Kẹo Tết</li>
+          <li><span class="dot dot-pick"></span>Bookmark lộc</li>
+          <li><span class="dot dot-pick"></span>Charm may mắn</li>
+          <li><span class="dot dot-pick"></span>Trà túi lọc</li>
+        </ul>
+        <p class="pkg-pick-note">* Chọn 1 trong số các món trên</p>
+        <button class="pkg-btn pkg-btn-outline" style="width:100%;">Chọn Gói Mini</button>
+      </div>
+
+      <!-- BASIC -->
+      <div class="pkg-card">
+        <div class="pkg-accent" style="background: linear-gradient(90deg,#6ee7b7,#34d399);"></div>
+        <div class="pkg-header">
+          <p class="pkg-name">Basic</p>
+          <p class="pkg-price">&lt; 199.000 ₫</p>
+        </div>
+        <hr class="pkg-divider">
+        <p class="pkg-section-label">🔒 Sản phẩm cố định (2 món)</p>
+        <ul class="pkg-items">
+          <li><span class="dot dot-fix"></span>Hộp mứt (vừa)</li>
+          <li><span class="dot dot-fix"></span>Trà</li>
+        </ul>
+        <p class="pkg-section-label">✨ Tự chọn thêm (2 món)</p>
+        <ul class="pkg-items">
+          <li><span class="dot dot-pick"></span>Lì xì set</li>
+          <li><span class="dot dot-pick"></span>Tất đỏ</li>
+          <li><span class="dot dot-pick"></span>Hoa khô mini</li>
+          <li><span class="dot dot-pick"></span>Lịch để bàn</li>
+        </ul>
+        <p class="pkg-pick-note">* Chọn 2 trong số các món trên</p>
+        <button class="pkg-btn pkg-btn-outline" style="width:100%;">Chọn Gói Basic</button>
+      </div>
+
+      <!-- STANDARD -->
+      <div class="pkg-card highlight">
+        <div class="pkg-accent" style="background: linear-gradient(90deg,#0284c7,#38bdf8);"></div>
+        <div class="pkg-header">
+          <p class="pkg-name">Standard <span class="pkg-badge">Phổ biến</span></p>
+          <p class="pkg-price">&lt; 399.000 ₫</p>
+        </div>
+        <hr class="pkg-divider">
+        <p class="pkg-section-label">🔒 Sản phẩm cố định (3 món)</p>
+        <ul class="pkg-items">
+          <li><span class="dot dot-fix"></span>Rượu vang</li>
+          <li><span class="dot dot-fix"></span>Mứt</li>
+          <li><span class="dot dot-fix"></span>Trà</li>
+        </ul>
+        <p class="pkg-section-label">✨ Tự chọn thêm (1 món)</p>
+        <ul class="pkg-items">
+          <li><span class="dot dot-pick"></span>Trà Tết</li>
+          <li><span class="dot dot-pick"></span>Gấu bông mini</li>
+          <li><span class="dot dot-pick"></span>Tinh dầu</li>
+          <li><span class="dot dot-pick"></span>Bookmark</li>
+          <li><span class="dot dot-pick"></span>Pouch</li>
+          <li><span class="dot dot-pick"></span>Lịch để bàn</li>
+        </ul>
+        <p class="pkg-pick-note">* Chọn 1 trong số các món trên</p>
+        <button class="pkg-btn pkg-btn-primary" style="width:100%;">Chọn Gói Standard</button>
+      </div>
+
+      <!-- PREMIUM / PREMIUM PLUS -->
+      <div class="pkg-card">
+        <div class="pkg-accent" style="background: linear-gradient(90deg,#a78bfa,#7c3aed);"></div>
+        <div class="pkg-header">
+          <p class="pkg-name">Premium <span class="pkg-badge" style="background:#7c3aed;">Plus</span></p>
+          <p class="pkg-price">&lt; 599.000 ₫+</p>
+        </div>
+        <hr class="pkg-divider">
+        <p class="pkg-section-label">🔒 Sản phẩm cố định (3 món)</p>
+        <ul class="pkg-items">
+          <li><span class="dot dot-fix"></span>Rượu vang</li>
+          <li><span class="dot dot-fix"></span>Mứt</li>
+          <li><span class="dot dot-fix"></span>Trà</li>
+        </ul>
+        <p class="pkg-section-label">✨ Tự chọn thêm (2 món)</p>
+        <ul class="pkg-items">
+          <li><span class="dot dot-pick"></span>Gấu bông</li>
+          <li><span class="dot dot-pick"></span>Đèn ngủ</li>
+          <li><span class="dot dot-pick"></span>Bath items</li>
+          <li><span class="dot dot-pick"></span>Trà / Cà phê set</li>
+          <li><span class="dot dot-pick"></span>Chocolate premium</li>
+          <li><span class="dot dot-pick"></span>Lịch để bàn</li>
+          <li><span class="dot dot-pick"></span>Mứt</li>
+        </ul>
+        <p class="pkg-pick-note">* Chọn 2 trong số các món trên</p>
+        <button class="pkg-btn pkg-btn-outline" style="width:100%; border-color:#a78bfa; color:#7c3aed;">Chọn Gói Premium</button>
+      </div>
+
     </div>
   </main>
 
@@ -154,29 +282,9 @@
       document.getElementById('catBanner').style.background = categories[cat].bg;
     }
 
-    function renderCatResults() {
-      const grid = document.getElementById('catResults');
-      if (!grid || typeof FEATURED_BOXES === 'undefined') return;
-      
-      grid.innerHTML = FEATURED_BOXES.map(box => `
-        <div class="gift-card">
-          <a href="box-detail.html?id=${box.id}" class="gift-img-wrap">
-            ${box.badge ? `<span class="gift-badge">${box.badge}</span>` : ''}
-            <img src="${box.image}" alt="${box.name}" class="gift-img">
-          </a>
-          <div class="gift-content">
-            <a href="box-detail.html?id=${box.id}"><h3 class="gift-title">${box.name}</h3></a>
-            <p class="gift-desc">${box.desc}</p>
-            <div class="gift-footer">
-              <span class="gift-price">${formatPrice(box.price)}</span>
-              <button class="btn btn-primary" onclick="addToCart('${box.id}')">Thêm giỏ</button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    document.addEventListener('DOMContentLoaded', renderCatResults);
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof updateCartBadge === 'function') updateCartBadge();
+    });
   </script>
 </body>
 </html>
