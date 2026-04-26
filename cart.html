@@ -210,7 +210,6 @@
       list.innerHTML = cart.map(item => {
         if (item.isPkg) {
           // --- Package item ---
-          const allItems = [...(item.fixedItems || []), ...(item.selectedPicks || [])];
           const fixedHTML = (item.fixedItems || []).map(f =>
             `<span style="display:inline-block;background:#e0f2fe;color:#0284c7;font-size:0.72rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:999px;margin:0.1rem;">${f}</span>`
           ).join('');
@@ -219,6 +218,8 @@
                 `<span style="display:inline-block;background:#fef3c7;color:#92400e;font-size:0.72rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:999px;margin:0.1rem;">${p}</span>`
               ).join('')
             : '<span style="font-size:0.75rem;color:#94a3b8;font-style:italic;">Chưa chọn món tự chọn</span>';
+
+          if (item.priceNum) total += item.priceNum * item.quantity;
 
           return `
             <div class="cart-item">
@@ -264,8 +265,8 @@
         }
       }).join('');
 
-      document.getElementById('subtotal').textContent = total > 0 ? formatPrice(total) : '—';
-      document.getElementById('totalPrice').textContent = total > 0 ? formatPrice(total) : '—';
+      document.getElementById('subtotal').textContent = formatPrice(total);
+      document.getElementById('totalPrice').textContent = formatPrice(total);
     }
 
     function updateQty(id, delta) {
