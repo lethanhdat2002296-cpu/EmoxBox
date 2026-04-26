@@ -208,28 +208,64 @@
       let total = 0;
 
       list.innerHTML = cart.map(item => {
-        const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
-        total += box.price * item.quantity;
-        return `
-          <div class="cart-item">
-            <img src="${box.image}" class="cart-item-img">
-            <div class="cart-item-info">
-              <h4>${box.name}</h4>
-              <p>${box.tagline}</p>
-              <div style="margin-top: 0.5rem; font-weight: 700; color: var(--primary);">${formatPrice(box.price)}</div>
+        if (item.isPkg) {
+          // --- Package item ---
+          const allItems = [...(item.fixedItems || []), ...(item.selectedPicks || [])];
+          const fixedHTML = (item.fixedItems || []).map(f =>
+            `<span style="display:inline-block;background:#e0f2fe;color:#0284c7;font-size:0.72rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:999px;margin:0.1rem;">${f}</span>`
+          ).join('');
+          const pickHTML = (item.selectedPicks || []).length > 0
+            ? (item.selectedPicks).map(p =>
+                `<span style="display:inline-block;background:#fef3c7;color:#92400e;font-size:0.72rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:999px;margin:0.1rem;">${p}</span>`
+              ).join('')
+            : '<span style="font-size:0.75rem;color:#94a3b8;font-style:italic;">Chưa chọn món tự chọn</span>';
+
+          return `
+            <div class="cart-item">
+              <div style="width:100px;height:100px;border-radius:12px;background:linear-gradient(135deg,#e0f2fe,#bae6fd);display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;">🎁</div>
+              <div class="cart-item-info" style="flex:1;">
+                <h4 style="margin-bottom:0.4rem;">${item.name}</h4>
+                <div style="margin-bottom:0.35rem;">
+                  <span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);">🔒 Cố định: </span>${fixedHTML}
+                </div>
+                <div style="margin-bottom:0.5rem;">
+                  <span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);">✨ Tự chọn: </span>${pickHTML}
+                </div>
+                <div style="font-weight:700;color:var(--primary);font-size:1rem;">${item.pkgPrice || '—'}</div>
+              </div>
+              <div class="cart-qty">
+                <button class="qty-btn" onclick="updateQty('${item.id}', -1)">−</button>
+                <span style="font-weight:600;">${item.quantity}</span>
+                <button class="qty-btn" onclick="updateQty('${item.id}', 1)">＋</button>
+              </div>
+              <button class="btn-icon" onclick="removeFromCart('${item.id}')" style="color:#ef4444;">🗑️</button>
             </div>
-            <div class="cart-qty">
-              <button class="qty-btn" onclick="updateQty('${item.id}', -1)">−</button>
-              <span style="font-weight: 600;">${item.quantity}</span>
-              <button class="qty-btn" onclick="updateQty('${item.id}', 1)">＋</button>
+          `;
+        } else {
+          // --- Normal gift box item ---
+          const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
+          total += box.price * item.quantity;
+          return `
+            <div class="cart-item">
+              <img src="${box.image}" class="cart-item-img">
+              <div class="cart-item-info">
+                <h4>${box.name}</h4>
+                <p>${box.tagline}</p>
+                <div style="margin-top: 0.5rem; font-weight: 700; color: var(--primary);">${formatPrice(box.price)}</div>
+              </div>
+              <div class="cart-qty">
+                <button class="qty-btn" onclick="updateQty('${item.id}', -1)">−</button>
+                <span style="font-weight: 600;">${item.quantity}</span>
+                <button class="qty-btn" onclick="updateQty('${item.id}', 1)">＋</button>
+              </div>
+              <button class="btn-icon" onclick="removeFromCart('${item.id}')" style="color: #ef4444;">🗑️</button>
             </div>
-            <button class="btn-icon" onclick="removeFromCart('${item.id}')" style="color: #ef4444;">🗑️</button>
-          </div>
-        `;
+          `;
+        }
       }).join('');
 
-      document.getElementById('subtotal').textContent = formatPrice(total);
-      document.getElementById('totalPrice').textContent = formatPrice(total);
+      document.getElementById('subtotal').textContent = total > 0 ? formatPrice(total) : '—';
+      document.getElementById('totalPrice').textContent = total > 0 ? formatPrice(total) : '—';
     }
 
     function updateQty(id, delta) {
