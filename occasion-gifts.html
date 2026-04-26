@@ -149,6 +149,9 @@
         </div>
         <button class="pkg-modal-close" onclick="closePkgModal()">✕</button>
       </div>
+      <div class="pkg-modal-image-container" id="pkgImageContainer" style="display:none; text-align:center; padding: 1rem 1.5rem 0;">
+        <img id="pkgImage" src="" style="width:100%; max-height:200px; object-fit:contain; border-radius:12px; background:#f8fafc; border:1px solid var(--border);">
+      </div>
       <div class="pkg-modal-progress" id="modalProgress"></div>
       <div class="pkg-modal-body" id="modalBody"></div>
       <div class="pkg-modal-footer">
@@ -334,6 +337,27 @@
       document.getElementById('modalTitle').textContent = pkg.name + ' – ' + pkg.price;
       document.getElementById('modalSub').textContent =
         '🔒 Cố định: ' + pkg.fixedItems.join(', ');
+        
+      const PKG_IMAGES = {
+        '8-3-20-10': {
+          'mini': '1. Mini 20-10 & 8-3.png',
+          'basic': '2. Basic 20-10 & 8-3.png',
+          'standard': '3. Standard 20-10 & 8-3.png',
+          'premium': '4. Premium 20-10 & 8-3.png'
+        }
+      };
+
+      const currentCat = cat || 'tet';
+      const imgContainer = document.getElementById('pkgImageContainer');
+      const imgEl = document.getElementById('pkgImage');
+      
+      if (PKG_IMAGES[currentCat] && PKG_IMAGES[currentCat][pkgKey]) {
+        imgEl.src = PKG_IMAGES[currentCat][pkgKey];
+        imgContainer.style.display = 'block';
+      } else {
+        imgContainer.style.display = 'none';
+      }
+
       updateProgress();
 
       const body = document.getElementById('modalBody');
