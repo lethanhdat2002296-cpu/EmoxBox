@@ -54,6 +54,7 @@ ul {
   justify-content: space-between;
   align-items: center;
   height: 64px;
+  position: relative;
 }
 
 .nav-logo {
@@ -76,6 +77,9 @@ ul {
 .nav-links {
   display: flex;
   gap: 2rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .nav-link {
