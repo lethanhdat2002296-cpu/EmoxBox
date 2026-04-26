@@ -12,6 +12,57 @@
     .cat-container { padding-top: 4rem; padding-bottom: 6rem; }
     .cat-banner { background: #e0f2fe; padding: 4rem; border-radius: 32px; margin-bottom: 4rem; text-align: center; }
     .cat-title { font-family: var(--font-serif); font-size: 3rem; margin-bottom: 1rem; }
+
+    /* Package Cards */
+    .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; margin-top: 1rem; }
+    .pkg-card { background: white; border-radius: 24px; border: 1px solid var(--border); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all 0.3s; position: relative; overflow: hidden; }
+    .pkg-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.12); }
+    .pkg-card.highlight { border: 2px solid var(--primary); box-shadow: 0 8px 24px rgba(2,132,199,0.12); }
+    .pkg-accent { position: absolute; top: 0; left: 0; right: 0; height: 5px; border-radius: 24px 24px 0 0; }
+    .pkg-header { margin-bottom: 1.25rem; }
+    .pkg-name { font-weight: 800; font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .pkg-price { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+    .pkg-badge { display: inline-block; background: var(--primary); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px; margin-left: 0.5rem; vertical-align: middle; letter-spacing: 0.5px; }
+    .pkg-divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+    .pkg-section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .pkg-items { list-style: none; padding: 0; margin: 0 0 1rem 0; }
+    .pkg-items li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem; color: #475569; margin-bottom: 0.4rem; }
+    .pkg-items li .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 0.4rem; }
+    .dot-fix { background: var(--primary); }
+    .dot-pick { background: #f59e0b; }
+    .pkg-pick-note { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-bottom: 1.25rem; }
+    .pkg-btn { margin-top: auto; padding: 0.75rem; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; transition: all 0.2s; }
+    .pkg-btn-primary { background: var(--primary); color: white; }
+    .pkg-btn-primary:hover { background: var(--primary-hover); }
+    .pkg-btn-outline { background: transparent; border: 2px solid #bae6fd; color: var(--primary); }
+    .pkg-btn-outline:hover { background: #f0f9ff; }
+
+    /* Modal */
+    .pkg-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 900; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .pkg-overlay.active { opacity: 1; pointer-events: all; }
+    .pkg-modal { background: white; border-radius: 24px; width: 90%; max-width: 480px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; transform: translateY(30px) scale(0.97); transition: transform 0.25s; box-shadow: 0 25px 60px -10px rgba(0,0,0,0.25); }
+    .pkg-overlay.active .pkg-modal { transform: translateY(0) scale(1); }
+    .pkg-modal-header { padding: 1.5rem 1.75rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
+    .pkg-modal-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.2rem; }
+    .pkg-modal-sub { font-size: 0.82rem; color: var(--text-muted); }
+    .pkg-modal-close { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
+    .pkg-modal-close:hover { background: #e2e8f0; }
+    .pkg-modal-progress { padding: 0.85rem 1.75rem; background: #f8fafc; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; }
+    .pkg-modal-progress strong { color: var(--primary); }
+    .pkg-modal-body { overflow-y: auto; padding: 1.25rem 1.75rem; flex: 1; }
+    .pick-option { display: flex; align-items: center; gap: 0.875rem; padding: 0.85rem 1rem; border: 2px solid var(--border); border-radius: 12px; margin-bottom: 0.65rem; cursor: pointer; transition: all 0.18s; user-select: none; }
+    .pick-option:hover { border-color: #bae6fd; background: #f0f9ff; }
+    .pick-option.selected { border-color: var(--primary); background: #e0f2fe; }
+    .pick-option.disabled { opacity: 0.4; cursor: not-allowed; }
+    .pick-checkbox { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.18s; }
+    .pick-option.selected .pick-checkbox { background: var(--primary); border-color: var(--primary); color: white; font-size: 0.75rem; }
+    .pick-label { font-size: 0.92rem; font-weight: 500; }
+    .pkg-modal-footer { padding: 1.25rem 1.75rem; border-top: 1px solid var(--border); display: flex; gap: 0.75rem; }
+    .pkg-modal-footer .btn-add { flex: 1; padding: 0.85rem; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
+    .pkg-modal-footer .btn-add:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pkg-modal-footer .btn-add:not(:disabled):hover { background: var(--primary-hover); }
+    .pkg-modal-footer .btn-cancel { padding: 0.85rem 1.25rem; background: #f1f5f9; border: none; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; color: var(--text-muted); transition: background 0.2s; }
+    .pkg-modal-footer .btn-cancel:hover { background: #e2e8f0; }
   </style>
 </head>
 <body>
@@ -83,10 +134,29 @@
       <p class="section-subtitle" id="catDesc">Tìm những món quà chạm đến trái tim người nhận</p>
     </div>
 
-    <div class="gifts-grid" id="catResults">
-      <!-- Filled by JS -->
+    <div class="packages-grid" id="packagesGrid">
+      <!-- Rendered by JS -->
     </div>
   </main>
+
+  <!-- PACKAGE SELECTION MODAL -->
+  <div class="pkg-overlay" id="pkgOverlay" onclick="handleOverlayClick(event)">
+    <div class="pkg-modal" id="pkgModal">
+      <div class="pkg-modal-header">
+        <div>
+          <h3 class="pkg-modal-title" id="modalTitle">Chọn Gói</h3>
+          <p class="pkg-modal-sub" id="modalSub">🔒 Cố định: ...</p>
+        </div>
+        <button class="pkg-modal-close" onclick="closePkgModal()">✕</button>
+      </div>
+      <div class="pkg-modal-progress" id="modalProgress"></div>
+      <div class="pkg-modal-body" id="modalBody"></div>
+      <div class="pkg-modal-footer">
+        <button class="btn-cancel" onclick="closePkgModal()">Hủy</button>
+        <button class="btn-add" id="modalAddBtn" onclick="addPkgToCart()" disabled>Thêm vào giỏ hàng</button>
+      </div>
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -154,29 +224,195 @@
       document.getElementById('catBanner').style.background = categories[cat].bg;
     }
 
-    function renderCatResults() {
-      const grid = document.getElementById('catResults');
-      if (!grid || typeof FEATURED_BOXES === 'undefined') return;
-      
-      grid.innerHTML = FEATURED_BOXES.map(box => `
-        <div class="gift-card">
-          <a href="box-detail.html?id=${box.id}" class="gift-img-wrap">
-            ${box.badge ? `<span class="gift-badge">${box.badge}</span>` : ''}
-            <img src="${box.image}" alt="${box.name}" class="gift-img">
-          </a>
-          <div class="gift-content">
-            <a href="box-detail.html?id=${box.id}"><h3 class="gift-title">${box.name}</h3></a>
-            <p class="gift-desc">${box.desc}</p>
-            <div class="gift-footer">
-              <span class="gift-price">${formatPrice(box.price)}</span>
-              <button class="btn btn-primary" onclick="addToCart('${box.id}')">Thêm giỏ</button>
+    /* ===== PACKAGE DATA ===== */
+    const PKG_DATA = {
+      mini: {
+        name: 'Gói Mini',
+        price: '99.000 ₫',
+        priceNum: 99000,
+        picks: 1,
+        fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'],
+        options: ['Sticker pack', 'Bookmark', 'Kẹo / Chocolate nhỏ', 'Bút', 'Charm nhỏ', 'Hoa khô mini']
+      },
+      basic: {
+        name: 'Gói Basic',
+        price: '199.000 ₫',
+        priceNum: 199000,
+        picks: 2,
+        fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'],
+        options: ['Snack / Chocolate', 'Trà / Cà phê gói', 'Bookmark', 'Bút', 'Sticky notes', 'Sticker', 'Hoa khô mini', 'Móc khóa', 'Tất / Vớ basic']
+      },
+      standard: {
+        name: 'Gói Standard',
+        price: '399.000 ₫',
+        priceNum: 399000,
+        picks: 2,
+        fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'],
+        options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm']
+      },
+      premium: {
+        name: 'Gói Premium Plus',
+        price: '599.000 ₫',
+        priceNum: 599000,
+        picks: 4,
+        fixedItems: ['Thiệp cá nhân hóa', 'Tinh dầu cao cấp', 'Ly giữ nhiệt', 'Snack / Trà set nhỏ'],
+        options: ['Gấu bông mini', 'Hoa khô', 'Sleep mask', 'Bath items', 'Túi chườm bụng', 'Ly giữ nhiệt', 'Móc khóa', 'Phụ kiện nhỏ', 'Đèn ngủ mini', 'Bookmark', 'Bút premium', 'Sticker / Charm', 'Chocolate premium', 'Cà phê / Trà set', 'Tất / Vớ', 'Pouch', 'Túi chườm']
+      }
+    };
+
+    const TIER_CONFIG = {
+      mini:     { accent: 'linear-gradient(90deg,#bae6fd,#7dd3fc)', highlight: false, btnClass: 'pkg-btn-outline', btnStyle: 'width:100%;',                              badge: null },
+      basic:    { accent: 'linear-gradient(90deg,#6ee7b7,#34d399)', highlight: false, btnClass: 'pkg-btn-outline', btnStyle: 'width:100%;',                              badge: null },
+      standard: { accent: 'linear-gradient(90deg,#0284c7,#38bdf8)', highlight: true,  btnClass: 'pkg-btn-primary', btnStyle: 'width:100%;',                              badge: 'Phổ biến' },
+      premium:  { accent: 'linear-gradient(90deg,#a78bfa,#7c3aed)', highlight: false, btnClass: 'pkg-btn-outline', btnStyle: 'width:100%; border-color:#a78bfa; color:#7c3aed;', badge: 'Plus', badgeStyle: 'background:#7c3aed;' }
+    };
+
+    function renderPackages() {
+      const grid = document.getElementById('packagesGrid');
+      if (!grid) return;
+      const tiers = ['mini', 'basic', 'standard', 'premium'];
+      grid.innerHTML = tiers.map(key => {
+        const d = PKG_DATA[key];
+        const t = TIER_CONFIG[key];
+        const badgeHTML = t.badge
+          ? (key === 'premium'
+              ? `<span class="pkg-badge" style="${t.badgeStyle || ''}">${t.badge}</span>`
+              : `<span class="pkg-badge">${t.badge}</span>`)
+          : '';
+        const fixedHTML = d.fixedItems.map(f => `<li><span class="dot dot-fix"></span>${f}</li>`).join('');
+        const optHTML   = d.options.map(o => `<li><span class="dot dot-pick"></span>${o}</li>`).join('');
+        const highlightClass = t.highlight ? ' highlight' : '';
+        return `
+          <div class="pkg-card${highlightClass}">
+            <div class="pkg-accent" style="background:${t.accent};"></div>
+            <div class="pkg-header">
+              <p class="pkg-name">${d.name} ${badgeHTML}</p>
+              <p class="pkg-price">${d.price}</p>
             </div>
-          </div>
-        </div>
-      `).join('');
+            <hr class="pkg-divider">
+            <p class="pkg-section-label">🔒 Sản phẩm cố định (${d.fixedItems.length} món)</p>
+            <ul class="pkg-items">${fixedHTML}</ul>
+            <p class="pkg-section-label">✨ Tự chọn thêm (${d.picks} món)</p>
+            <ul class="pkg-items">${optHTML}</ul>
+            <p class="pkg-pick-note">* Chọn ${d.picks} trong số các món trên</p>
+            <button class="pkg-btn ${t.btnClass}" style="${t.btnStyle}" onclick="openPkgModal('${key}')">Chọn ${d.name}</button>
+          </div>`;
+      }).join('');
     }
 
-    document.addEventListener('DOMContentLoaded', renderCatResults);
+    let currentPkg = null;
+    let selectedPicks = [];
+
+    function openPkgModal(pkgKey) {
+      currentPkg = PKG_DATA[pkgKey];
+      selectedPicks = [];
+      const pkg = currentPkg;
+
+      document.getElementById('modalTitle').textContent = pkg.name + ' – ' + pkg.price;
+      document.getElementById('modalSub').textContent =
+        '🔒 Cố định: ' + pkg.fixedItems.join(', ');
+      updateProgress();
+
+      const body = document.getElementById('modalBody');
+      body.innerHTML = pkg.options.map((opt, idx) => `
+        <label class="pick-option" id="opt-${idx}">
+          <div class="pick-checkbox" id="chk-${idx}"></div>
+          <span class="pick-label">${opt}</span>
+          <input type="checkbox" style="display:none;" onchange="togglePick('${opt}', ${idx})">
+        </label>
+      `).join('');
+
+      document.getElementById('pkgOverlay').classList.add('active');
+    }
+
+    function closePkgModal() {
+      document.getElementById('pkgOverlay').classList.remove('active');
+      currentPkg = null;
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target.id === 'pkgOverlay') closePkgModal();
+    }
+
+    function updateProgress() {
+      if (!currentPkg) return;
+      const count = selectedPicks.length;
+      const max = currentPkg.picks;
+      const prog = document.getElementById('modalProgress');
+      const btn = document.getElementById('modalAddBtn');
+
+      prog.innerHTML = `Đã chọn: <strong>${count} / ${max}</strong> món tự chọn`;
+      btn.disabled = count !== max; // Need exactly 'max' picks
+
+      if (count === max) {
+        btn.textContent = 'Thêm vào giỏ hàng';
+      } else {
+        btn.textContent = `Chọn thêm ${max - count} món nữa`;
+      }
+    }
+
+    function togglePick(optName, idx) {
+      const idxInArr = selectedPicks.indexOf(optName);
+      if (idxInArr > -1) {
+        selectedPicks.splice(idxInArr, 1);
+        document.getElementById('opt-' + idx).classList.remove('selected');
+        document.getElementById('chk-' + idx).textContent = '';
+      } else {
+        if (selectedPicks.length >= currentPkg.picks) {
+          showToast('Bạn đã chọn đủ số lượng món tự chọn!');
+          const input = document.querySelector(`#opt-${idx} input`);
+          if (input) input.checked = false;
+          return;
+        }
+        selectedPicks.push(optName);
+        document.getElementById('opt-' + idx).classList.add('selected');
+        document.getElementById('chk-' + idx).textContent = '✓';
+      }
+      
+      const allLabels = document.querySelectorAll('.pick-option');
+      if (selectedPicks.length >= currentPkg.picks) {
+        allLabels.forEach(lbl => {
+          if (!lbl.classList.contains('selected')) lbl.classList.add('disabled');
+        });
+      } else {
+        allLabels.forEach(lbl => lbl.classList.remove('disabled'));
+      }
+      
+      updateProgress();
+    }
+
+    function addPkgToCart() {
+      if (!currentPkg) return;
+      if (selectedPicks.length !== currentPkg.picks) {
+        showToast(`Vui lòng chọn đủ ${currentPkg.picks} món`);
+        return;
+      }
+
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const pkgId = 'pkg_' + Date.now();
+      
+      cart.push({
+        id: pkgId,
+        isPkg: true,
+        name: currentPkg.name,
+        pkgPrice: currentPkg.price,
+        priceNum: currentPkg.priceNum,
+        fixedItems: [...currentPkg.fixedItems],
+        selectedPicks: [...selectedPicks],
+        quantity: 1
+      });
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      if (typeof updateCartBadge === 'function') updateCartBadge();
+      
+      closePkgModal();
+      showToast('Đã thêm gói quà vào giỏ hàng!');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof updateCartBadge === 'function') updateCartBadge();
+      renderPackages();
+    });
   </script>
 </body>
 </html>
