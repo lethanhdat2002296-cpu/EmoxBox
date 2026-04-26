@@ -38,6 +38,36 @@
       .calendar-layout { grid-template-columns: 1fr; }
       .sidebar-card { position: static; order: -1; }
     }
+
+    /* Modal Styles */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 900; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal-content { background: white; border-radius: 24px; width: 90%; max-width: 500px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; transform: translateY(30px) scale(0.97); transition: transform 0.25s; box-shadow: 0 25px 60px -10px rgba(0,0,0,0.25); }
+    .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+    .modal-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-title { font-size: 1.25rem; font-weight: 800; margin: 0; }
+    .modal-close { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .modal-close:hover { background: #e2e8f0; }
+    .modal-body { padding: 1.5rem; overflow-y: auto; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main); }
+    .form-input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.2s; box-sizing: border-box; }
+    .form-input:focus { outline: none; border-color: var(--primary); }
+    .modal-footer { padding: 1.25rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.75rem; }
+    .btn-cancel { background: #f1f5f9; color: var(--text-muted); border: none; font-weight: 600; padding: 0.8rem 1.2rem; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+    .btn-cancel:hover { background: #e2e8f0; }
+
+    /* Custom Calendar inside Modal */
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .cal-month-year { font-weight: 700; font-size: 1.1rem; }
+    .cal-nav { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0.5rem; color: var(--text-muted); transition: color 0.2s; }
+    .cal-nav:hover { color: var(--primary); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center; }
+    .cal-day-name { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); padding-bottom: 0.5rem; }
+    .cal-day { padding: 0.7rem 0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
+    .cal-day:hover { background: #e0f2fe; color: var(--primary); font-weight: 600; }
+    .cal-day.empty { cursor: default; }
+    .cal-day.empty:hover { background: none; }
   </style>
 </head>
 <body>
@@ -156,7 +186,7 @@
       <!-- Sidebar -->
       <aside>
         <div class="sidebar-card">
-          <button class="btn btn-primary add-event-btn">＋ Thêm sự kiện mới</button>
+          <button class="btn btn-primary add-event-btn" onclick="openCalendarModal()">＋ Thêm sự kiện mới</button>
           
           <div class="sidebar-title">Gợi ý cho bạn</div>
           <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
@@ -174,6 +204,77 @@
       </aside>
     </div>
   </main>
+
+  <!-- CALENDAR PICKER MODAL -->
+  <div class="modal-overlay" id="calendarModalOverlay" onclick="handleCalendarModalClick(event)">
+    <div class="modal-content" id="calendarModal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Chọn ngày tặng quà</h3>
+        <button class="modal-close" onclick="closeCalendarModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="cal-header">
+          <button class="cal-nav" onclick="changeMonth(-1)">❮</button>
+          <div class="cal-month-year" id="calMonthYear">Tháng 5 2026</div>
+          <button class="cal-nav" onclick="changeMonth(1)">❯</button>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-day-name">CN</div>
+          <div class="cal-day-name">T2</div>
+          <div class="cal-day-name">T3</div>
+          <div class="cal-day-name">T4</div>
+          <div class="cal-day-name">T5</div>
+          <div class="cal-day-name">T6</div>
+          <div class="cal-day-name">T7</div>
+        </div>
+        <div class="cal-grid" id="calDays">
+          <!-- Days rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD EVENT MODAL -->
+  <div class="modal-overlay" id="eventModalOverlay" onclick="handleEventModalClick(event)">
+    <div class="modal-content" id="eventModal">
+      <div class="modal-header">
+        <h3 class="modal-title">Thêm sự kiện mới</h3>
+        <button class="modal-close" onclick="closeEventModal()">✕</button>
+      </div>
+      <form id="eventForm" onsubmit="addEvent(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Ngày tặng quà</label>
+            <input type="date" class="form-input" id="eventDate" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Người nhận</label>
+            <input type="text" class="form-input" id="eventRecipient" placeholder="Nhập tên người nhận" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Địa chỉ giao hàng</label>
+            <input type="text" class="form-input" id="eventAddress" placeholder="Nhập địa chỉ giao hàng" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số điện thoại</label>
+            <input type="tel" class="form-input" id="eventPhone" placeholder="Nhập số điện thoại" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="eventEmail" placeholder="Nhập email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số tiền thanh toán</label>
+            <input type="number" class="form-input" id="eventAmount" placeholder="VD: 500000" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeEventModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu sự kiện</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -222,6 +323,83 @@
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script>
+    /* CALENDAR MODAL LOGIC */
+    let currDate = new Date();
+
+    function renderCalendar() {
+      const year = currDate.getFullYear();
+      const month = currDate.getMonth();
+      document.getElementById('calMonthYear').textContent = `Tháng ${month + 1}, ${year}`;
+      
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      const calDays = document.getElementById('calDays');
+      let html = '';
+      
+      for (let i = 0; i < firstDay; i++) {
+        html += `<div class="cal-day empty"></div>`;
+      }
+      
+      for (let i = 1; i <= daysInMonth; i++) {
+        const fullDateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        html += `<div class="cal-day" onclick="selectDate('${fullDateStr}')">${i}</div>`;
+      }
+      calDays.innerHTML = html;
+    }
+
+    function changeMonth(dir) {
+      currDate.setMonth(currDate.getMonth() + dir);
+      renderCalendar();
+    }
+
+    function openCalendarModal() {
+      currDate = new Date(); // start at current date
+      renderCalendar();
+      document.getElementById('calendarModalOverlay').classList.add('active');
+    }
+
+    function closeCalendarModal() {
+      document.getElementById('calendarModalOverlay').classList.remove('active');
+    }
+
+    function handleCalendarModalClick(e) {
+      if (e.target.id === 'calendarModalOverlay') closeCalendarModal();
+    }
+
+    function selectDate(dateStr) {
+      closeCalendarModal();
+      openEventModal();
+      document.getElementById('eventDate').value = dateStr;
+    }
+
+    /* FORM MODAL LOGIC */
+    function openEventModal() {
+      document.getElementById('eventModalOverlay').classList.add('active');
+    }
+
+    function closeEventModal() {
+      document.getElementById('eventModalOverlay').classList.remove('active');
+    }
+
+    function handleEventModalClick(e) {
+      if (e.target.id === 'eventModalOverlay') closeEventModal();
+    }
+
+    function addEvent(e) {
+      e.preventDefault();
+      
+      document.getElementById('eventForm').reset();
+      closeEventModal();
+      
+      if (typeof showToast === 'function') {
+        showToast('Đã thêm sự kiện thành công!');
+      } else {
+        alert('Đã thêm sự kiện thành công!');
+      }
+    }
+  </script>
 </body>
 </html>
 
