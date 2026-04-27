@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quà Tặng Theo Cảm Xúc – EmoBox</title>
+  <title>Quà Tặng Theo Cảm Xúc - EmoBox</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -70,8 +70,7 @@
   <nav class="navbar" id="navbar">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">
-        <div class="nav-logo-icon">🎁</div>
-        <span>EmoBox</span>
+        <img src="Logo.png" alt="EmoBox Logo" style="height: 32px; object-fit: contain;">
       </a>
       <div class="nav-links" id="navLinks">
         <a href="index.html" class="nav-link">Trang Chủ</a>
@@ -165,12 +164,25 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <span class="footer-logo">🎁 EmoBox</span>
-        <p class="footer-tagline">Chọn đúng quà, trao đúng cảm xúc, đúng sự kiện và đúng người.</p>
+        <span class="footer-logo" style="display: block; margin-bottom: 1rem;">
+          <img src="Logo.png" alt="EmoBox Logo" style="height: 32px; object-fit: contain;">
+        </span>
+        <p class="footer-tagline">Gói tâm tình, gửi tâm giao</p>
         <div class="footer-socials">
-          <a href="#" class="social-btn">f</a>
+          <a href="https://www.facebook.com/profile.php?id=61564729661320" target="_blank" class="social-btn">f</a>
           <a href="#" class="social-btn">in</a>
           <a href="#" class="social-btn">ig</a>
+        </div>
+        <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.5rem;">
+            <span>📍</span><span>279 Nguyễn Tri Phương, phường Diên Hồng, TP. HCM</span>
+          </p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+            <span>📧</span><a href="mailto:info.emobox@gmail.com" style="color: var(--text-muted); text-decoration: none;">info.emobox@gmail.com</a>
+          </p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+            <span>📞</span><a href="tel:0917297709" style="color: var(--text-muted); text-decoration: none;">0917 297 709</a>
+          </p>
         </div>
       </div>
       <div class="footer-col">
@@ -231,7 +243,7 @@
     const PKG_DATA = {
       mini: {
         name: 'Gói Mini',
-        price: '99.000 ₫',
+        price: '99.000 đ',
         priceNum: 99000,
         picks: 1,
         fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'],
@@ -239,7 +251,7 @@
       },
       basic: {
         name: 'Gói Basic',
-        price: '199.000 ₫',
+        price: '199.000 đ',
         priceNum: 199000,
         picks: 2,
         fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'],
@@ -247,7 +259,7 @@
       },
       standard: {
         name: 'Gói Standard',
-        price: '399.000 ₫',
+        price: '399.000 đ',
         priceNum: 399000,
         picks: 2,
         fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'],
@@ -255,7 +267,7 @@
       },
       premium: {
         name: 'Gói Premium Plus',
-        price: '599.000 ₫',
+        price: '599.000 đ',
         priceNum: 599000,
         picks: 4,
         fixedItems: ['Thiệp cá nhân hóa', 'Tinh dầu cao cấp', 'Ly giữ nhiệt', 'Snack / Trà set nhỏ'],
@@ -293,7 +305,7 @@
               <p class="pkg-price">${d.price}</p>
             </div>
             <hr class="pkg-divider">
-            <p class="pkg-section-label">🔒 Sản phẩm cố định (${d.fixedItems.length} món)</p>
+            <p class="pkg-section-label">📋 Sản phẩm cố định (${d.fixedItems.length} món)</p>
             <ul class="pkg-items">${fixedHTML}</ul>
             <p class="pkg-section-label">✨ Tự chọn thêm (${d.picks} món)</p>
             <ul class="pkg-items">${optHTML}</ul>
@@ -311,7 +323,7 @@
       selectedPicks = [];
       const pkg = currentPkg;
 
-      document.getElementById('modalTitle').textContent = pkg.name + ' – ' + pkg.price;
+      document.getElementById('modalTitle').textContent = pkg.name + ' - ' + pkg.price;
       document.getElementById('modalSub').textContent =
         '🔒 Cố định: ' + pkg.fixedItems.join(', ');
 
@@ -369,10 +381,9 @@
 
       const body = document.getElementById('modalBody');
       body.innerHTML = pkg.options.map((opt, idx) => `
-        <label class="pick-option" id="opt-${idx}">
+        <label class="pick-option" id="opt-${idx}" onclick="togglePick('${opt.replace(/'/g, "\\'")}', ${idx})">
           <div class="pick-checkbox" id="chk-${idx}"></div>
           <span class="pick-label">${opt}</span>
-          <input type="checkbox" style="display:none;" onchange="togglePick('${opt}', ${idx})">
         </label>
       `).join('');
 
@@ -409,8 +420,6 @@
       } else {
         if (selectedPicks.length >= currentPkg.picks) {
           showToast('Bạn đã chọn đủ số lượng món tự chọn!');
-          const input = document.querySelector(`#opt-${idx} input`);
-          if (input) input.checked = false;
           return;
         }
         selectedPicks.push(optName);
@@ -451,7 +460,7 @@
       if (typeof updateCartBadge === 'function') updateCartBadge();
       
       closePkgModal();
-      showToast('Đã thêm gói quà vào giỏ hàng!');
+      showToast('🛍️ Đã thêm gói quà vào giỏ hàng!');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -461,4 +470,3 @@
   </script>
 </body>
 </html>
-
