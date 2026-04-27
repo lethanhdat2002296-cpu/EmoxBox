@@ -99,7 +99,70 @@ function renderFeaturedBoxes() {
   `).join('');
 }
 
+function handleLogout(e) {
+  if (e) e.preventDefault();
+  localStorage.removeItem('emobox_user');
+  window.location.reload();
+}
+
 // Khởi chạy khi load
 document.addEventListener('DOMContentLoaded', () => {
   updateCartBadge();
+
+    // Update User Menu in Navbar across all pages
+  const userMenuBody = document.querySelector('.user-menu-body');
+  const currentUser = JSON.parse(localStorage.getItem('emobox_user'));
+  
+  if (userMenuBody) {
+    // Remove existing login/logout links if any
+    const existingAuthLinks = userMenuBody.querySelectorAll('a[href="login.html"], a[onclick="handleLogout(event)"], a[onclick="handleLogout()"]');
+    existingAuthLinks.forEach(link => link.remove());
+
+    const authLink = document.createElement('a');
+    authLink.className = 'user-menu-item';
+    
+    if (currentUser) {
+      authLink.textContent = 'Đăng xuất';
+      authLink.href = '#';
+      authLink.onclick = handleLogout;
+    } else {
+      authLink.textContent = 'Đăng nhập / Đăng ký';
+      authLink.href = 'login.html';
+    }
+    
+    userMenuBody.insertBefore(authLink, userMenuBody.firstChild);
+  }
+
+  if (currentUser) {
+    const navUserName = document.querySelector('.user-name');
+    const navAvatar = document.querySelector('.user-avatar-sm');
+    const navUserSub = document.querySelector('.user-sub');
+    
+    if (navUserName) navUserName.textContent = currentUser.name;
+    if (navAvatar) navAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+    
+    if (navUserSub) {
+      let planLabel = 'Tài khoản thường';
+      if(currentUser.plan === '3-months') planLabel = 'Thành viên 3 Tháng';
+      if(currentUser.plan === '6-months') planLabel = 'Thành viên 6 Tháng';
+      if(currentUser.plan === '12-months') planLabel = 'Thành viên 12 Tháng';
+      navUserSub.textContent = planLabel;
+    }
+  }
+
+  // Intercept calendar links
+  const calendarLinks = document.querySelectorAll('a[href="calendar.html"]');
+  calendarLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const user = JSON.parse(localStorage.getItem('emobox_user'));
+      if (!user || user.plan === 'none' || !user.plan) {
+        e.preventDefault(); // prevent navigation
+        if (typeof showToast === 'function') {
+          showToast('Chức năng dành cho thành viên');
+        } else {
+          alert('Chức năng dành cho thành viên');
+        }
+      }
+    });
+  });
 });
