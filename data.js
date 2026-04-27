@@ -12,56 +12,56 @@ const EMOTIONS = [
 
 const FEATURED_BOXES = [
   {
-    id: 'box-standard-love',
-    name: 'Gói Standard Tình Yêu',
+    id: 'box-basic-love',
+    name: 'Gói Basic Tình Yêu',
     tagline: 'Món quà ngọt ngào',
-    image: '3. Standard Love.png',
-    price: 399000,
+    image: '2. Basic Valentine.png',
+    price: 199000,
     badge: 'Bán Chạy Nhất',
     desc: 'Thể hiện tình cảm chân thành với nửa kia qua những món đồ nhỏ xinh nhưng đầy ý nghĩa.'
   },
   {
-    id: 'box-standard-healing',
-    name: 'Gói Standard Chữa Lành',
+    id: 'box-basic-healing',
+    name: 'Gói Basic Chữa Lành',
     tagline: 'Xoa dịu tâm hồn',
-    image: '3. Standard Healing.png',
-    price: 399000,
+    image: '2. Basic Healing.png',
+    price: 199000,
     badge: 'Healing',
     desc: 'Một bộ sưu tập ấm áp được thiết kế để xoa dịu tâm hồn và trao tặng một cái ôm tinh thần.'
   },
   {
-    id: 'box-standard-support',
-    name: 'Gói Standard Động Viên',
+    id: 'box-basic-support',
+    name: 'Gói Basic Động Viên',
     tagline: 'Luôn bên cạnh bạn',
-    image: '3. Standard Support.png',
-    price: 399000,
+    image: '2. Basic Support.png',
+    price: 199000,
     badge: 'Phổ Biến',
     desc: 'Món quà khích lệ tinh thần tuyệt vời nhất dành cho những lúc họ cần một bờ vai để tựa vào.'
   },
   {
-    id: 'box-standard-motivation',
-    name: 'Gói Standard Tiếp Sức',
+    id: 'box-basic-motivation',
+    name: 'Gói Basic Tiếp Sức',
     tagline: 'Nạp năng lượng tức thì',
-    image: '3. Standard Motivation.png',
-    price: 399000,
+    image: '2. Basic Motivation.png',
+    price: 199000,
     badge: 'Trending',
     desc: 'Mọi thứ bạn cần để thức xuyên đêm chạy deadline hay những kỳ thi căng thẳng nhất.'
   },
   {
-    id: 'box-standard-celebration',
-    name: 'Gói Standard Ăn Mừng',
+    id: 'box-basic-celebration',
+    name: 'Gói Basic Ăn Mừng',
     tagline: 'Bật tung cảm xúc',
-    image: '3. Standard Celebration.png',
-    price: 399000,
+    image: '2. Basic Celebration.png',
+    price: 199000,
     badge: 'Mới Nhất',
     desc: 'Cùng chia sẻ niềm vui và chúc mừng những cột mốc đáng nhớ trong cuộc sống.'
   },
   {
-    id: 'box-standard-sorry',
-    name: 'Gói Standard Xin Lỗi',
+    id: 'box-basic-sorry',
+    name: 'Gói Basic Xin Lỗi',
     tagline: 'Làm hòa nhé',
-    image: '3. Standard Sorry.png',
-    price: 399000,
+    image: '2. Basic Sorry.png',
+    price: 199000,
     badge: 'Hot',
     desc: 'Gửi gắm lời xin lỗi từ tận đáy lòng để gắn kết lại những rạn nứt một cách tự nhiên nhất.'
   }
