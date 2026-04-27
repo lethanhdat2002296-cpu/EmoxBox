@@ -3,33 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Giỏ Hàng – EmoBox</title>
+  <title>Giỏ Hàng - EmoBox</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
+    body { background: #f8fafc; }
     .cart-container { padding-top: 4rem; padding-bottom: 6rem; }
-    .cart-layout { display: grid; grid-template-columns: 1fr 380px; gap: 3rem; }
+    .cart-layout { display: grid; grid-template-columns: 1fr 380px; gap: 2.5rem; }
     
-    .cart-items { background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); }
-    .cart-item { display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
-    .cart-item:last-child { border-bottom: none; }
+    .cart-item { background: white; border-radius: 20px; border: 1px solid var(--border); padding: 1.5rem; display: flex; gap: 1.5rem; align-items: center; position: relative; }
     
-    .cart-item-img { width: 100px; height: 100px; border-radius: 12px; object-fit: cover; background: #f1f5f9; }
+    .cart-item-img { width: 110px; height: 110px; border-radius: 16px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
     .cart-item-info { flex: 1; }
-    .cart-item-info h4 { margin-bottom: 0.25rem; }
-    .cart-item-info p { font-size: 0.875rem; color: var(--text-muted); }
+    .cart-item-info h4 { margin-bottom: 0.25rem; font-size: 1.1rem; color: #0f172a; }
+    .cart-item-info p { font-size: 0.85rem; color: var(--text-muted); }
     
-    .cart-qty { display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border); border-radius: 8px; padding: 0.25rem 0.75rem; }
-    .qty-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-main); }
+    .cart-item-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem; width: 100%; }
+    .cart-qty { display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border); background: #f8fafc; border-radius: 12px; padding: 0.3rem 1rem; }
+    .qty-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center; }
     
-    .summary-card { background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); position: sticky; top: 100px; }
-    .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--text-muted); }
-    .summary-total { border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem; font-weight: 800; font-size: 1.5rem; color: var(--text-main); display: flex; justify-content: space-between; }
+    .cart-item-price { font-weight: 800; font-size: 1.1rem; color: #0f172a; }
+    
+    .delete-btn { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.2rem; transition: 0.2s; }
+    .delete-btn:hover { color: #ef4444; }
+
+    .summary-card { background: white; padding: 2rem; border-radius: 20px; border: 1px solid var(--border); position: sticky; top: 100px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.95rem; }
+    .summary-total { border-top: 1px solid var(--border); margin-top: 1.5rem; padding-top: 1.5rem; font-weight: 800; font-size: 1.1rem; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; }
     
     .empty-cart { text-align: center; padding: 4rem 0; }
     .empty-icon { font-size: 4rem; margin-bottom: 1rem; display: block; }
+
+    .promo-banner { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 16px; padding: 1.5rem; text-align: center; margin-top: 1rem; }
 
     @media (max-width: 992px) {
       .cart-layout { grid-template-columns: 1fr; }
@@ -41,8 +48,7 @@
   <nav class="navbar" id="navbar">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">
-        <div class="nav-logo-icon">🎁</div>
-        <span>EmoBox</span>
+        <img src="Logo.png" alt="EmoBox Logo" style="height: 32px; object-fit: contain;">
       </a>
       <div class="nav-links" id="navLinks">
         <a href="index.html" class="nav-link">Trang Chủ</a>
@@ -88,7 +94,7 @@
           </div>
           <div class="user-menu-body">
             <a href="account.html" class="user-menu-item">📋 Hồ sơ</a>
-            <a href="cart.html" class="user-menu-item">📦 Đơn hàng</a>
+            <a href="cart.html" class="user-menu-item active">📦 Đơn hàng</a>
             <a href="plans.html" class="user-menu-item">💳 Subscription</a>
             <a href="calendar.html" class="user-menu-item">📅 Lịch tặng quà</a>
             <a href="wallet.html" class="user-menu-item">💰 Ví EmoBox</a>
@@ -100,49 +106,57 @@
   </nav>
 
   <main class="container cart-container">
-    <div class="section-header" style="text-align: left;">
-      <h1 class="section-title">Giỏ hàng của bạn</h1>
+    <div class="section-header" style="text-align: left; margin-bottom: 2rem;">
+      <h1 class="section-title" style="font-family: var(--font-serif); font-size: 2rem;">Giỏ Hàng Của Bạn</h1>
     </div>
 
     <div class="cart-layout" id="cartLayout">
-      <!-- Items -->
-      <div class="cart-items" id="cartItemsList">
-        <!-- Rendered by JS -->
+      <!-- Items Column -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div id="cartItemsList" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- Rendered by JS -->
+        </div>
+        
+        <div class="promo-banner">
+          <p style="color: #0369a1; font-weight: 600; margin-bottom: 0.75rem; font-size: 0.95rem;">Đăng ký mua gói để được miễn phí giao hàng ngay hôm nay!</p>
+          <a href="plans.html" style="background: white; color: #0284c7; border: 1px solid #bae6fd; padding: 0.4rem 1.2rem; border-radius: 999px; font-weight: 500; font-size: 0.9rem; text-decoration: none; display: inline-block; transition: 0.2s;">Xem Các Gói</a>
+        </div>
       </div>
 
-      <!-- Summary -->
+      <!-- Summary Column -->
       <aside>
         <div class="summary-card">
-          <h3 style="margin-bottom: 1.5rem; font-weight: 700;">Tóm tắt đơn hàng</h3>
+          <h3 style="margin-bottom: 1.5rem; font-weight: 700; color: #0f172a; font-size: 1.1rem;">Tóm tắt đơn hàng</h3>
           <div class="summary-row">
             <span>Tạm tính</span>
-            <span id="subtotal">0 ₫</span>
+            <span id="subtotal" style="font-weight: 600; color: #0f172a;">0 đ</span>
           </div>
           <div class="summary-row">
-            <span>Phí vận chuyển</span>
-            <span style="color: #059669; font-weight: 600;">Miễn phí</span>
+            <span>Phí Giao Hàng</span>
+            <span style="font-size: 0.85rem; text-align: right; width: 140px;">Được tính ở bước Thanh toán</span>
           </div>
           <div class="summary-total">
             <span>Tổng cộng</span>
-            <span id="totalPrice">0 ₫</span>
+            <span id="totalPrice" style="color: #0284c7; font-size: 1.75rem; font-weight: 800;">0 đ</span>
           </div>
 
-          <div style="margin-top: 1.5rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">Phương thức thanh toán</label>
-            <select id="cartPaymentMethod" onchange="checkCartWalletBalance()" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 1rem;">
-              <option value="cash">Tiền mặt</option>
-              <option value="bank">Ngân hàng</option>
-              <option value="wallet">Ví EmoBox</option>
-            </select>
-            <div id="cartWalletWarning" style="color: #ef4444; font-size: 0.85rem; font-weight: 600; display: none; margin-top: 0.5rem;">
-              ❗ Số dư ví không đủ để thanh toán.
-            </div>
-          </div>
-
-          <button class="btn btn-primary" onclick="proceedCheckout()" style="width: 100%; height: 56px; margin-top: 1.5rem; font-size: 1.1rem;">Thanh toán ngay</button>
+          <a href="checkout.html" class="btn" style="width: 100%; height: 56px; margin-top: 1.5rem; font-size: 1.05rem; font-weight: 600; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 12px;">
+            Tiến đến Thanh Toán <span style="font-size: 1.2rem;">→</span>
+          </a>
           
-          <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">
-            <span>🛡️ Thanh toán an toàn 100%</span>
+          <div style="text-align: center; margin-top: 1.25rem;">
+            <a href="index.html" style="color: var(--text-muted); font-size: 0.9rem; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">← Tiếp tục khám phá</a>
+          </div>
+
+          <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 0.75rem; color: var(--text-muted); font-size: 0.85rem;">
+              <span style="color: #10b981; font-size: 1.1rem;">🛡️</span> 
+              <span>Thanh toán bảo mật an toàn</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; color: var(--text-muted); font-size: 0.85rem;">
+              <span style="color: #3b82f6; font-size: 1.1rem;">💳</span> 
+              <span>Chấp nhận đa dạng hình thức thanh toán</span>
+            </div>
           </div>
         </div>
       </aside>
@@ -150,7 +164,7 @@
 
     <div id="emptyCartView" class="empty-cart" style="display: none;">
       <span class="empty-icon">🛒</span>
-      <h2>Giỏ hàng đang trống</h2>
+      <h2 style="font-family: var(--font-serif); margin-bottom: 0.5rem;">Giỏ hàng đang trống</h2>
       <p style="color: var(--text-muted); margin-bottom: 2rem;">Có vẻ như bạn chưa chọn được hộp quà nào cho mình.</p>
       <a href="finder.html" class="btn btn-primary">Khám phá quà tặng ngay</a>
     </div>
@@ -160,12 +174,25 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <span class="footer-logo">🎁 EmoBox</span>
-        <p class="footer-tagline">Chọn đúng quà, trao đúng cảm xúc, đúng sự kiện và đúng người.</p>
+        <span class="footer-logo" style="display: block; margin-bottom: 1rem;">
+          <img src="Logo.png" alt="EmoBox Logo" style="height: 32px; object-fit: contain;">
+        </span>
+        <p class="footer-tagline">Gói tâm tình, gửi tâm giao</p>
         <div class="footer-socials">
-          <a href="#" class="social-btn">f</a>
+          <a href="https://www.facebook.com/profile.php?id=61564729661320" target="_blank" class="social-btn">f</a>
           <a href="#" class="social-btn">in</a>
           <a href="#" class="social-btn">ig</a>
+        </div>
+        <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.5rem;">
+            <span>📍</span><span>279 Nguyễn Tri Phương, phường Diên Hồng, TP. HCM</span>
+          </p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+            <span>📧</span><a href="mailto:info.emobox@gmail.com" style="color: var(--text-muted); text-decoration: none;">info.emobox@gmail.com</a>
+          </p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+            <span>📞</span><a href="tel:0917297709" style="color: var(--text-muted); text-decoration: none;">0917 297 709</a>
+          </p>
         </div>
       </div>
       <div class="footer-col">
@@ -223,90 +250,55 @@
       let total = 0;
 
       list.innerHTML = cart.map(item => {
+        let name = '';
+        let desc = '';
+        let image = '';
+        let itemPrice = 0;
+        let itemTotal = 0;
+
         if (item.isPkg) {
-          // --- Package item ---
-          const fixedHTML = (item.fixedItems || []).map(f =>
-            `<span style="display:inline-block;background:#e0f2fe;color:#0284c7;font-size:0.72rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:999px;margin:0.1rem;">${f}</span>`
-          ).join('');
-          const pickHTML = (item.selectedPicks || []).length > 0
-            ? (item.selectedPicks).map(p =>
-                `<span style="display:inline-block;background:#fef3c7;color:#92400e;font-size:0.72rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:999px;margin:0.1rem;">${p}</span>`
-              ).join('')
-            : '<span style="font-size:0.75rem;color:#94a3b8;font-style:italic;">Chưa chọn món tự chọn</span>';
-
-          if (item.priceNum) total += item.priceNum * item.quantity;
-
-          const imgHTML = item.image 
-            ? `<img src="${item.image}" style="width:100px;height:100px;border-radius:12px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;background:#f8fafc;">` 
-            : `<div style="width:100px;height:100px;border-radius:12px;background:linear-gradient(135deg,#e0f2fe,#bae6fd);display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;">🎁</div>`;
-
-          return `
-            <div class="cart-item">
-              ${imgHTML}
-              <div class="cart-item-info" style="flex:1;">
-                <h4 style="margin-bottom:0.4rem;">${item.name}</h4>
-                <div style="margin-bottom:0.35rem;">
-                  <span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);">🔒 Cố định: </span>${fixedHTML}
-                </div>
-                <div style="margin-bottom:0.5rem;">
-                  <span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);">✨ Tự chọn: </span>${pickHTML}
-                </div>
-                <div style="font-weight:700;color:var(--primary);font-size:1rem;">${item.pkgPrice || '—'}</div>
-              </div>
-              <div class="cart-qty">
-                <button class="qty-btn" onclick="updateQty('${item.id}', -1)">−</button>
-                <span style="font-weight:600;">${item.quantity}</span>
-                <button class="qty-btn" onclick="updateQty('${item.id}', 1)">＋</button>
-              </div>
-              <button class="btn-icon" onclick="removeFromCart('${item.id}')" style="color:#ef4444;">🗑️</button>
-            </div>
-          `;
+          name = item.name;
+          image = item.image ? `<img src="${item.image}" class="cart-item-img">` : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,#e0f2fe,#bae6fd);">🎁</div>`;
+          desc = `<span style="color:var(--text-muted);font-size:0.85rem;">Màu: Màu Sắc Đặc Trưng • Giấy Kraft Truyền Thống</span>`;
+          if (item.priceNum) {
+            itemPrice = item.priceNum;
+            itemTotal = itemPrice * item.quantity;
+            total += itemTotal;
+          }
         } else {
-          // --- Normal gift box item ---
           const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
-          total += box.price * item.quantity;
-          return `
-            <div class="cart-item">
-              <img src="${box.image}" class="cart-item-img">
-              <div class="cart-item-info">
-                <h4>${box.name}</h4>
-                <p>${box.tagline}</p>
-                <div style="margin-top: 0.5rem; font-weight: 700; color: var(--primary);">${formatPrice(box.price)}</div>
-              </div>
-              <div class="cart-qty">
-                <button class="qty-btn" onclick="updateQty('${item.id}', -1)">−</button>
-                <span style="font-weight: 600;">${item.quantity}</span>
-                <button class="qty-btn" onclick="updateQty('${item.id}', 1)">＋</button>
-              </div>
-              <button class="btn-icon" onclick="removeFromCart('${item.id}')" style="color: #ef4444;">🗑️</button>
-            </div>
-          `;
+          name = box.name;
+          image = `<img src="${box.image}" class="cart-item-img">`;
+          desc = `<span style="color:var(--text-muted);font-size:0.85rem;">Màu: Màu Sắc Đặc Trưng • Giấy Kraft Truyền Thống</span>`;
+          itemPrice = box.price;
+          itemTotal = itemPrice * item.quantity;
+          total += itemTotal;
         }
+
+        return `
+          <div class="cart-item">
+            ${image}
+            <div class="cart-item-info">
+              <h4>${name}</h4>
+              <p>${desc}</p>
+              
+              <div class="cart-item-actions">
+                <div class="cart-qty">
+                  <button class="qty-btn" onclick="updateQty('${item.id}', -1)">−</button>
+                  <span style="font-weight: 600; font-size: 0.95rem; width: 20px; text-align: center;">${item.quantity}</span>
+                  <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
+                </div>
+                <div class="cart-item-price">${formatPrice(itemTotal)}</div>
+              </div>
+            </div>
+            <button class="delete-btn" onclick="removeFromCart('${item.id}')" title="Xóa sản phẩm">🗑️</button>
+          </div>
+        `;
       }).join('');
 
       document.getElementById('subtotal').textContent = formatPrice(total);
       document.getElementById('totalPrice').textContent = formatPrice(total);
       cartTotal = total;
-      checkCartWalletBalance();
-    }
-
-    function checkCartWalletBalance() {
-      const paymentMethod = document.getElementById('cartPaymentMethod');
-      if (!paymentMethod) return;
-      const warning = document.getElementById('cartWalletWarning');
-      
-      if (paymentMethod.value === 'wallet') {
-        const user = JSON.parse(localStorage.getItem('emobox_user'));
-        const balance = (user && user.balance) ? user.balance : 0;
-        
-        if (balance < cartTotal) {
-          warning.style.display = 'block';
-        } else {
-          warning.style.display = 'none';
-        }
-      } else {
-        warning.style.display = 'none';
-      }
     }
 
     function updateQty(id, delta) {
@@ -329,55 +321,7 @@
       renderCart();
     }
 
-    function proceedCheckout() {
-      if (cart.length === 0) return;
-
-      const paymentMethod = document.getElementById('cartPaymentMethod').value;
-      const user = JSON.parse(localStorage.getItem('emobox_user'));
-      
-      if (paymentMethod === 'wallet') {
-        const balance = (user && user.balance) ? user.balance : 0;
-        if (balance < cartTotal) {
-          if (typeof showToast === 'function') showToast('Số dư ví không đủ! Vui lòng chọn phương thức khác.');
-          return;
-        }
-        
-        // Deduct balance
-        user.balance -= cartTotal;
-        localStorage.setItem('emobox_user', JSON.stringify(user));
-      }
-
-      let events = JSON.parse(localStorage.getItem('emobox_events') || '[]');
-      let eventsUpdated = false;
-
-      cart.forEach(item => {
-        if (item.isPkg && item.id.startsWith('evt_')) {
-          const evt = events.find(e => e.id === item.id);
-          if (evt) {
-            evt.paid = true;
-            eventsUpdated = true;
-          }
-        }
-      });
-
-      if (eventsUpdated) {
-        localStorage.setItem('emobox_events', JSON.stringify(events));
-      }
-
-      if (typeof showToast === 'function') {
-        showToast('Thanh toán thành công! Đơn hàng đang được xử lý.');
-      } else {
-        alert('Thanh toán thành công! Đơn hàng đang được xử lý.');
-      }
-      
-      localStorage.setItem('emobox_cart', '[]');
-      cart = [];
-      updateCartBadge();
-      renderCart();
-    }
-
     document.addEventListener('DOMContentLoaded', renderCart);
   </script>
 </body>
 </html>
-
