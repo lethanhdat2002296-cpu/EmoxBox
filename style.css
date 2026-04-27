@@ -1,12 +1,12 @@
 :root {
-  --primary: #0284c7;
-  --primary-hover: #0369a1;
-  --bg-color: #FBF8F5;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
+  --primary: #409CCF;
+  --primary-hover: #133F48;
+  --bg-color: #D6DEE0;
+  --text-main: #133F48;
+  --text-muted: #409CCF;
   --white: #ffffff;
-  --border: #e2e8f0;
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --border: #9ACCE7;
+  --shadow: 0 4px 6px -1px rgb(19 63 72 / 0.15);
   --font-serif: 'Playfair Display', serif;
   --font-sans: 'Inter', sans-serif;
 }
