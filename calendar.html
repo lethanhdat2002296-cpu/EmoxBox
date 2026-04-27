@@ -672,6 +672,31 @@
       }
       
       const date = document.getElementById('eventDate').value;
+      
+      const currentUser = JSON.parse(localStorage.getItem('emobox_user'));
+      if (currentUser && currentUser.plan && currentUser.plan !== 'none') {
+        const regDateStr = currentUser.registeredAt || new Date().toISOString();
+        const regDate = new Date(regDateStr);
+        const evtDate = new Date(date);
+        const maxDate = new Date(regDate);
+        
+        let monthsToAdd = 0;
+        if (currentUser.plan === '3-months') monthsToAdd = 3;
+        if (currentUser.plan === '6-months') monthsToAdd = 6;
+        if (currentUser.plan === '12-months') monthsToAdd = 12;
+        
+        if (monthsToAdd > 0) {
+           maxDate.setMonth(maxDate.getMonth() + monthsToAdd);
+           if (evtDate > maxDate) {
+              if (typeof showToast === 'function') {
+                showToast('Yêu cầu nâng cấp gói thành viên');
+              } else {
+                alert('Yêu cầu nâng cấp gói thành viên');
+              }
+              return;
+           }
+        }
+      }
       const recipient = document.getElementById('eventRecipient').value;
       const address = document.getElementById('eventAddress').value;
       const phone = document.getElementById('eventPhone').value;
