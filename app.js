@@ -83,16 +83,16 @@ function renderFeaturedBoxes() {
   
   grid.innerHTML = FEATURED_BOXES.map(box => `
     <div class="gift-card">
-      <a href="box-detail.html?id=${box.id}" class="gift-img-wrap">
+      <div onclick="openFeaturedModal('${box.id}')" class="gift-img-wrap" style="cursor: pointer;">
         ${box.badge ? `<span class="gift-badge">${box.badge}</span>` : ''}
         <img src="${box.image}" alt="${box.name}" class="gift-img">
-      </a>
+      </div>
       <div class="gift-content">
-        <a href="box-detail.html?id=${box.id}"><h3 class="gift-title">${box.name}</h3></a>
+        <h3 class="gift-title" onclick="openFeaturedModal('${box.id}')" style="cursor: pointer; display: inline-block;">${box.name}</h3>
         <p class="gift-desc">${box.desc}</p>
         <div class="gift-footer">
           <span class="gift-price">${formatPrice(box.price)}</span>
-          <button class="btn btn-primary" onclick="addToCart('${box.id}')">Thêm giỏ</button>
+          <button class="btn btn-primary" onclick="openFeaturedModal('${box.id}')">Thêm giỏ</button>
         </div>
       </div>
     </div>
