@@ -361,7 +361,8 @@
         user = {
           name: username,
           email: username,
-          plan: 'none'
+          plan: 'none',
+          registeredAt: new Date().toISOString()
         };
       }
 
@@ -382,7 +383,8 @@
       const newUser = {
         name: name,
         email: email,
-        plan: plan
+        plan: plan,
+        registeredAt: new Date().toISOString()
       };
 
       let storedUsers = JSON.parse(localStorage.getItem('emobox_users') || '[]');
