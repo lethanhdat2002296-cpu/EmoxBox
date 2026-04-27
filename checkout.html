@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanh Toán - EmoBox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { background: #f8fafc; }
+    .checkout-container { padding-top: 2rem; padding-bottom: 6rem; max-width: 1100px; margin: 0 auto; }
+    
+    .breadcrumb { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumb span { margin: 0 0.5rem; }
+    
+    .checkout-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; }
+    
+    /* Left Side Form */
+    .checkout-title { font-family: var(--font-serif); font-size: 2rem; margin-bottom: 2rem; color: #0f172a; }
+    
+    .form-section { margin-bottom: 2.5rem; }
+    .form-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .form-section-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 0; }
+    
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: #334155; }
+    .form-label span { color: #ef4444; }
+    .form-input, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 0.95rem; background: white; transition: 0.2s; }
+    .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    
+    .delivery-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .delivery-opt { border: 2px solid var(--border); border-radius: 12px; padding: 1.25rem; text-align: center; cursor: pointer; background: white; transition: 0.2s; }
+    .delivery-opt:hover { border-color: #bae6fd; }
+    .delivery-opt.active { border-color: #0ea5e9; background: #f0f9ff; color: #0369a1; }
+    .delivery-opt-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .delivery-opt-sub { font-size: 0.8rem; color: var(--text-muted); }
+    
+    /* Right Side Order Summary */
+    .summary-box { background: white; border-radius: 24px; padding: 2rem; border: 1px solid var(--border); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); position: sticky; top: 100px; }
+    .summary-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: #0f172a; }
+    
+    .payment-methods { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+    .payment-opt { border: 1px solid var(--border); border-radius: 12px; padding: 1rem; display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; transition: 0.2s; background: white; }
+    .payment-opt.active { border-color: #0ea5e9; border-width: 2px; }
+    .payment-opt input[type="radio"] { margin-top: 0.2rem; cursor: pointer; }
+    .payment-opt-content { flex: 1; }
+    .payment-opt-label { font-weight: 600; font-size: 0.95rem; color: #0f172a; display: flex; justify-content: space-between; align-items: center; }
+    
+    /* Card form inside payment method */
+    .card-form { margin-top: 1rem; display: none; padding-top: 1rem; border-top: 1px dashed var(--border); }
+    .payment-opt.active .card-form { display: block; }
+
+    .order-items-list { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.5rem 0; margin-bottom: 1.5rem; }
+    .order-item-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem; }
+    .order-item-row:last-child { margin-bottom: 0; }
+    .order-item-name { color: #334155; font-weight: 500; }
+    .order-item-qty { color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.2rem; }
+    .order-item-price { font-weight: 600; color: #0f172a; }
+
+    .calc-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.95rem; color: #334155; }
+    .calc-row.total { border-top: 1px solid var(--border); padding-top: 1rem; font-weight: 800; font-size: 1.1rem; color: #0f172a; margin-top: 0.5rem; margin-bottom: 2rem; }
+
+    .btn-submit { width: 100%; height: 56px; background: #0f172a; color: white; font-weight: 600; font-size: 1.05rem; border: none; border-radius: 12px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .btn-submit:hover { background: #1e293b; }
+
+    @media (max-width: 992px) {
+      .checkout-layout { grid-template-columns: 1fr; gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="Logo.png" alt="EmoBox Logo" style="height: 32px; object-fit: contain;">
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" class="nav-link">Trang Chủ</a>
+        <div class="nav-dropdown">
+          <a href="emotion-gifts.html" class="nav-link">Quà Cảm Xúc <span class="chevron">▾</span></a>
+          <div class="dropdown-menu">
+            <a href="emotion-gifts.html?cat=an-ui-dong-vien" class="dropdown-item">An ủi và động viên</a>
+            <a href="emotion-gifts.html?cat=xin-loi-lam-hoa" class="dropdown-item">Xin lỗi và làm hòa</a>
+            <a href="emotion-gifts.html?cat=tiep-suc-truyen-dong-luc" class="dropdown-item">Tiếp sức và truyền động lực</a>
+            <a href="emotion-gifts.html?cat=yeu-thuong-quan-tam" class="dropdown-item">Yêu thương và quan tâm</a>
+            <a href="emotion-gifts.html?cat=chuc-mung-an-mung" class="dropdown-item">Chúc mừng và ăn mừng</a>
+            <a href="emotion-gifts.html?cat=healing-self-care" class="dropdown-item">Healing & Self-care</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="occasion-gifts.html" class="nav-link">Quà Theo Dịp <span class="chevron">▾</span></a>
+          <div class="dropdown-menu">
+            <a href="occasion-gifts.html?cat=tet" class="dropdown-item">Tết</a>
+            <a href="occasion-gifts.html?cat=valentine" class="dropdown-item">Valentine</a>
+            <a href="occasion-gifts.html?cat=8-3-20-10" class="dropdown-item">8/3 + 20/10</a>
+            <a href="occasion-gifts.html?cat=trung-thu" class="dropdown-item">Trung Thu</a>
+            <a href="occasion-gifts.html?cat=20-11" class="dropdown-item">20/11</a>
+            <a href="occasion-gifts.html?cat=noel" class="dropdown-item">Noel</a>
+          </div>
+        </div>
+        <a href="plans.html" class="nav-link">Subscription</a>
+        <a href="calendar.html" class="nav-link">Đặt Lịch</a>
+        <a href="contact.html" class="nav-link">Liên Hệ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="cart.html" class="btn-icon" id="cartBtn" title="Giỏ hàng">
+          🛍️
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+        <button class="btn-icon" onclick="toggleUserMenu()" id="userBtn" title="Tài khoản">👤</button>
+        <div class="user-menu" id="userMenu">
+          <div class="user-menu-header">
+            <div class="user-avatar-sm">U</div>
+            <div>
+              <p class="user-name">Tài Khoản</p>
+              <p class="user-sub">Xem thông tin của bạn</p>
+            </div>
+          </div>
+          <div class="user-menu-body">
+            <a href="account.html" class="user-menu-item">📋 Hồ sơ</a>
+            <a href="cart.html" class="user-menu-item active">📦 Đơn hàng</a>
+            <a href="plans.html" class="user-menu-item">💳 Subscription</a>
+            <a href="calendar.html" class="user-menu-item">📅 Lịch tặng quà</a>
+            <a href="wallet.html" class="user-menu-item">💰 Ví EmoBox</a>
+          </div>
+        </div>
+        <button class="hamburger" id="hamburger" onclick="toggleNav()">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container checkout-container">
+    <div class="breadcrumb">
+      <a href="cart.html">Giỏ Hàng</a> <span>›</span>
+      <span style="font-weight: 600; color: #0f172a;">Thông tin Vận Chuyển</span> <span>›</span>
+      Thanh toán
+    </div>
+
+    <div class="checkout-layout">
+      <!-- Left Form -->
+      <div>
+        <h1 class="checkout-title">Thanh Toán Bảo Mật</h1>
+
+        <form id="checkoutForm" onsubmit="event.preventDefault(); submitOrder();">
+          <!-- Section 1 -->
+          <div class="form-section">
+            <div class="form-section-header">
+              <h3 class="form-section-title">Ai là người nhận quà?</h3>
+              <label style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="anonSender"> Ẩn danh người gửi
+              </label>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Tên người nhận <span>*</span></label>
+                <input type="text" class="form-input" placeholder="Họ và tên" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Số điện thoại <span>*</span></label>
+                <input type="tel" class="form-input" placeholder="Để liên lạc khi giao hàng" required>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Email liên hệ <span>*</span></label>
+              <input type="email" class="form-input" placeholder="Để nhận hóa đơn và cập nhật đơn hàng" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Địa chỉ giao hàng <span>*</span></label>
+              <input type="text" class="form-input" placeholder="Số nhà, đường, ngõ, phường, tòa nhà" required>
+            </div>
+          </div>
+
+          <!-- Section 2 -->
+          <div class="form-section">
+            <h3 class="form-section-title" style="margin-bottom: 1.25rem;">Tin nhắn cá nhân</h3>
+            <textarea class="form-textarea" placeholder="Chúng tôi sẽ viết tay lời nhắn này trên một tấm thiệp lộng lẫy..."></textarea>
+          </div>
+
+          <!-- Section 3 -->
+          <div class="form-section">
+            <h3 class="form-section-title" style="margin-bottom: 1.25rem;">Khi nào chúng tôi nên giao hàng?</h3>
+            <div class="delivery-options">
+              <div class="delivery-opt active" onclick="selectDelivery(this)">
+                <div class="delivery-opt-title">Càng Sớm Càng Tốt</div>
+                <div class="delivery-opt-sub">Ngày mai</div>
+              </div>
+              <div class="delivery-opt" onclick="selectDelivery(this)">
+                <div class="delivery-opt-title">Ngày Cụ Thể</div>
+                <div class="delivery-opt-sub">Chọn ngày</div>
+              </div>
+            </div>
+            <p style="font-size: 0.85rem; color: #059669; font-weight: 600;">🎉 Đơn hàng trên 500.000đ, bạn được miễn phí giao hàng!</p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Summary -->
+      <aside>
+        <div class="summary-box">
+          <h3 class="summary-title">Thanh Toán</h3>
+          
+          <div class="payment-methods">
+            <!-- COD -->
+            <label class="payment-opt" onclick="selectPayment(this)">
+              <input type="radio" name="payment" value="cod">
+              <div class="payment-opt-content">
+                <div class="payment-opt-label">Tiền mặt khi nhận hàng (COD)</div>
+              </div>
+            </label>
+            
+            <!-- Credit Card -->
+            <label class="payment-opt active" onclick="selectPayment(this)">
+              <input type="radio" name="payment" value="card" checked>
+              <div class="payment-opt-content">
+                <div class="payment-opt-label">
+                  Thẻ Ngân Hàng (Visa, Mastercard, v.v.)
+                  <span style="color: #0ea5e9; font-size: 1.2rem;">💳</span>
+                </div>
+                
+                <div class="card-form">
+                  <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: block;">Số thẻ</label>
+                    <input type="text" class="form-input" placeholder="0000 0000 0000 0000" style="padding: 0.6rem 0.8rem; font-size: 0.85rem;">
+                  </div>
+                  <div class="form-row" style="margin-bottom: 1rem;">
+                    <div>
+                      <label style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: block;">Ngày hết hạn</label>
+                      <input type="text" class="form-input" placeholder="MM/YY" style="padding: 0.6rem 0.8rem; font-size: 0.85rem;">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: block;">CVC/CVV</label>
+                      <input type="text" class="form-input" placeholder="123" style="padding: 0.6rem 0.8rem; font-size: 0.85rem;">
+                    </div>
+                  </div>
+                  <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; display: block;">Tên in trên thẻ</label>
+                    <input type="text" class="form-input" placeholder="NGUYEN VAN A" style="padding: 0.6rem 0.8rem; font-size: 0.85rem; text-transform: uppercase;">
+                  </div>
+                </div>
+              </div>
+            </label>
+            
+            <!-- Wallet -->
+            <label class="payment-opt" onclick="selectPayment(this)">
+              <input type="radio" name="payment" value="wallet">
+              <div class="payment-opt-content">
+                <div class="payment-opt-label">Ví EmoBox</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Số dư: <span id="walletBalanceDisplay">0 đ</span></div>
+                <div id="walletWarning" style="color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-top: 0.5rem; display: none;">⚠ Số dư ví không đủ để thanh toán.</div>
+              </div>
+            </label>
+          </div>
+
+          <div class="order-items-list" id="checkoutItems">
+            <!-- Rendered by JS -->
+          </div>
+
+          <div class="calc-row">
+            <span>Phí Giao Hàng</span>
+            <span style="color: #059669; font-weight: 600;">Miễn phí</span>
+          </div>
+
+          <div class="calc-row total">
+            <span>Tổng Thanh Toán</span>
+            <span id="checkoutTotal" style="color: #0284c7; font-size: 1.25rem;">0 đ</span>
+          </div>
+
+          <button type="button" id="submitBtn" class="btn-submit" onclick="submitOrder()">
+            🔒 Thanh Toán <span id="btnTotal">0 đ</span>
+          </button>
+          
+          <p style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">
+            Việc hoàn tất đơn hàng đồng nghĩa với việc bạn xác nhận đã đọc và đồng ý với các điều khoản của EmoBox.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let checkoutCartTotal = 0;
+
+    function initCheckout() {
+      // 1. Fetch Cart Data
+      const cartData = JSON.parse(localStorage.getItem('emobox_cart') || '[]');
+      if (cartData.length === 0) {
+        alert("Giỏ hàng của bạn đang trống! Đang quay lại trang trước.");
+        window.location.href = 'cart.html';
+        return;
+      }
+
+      const listContainer = document.getElementById('checkoutItems');
+      let total = 0;
+      let itemsHTML = '';
+
+      cartData.forEach(item => {
+        let name = '';
+        let itemPrice = 0;
+
+        if (item.isPkg) {
+          name = item.name;
+          itemPrice = item.priceNum || 0;
+        } else {
+          const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
+          name = box.name;
+          itemPrice = box.price;
+        }
+        
+        const itemTotal = itemPrice * item.quantity;
+        total += itemTotal;
+
+        itemsHTML += `
+          <div class="order-item-row">
+            <div>
+              <div class="order-item-name">${name}</div>
+              <span class="order-item-qty">x${item.quantity}</span>
+            </div>
+            <div class="order-item-price">${formatPrice(itemTotal)}</div>
+          </div>
+        `;
+      });
+
+      listContainer.innerHTML = itemsHTML;
+      checkoutCartTotal = total;
+
+      document.getElementById('checkoutTotal').textContent = formatPrice(total);
+      document.getElementById('btnTotal').textContent = formatPrice(total);
+
+      // 2. Fetch User Wallet Balance
+      const user = JSON.parse(localStorage.getItem('emobox_user'));
+      if (user && user.balance !== undefined) {
+        document.getElementById('walletBalanceDisplay').textContent = formatPrice(user.balance);
+      }
+
+      checkWalletWarning();
+    }
+
+    function selectDelivery(el) {
+      document.querySelectorAll('.delivery-opt').forEach(opt => opt.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function selectPayment(labelEl) {
+      document.querySelectorAll('.payment-opt').forEach(opt => opt.classList.remove('active'));
+      labelEl.classList.add('active');
+      checkWalletWarning();
+    }
+
+    function checkWalletWarning() {
+      const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+      const warning = document.getElementById('walletWarning');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      if (selectedPayment === 'wallet') {
+        const user = JSON.parse(localStorage.getItem('emobox_user'));
+        const balance = (user && user.balance) ? user.balance : 0;
+        if (balance < checkoutCartTotal) {
+          warning.style.display = 'block';
+          submitBtn.style.opacity = '0.5';
+          submitBtn.style.cursor = 'not-allowed';
+        } else {
+          warning.style.display = 'none';
+          submitBtn.style.opacity = '1';
+          submitBtn.style.cursor = 'pointer';
+        }
+      } else {
+        warning.style.display = 'none';
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+      }
+    }
+
+    function submitOrder() {
+      const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+      const user = JSON.parse(localStorage.getItem('emobox_user'));
+
+      if (selectedPayment === 'wallet') {
+        const balance = (user && user.balance) ? user.balance : 0;
+        if (balance < checkoutCartTotal) {
+          showToast('⚠ Số dư ví EmoBox không đủ để thanh toán.');
+          return;
+        }
+        // Deduct balance
+        user.balance -= checkoutCartTotal;
+        localStorage.setItem('emobox_user', JSON.stringify(user));
+      }
+
+      // Mark calendar events as paid if they exist in cart
+      let events = JSON.parse(localStorage.getItem('emobox_events') || '[]');
+      let cartData = JSON.parse(localStorage.getItem('emobox_cart') || '[]');
+      let eventsUpdated = false;
+
+      cartData.forEach(item => {
+        if (item.isPkg && item.id.startsWith('evt_')) {
+          const evt = events.find(e => e.id === item.id);
+          if (evt) {
+            evt.paid = true;
+            eventsUpdated = true;
+          }
+        }
+      });
+
+      if (eventsUpdated) {
+        localStorage.setItem('emobox_events', JSON.stringify(events));
+      }
+
+      // Empty the cart
+      localStorage.setItem('emobox_cart', '[]');
+      if (typeof updateCartBadge === 'function') updateCartBadge();
+
+      showToast('🎉 Thanh toán thành công! Đơn hàng của bạn đang được xử lý.');
+      
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', initCheckout);
+  </script>
+</body>
+</html>
