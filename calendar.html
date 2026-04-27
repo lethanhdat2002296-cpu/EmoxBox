@@ -641,13 +641,8 @@
       lbl.textContent = `Quà đi kèm (Đã chọn ${count}/${max})`;
       
       const warning = document.getElementById('eventPicksWarning');
-      if (count < max) {
-        lbl.style.color = '#b45309';
-        warning.style.display = 'block';
-      } else {
-        lbl.style.color = 'var(--text-main)';
-        warning.style.display = 'none';
-      }
+      lbl.style.color = 'var(--text-main)';
+      if (warning) warning.style.display = 'none';
     }
 
     function openEventModal() {
@@ -665,11 +660,6 @@
 
     function addEvent(e) {
       e.preventDefault();
-      
-      if (eventSelectedPicks.length < eventCurrentPkg.picks) {
-        if (typeof showToast === 'function') showToast(`Vui lòng chọn đủ ${eventCurrentPkg.picks} món quà đi kèm!`);
-        return;
-      }
       
       const date = document.getElementById('eventDate').value;
       
