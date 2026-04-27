@@ -325,9 +325,9 @@
     renderEmotionGrid();
     renderFeaturedBoxes();
 
-    const STANDARD_PKG_DATA = {
-      picks: 2,
-      fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'],
+    const BASIC_PKG_DATA = {
+      picks: 1,
+      fixedItems: ['Thiệp cá nhân hóa', 'Sổ tay mini'],
       options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm']
     };
 
@@ -340,7 +340,7 @@
       
       selectedPicks = [];
       document.getElementById('modalTitle').textContent = currentBox.name + ' – ' + formatPrice(currentBox.price);
-      document.getElementById('modalSub').textContent = '🔒 Cố định: ' + STANDARD_PKG_DATA.fixedItems.join(', ');
+      document.getElementById('modalSub').textContent = '🔒 Cố định: ' + BASIC_PKG_DATA.fixedItems.join(', ');
 
       const imgContainer = document.getElementById('pkgImageContainer');
       const imgEl = document.getElementById('pkgImage');
@@ -350,7 +350,7 @@
       updateProgress();
 
       const body = document.getElementById('modalBody');
-      body.innerHTML = STANDARD_PKG_DATA.options.map((opt, idx) => `
+      body.innerHTML = BASIC_PKG_DATA.options.map((opt, idx) => `
         <label class="pick-option" id="opt-${idx}">
           <div class="pick-checkbox" id="chk-${idx}"></div>
           <span class="pick-label">${opt}</span>
@@ -373,7 +373,7 @@
     function updateProgress() {
       if (!currentBox) return;
       const count = selectedPicks.length;
-      const max = STANDARD_PKG_DATA.picks;
+      const max = BASIC_PKG_DATA.picks;
       const prog = document.getElementById('modalProgress');
       const btn = document.getElementById('modalAddBtn');
 
@@ -399,7 +399,7 @@
         document.getElementById('opt-' + idx).classList.remove('selected');
         document.getElementById('chk-' + idx).textContent = '';
       } else {
-        if (selectedPicks.length >= STANDARD_PKG_DATA.picks) {
+        if (selectedPicks.length >= BASIC_PKG_DATA.picks) {
           showToast('Bạn đã chọn đủ số lượng món tự chọn!');
           const input = document.querySelector(`#opt-${idx} input`);
           if (input) input.checked = false;
@@ -411,7 +411,7 @@
       }
       
       const allLabels = document.querySelectorAll('.pick-option');
-      if (selectedPicks.length >= STANDARD_PKG_DATA.picks) {
+      if (selectedPicks.length >= BASIC_PKG_DATA.picks) {
         allLabels.forEach(lbl => {
           if (!lbl.classList.contains('selected')) lbl.classList.add('disabled');
         });
@@ -435,7 +435,7 @@
         image: document.getElementById('pkgImage').src,
         pkgPrice: formatPrice(currentBox.price),
         priceNum: currentBox.price,
-        fixedItems: [...STANDARD_PKG_DATA.fixedItems],
+        fixedItems: [...BASIC_PKG_DATA.fixedItems],
         selectedPicks: [...selectedPicks],
         quantity: 1
       });
