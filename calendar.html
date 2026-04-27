@@ -240,15 +240,17 @@
           <h4 style="margin-bottom: 1rem; font-size: 1.1rem;">Cấu hình Gói Quà</h4>
 
           <div class="form-group">
-            <label class="form-label">Loại quà (Chủ đề)</label>
+            <label class="form-label">Phân loại quà</label>
+            <select class="form-input" id="eventGroup" onchange="handleEventGroupChange()">
+              <option value="occasion">Quà Lễ</option>
+              <option value="emotion">Quà Cảm Xúc</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Chủ đề quà</label>
             <select class="form-input" id="eventCat" onchange="handleEventPkgChange()">
-              <option value="tet">Tết</option>
-              <option value="valentine">Valentine</option>
-              <option value="8-3-20-10">8/3 & 20/10</option>
-              <option value="20-11">20/11 (Nhà Giáo)</option>
-              <option value="trung-thu">Trung Thu</option>
-              <option value="noel">Giáng Sinh (Noel)</option>
-              <option value="cam-xuc">Quà Cảm Xúc</option>
+              <!-- Options rendered by JS -->
             </select>
           </div>
 
@@ -381,7 +383,37 @@
         standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Bánh trung thu (4 cái)'], options: ['Trà xanh', 'Trà hoa cúc', 'Trà lài', 'Mật ong', 'Yến nhỏ (2 chai)'] },
         premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 2, fixedItems: ['Bánh trung thu (4 cái)'], options: ['Trà ô long', 'Hồng trà', 'Trà phổ nhĩ', 'Mật ong', 'Yến vừa (2 chai)'] }
       },
-      'cam-xuc': {
+      'an-ui-dong-vien': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'], options: ['Sticker pack', 'Bookmark', 'Kẹo / Chocolate nhỏ', 'Bút', 'Charm nhỏ', 'Hoa khô mini'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'], options: ['Snack / Chocolate', 'Trà / Cà phê gói', 'Bookmark', 'Bút', 'Sticky notes', 'Sticker', 'Hoa khô mini', 'Móc khóa', 'Tất / Vớ basic'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'], options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 4, fixedItems: ['Thiệp cá nhân hóa', 'Tinh dầu cao cấp', 'Ly giữ nhiệt', 'Snack / Trà set nhỏ'], options: ['Gấu bông mini', 'Hoa khô', 'Sleep mask', 'Bath items', 'Túi chườm bụng', 'Ly giữ nhiệt', 'Móc khóa', 'Phụ kiện nhỏ', 'Đèn ngủ mini', 'Bookmark', 'Bút premium', 'Sticker / Charm', 'Chocolate premium', 'Cà phê / Trà set', 'Tất / Vớ', 'Pouch', 'Túi chườm'] }
+      },
+      'xin-loi-lam-hoa': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'], options: ['Sticker pack', 'Bookmark', 'Kẹo / Chocolate nhỏ', 'Bút', 'Charm nhỏ', 'Hoa khô mini'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'], options: ['Snack / Chocolate', 'Trà / Cà phê gói', 'Bookmark', 'Bút', 'Sticky notes', 'Sticker', 'Hoa khô mini', 'Móc khóa', 'Tất / Vớ basic'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'], options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 4, fixedItems: ['Thiệp cá nhân hóa', 'Tinh dầu cao cấp', 'Ly giữ nhiệt', 'Snack / Trà set nhỏ'], options: ['Gấu bông mini', 'Hoa khô', 'Sleep mask', 'Bath items', 'Túi chườm bụng', 'Ly giữ nhiệt', 'Móc khóa', 'Phụ kiện nhỏ', 'Đèn ngủ mini', 'Bookmark', 'Bút premium', 'Sticker / Charm', 'Chocolate premium', 'Cà phê / Trà set', 'Tất / Vớ', 'Pouch', 'Túi chườm'] }
+      },
+      'tiep-suc-truyen-dong-luc': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'], options: ['Sticker pack', 'Bookmark', 'Kẹo / Chocolate nhỏ', 'Bút', 'Charm nhỏ', 'Hoa khô mini'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'], options: ['Snack / Chocolate', 'Trà / Cà phê gói', 'Bookmark', 'Bút', 'Sticky notes', 'Sticker', 'Hoa khô mini', 'Móc khóa', 'Tất / Vớ basic'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'], options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 4, fixedItems: ['Thiệp cá nhân hóa', 'Tinh dầu cao cấp', 'Ly giữ nhiệt', 'Snack / Trà set nhỏ'], options: ['Gấu bông mini', 'Hoa khô', 'Sleep mask', 'Bath items', 'Túi chườm bụng', 'Ly giữ nhiệt', 'Móc khóa', 'Phụ kiện nhỏ', 'Đèn ngủ mini', 'Bookmark', 'Bút premium', 'Sticker / Charm', 'Chocolate premium', 'Cà phê / Trà set', 'Tất / Vớ', 'Pouch', 'Túi chườm'] }
+      },
+      'yeu-thuong-quan-tam': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'], options: ['Sticker pack', 'Bookmark', 'Kẹo / Chocolate nhỏ', 'Bút', 'Charm nhỏ', 'Hoa khô mini'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'], options: ['Snack / Chocolate', 'Trà / Cà phê gói', 'Bookmark', 'Bút', 'Sticky notes', 'Sticker', 'Hoa khô mini', 'Móc khóa', 'Tất / Vớ basic'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'], options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 4, fixedItems: ['Thiệp cá nhân hóa', 'Tinh dầu cao cấp', 'Ly giữ nhiệt', 'Snack / Trà set nhỏ'], options: ['Gấu bông mini', 'Hoa khô', 'Sleep mask', 'Bath items', 'Túi chườm bụng', 'Ly giữ nhiệt', 'Móc khóa', 'Phụ kiện nhỏ', 'Đèn ngủ mini', 'Bookmark', 'Bút premium', 'Sticker / Charm', 'Chocolate premium', 'Cà phê / Trà set', 'Tất / Vớ', 'Pouch', 'Túi chườm'] }
+      },
+      'chuc-mung-an-mung': {
+        mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'], options: ['Sticker pack', 'Bookmark', 'Kẹo / Chocolate nhỏ', 'Bút', 'Charm nhỏ', 'Hoa khô mini'] },
+        basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'], options: ['Snack / Chocolate', 'Trà / Cà phê gói', 'Bookmark', 'Bút', 'Sticky notes', 'Sticker', 'Hoa khô mini', 'Móc khóa', 'Tất / Vớ basic'] },
+        standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'], options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm'] },
+        premium:  { name: 'Gói Premium Plus', price: '599.000 ₫', priceNum: 599000, picks: 4, fixedItems: ['Thiệp cá nhân hóa', 'Tinh dầu cao cấp', 'Ly giữ nhiệt', 'Snack / Trà set nhỏ'], options: ['Gấu bông mini', 'Hoa khô', 'Sleep mask', 'Bath items', 'Túi chườm bụng', 'Ly giữ nhiệt', 'Móc khóa', 'Phụ kiện nhỏ', 'Đèn ngủ mini', 'Bookmark', 'Bút premium', 'Sticker / Charm', 'Chocolate premium', 'Cà phê / Trà set', 'Tất / Vớ', 'Pouch', 'Túi chườm'] }
+      },
+      'healing-self-care': {
         mini:     { name: 'Gói Mini',         price: '99.000 ₫',  priceNum: 99000,  picks: 1, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size nhỏ'], options: ['Sticker pack', 'Bookmark', 'Kẹo / Chocolate nhỏ', 'Bút', 'Charm nhỏ', 'Hoa khô mini'] },
         basic:    { name: 'Gói Basic',        price: '199.000 ₫', priceNum: 199000, picks: 2, fixedItems: ['Thiệp / Thư tay', 'Nến thơm size vừa'], options: ['Snack / Chocolate', 'Trà / Cà phê gói', 'Bookmark', 'Bút', 'Sticky notes', 'Sticker', 'Hoa khô mini', 'Móc khóa', 'Tất / Vớ basic'] },
         standard: { name: 'Gói Standard',     price: '399.000 ₫', priceNum: 399000, picks: 2, fixedItems: ['Thiệp cá nhân hóa', 'Nến thơm size lớn', 'Sổ tay'], options: ['Gấu bông mini', 'Tinh dầu', 'Sleep mask', 'Bookmark', 'Bút premium', 'Sticky notes', 'Hoa khô', 'Móc khóa', 'Pouch nhỏ', 'Tất / Vớ', 'Chocolate hộp nhỏ', 'Túi chườm'] },
@@ -574,12 +606,12 @@
           'standard': '3. STANDARD TRUNG THU.png',
           'premium': '4. PREMIUM TRUNG THU.png'
         },
-        'cam-xuc': {
-          'mini': '1. Mini Love.png',
-          'basic': '2. Basic Love.png',
-          'standard': '3. Standard Love.png',
-          'premium': '4. Premium Love.png'
-        }
+        'an-ui-dong-vien': { 'mini': '1. Mini Support.png', 'basic': '2. Basic Support.png', 'standard': '3. Standard Support.png', 'premium': '4. Premium Support.png' },
+        'xin-loi-lam-hoa': { 'mini': '1. Mini Sorry.png', 'basic': '2. Basic Sorry.png', 'standard': '3. Standard Sorry.png', 'premium': '4. Premium Sorry.png' },
+        'tiep-suc-truyen-dong-luc': { 'mini': '1. Mini Motivation.png', 'basic': '2. Basic Motivation.png', 'standard': '3. Standard Motivation.png', 'premium': '4. Premium Motivation.png' },
+        'yeu-thuong-quan-tam': { 'mini': '1. Mini Love.png', 'basic': '2. Basic Love.png', 'standard': '3. Standard Love.png', 'premium': '4. Premium Love.png' },
+        'chuc-mung-an-mung': { 'mini': '1. Mini Celebration.png', 'basic': '2. Basic Celebration.png', 'standard': '3. Standard Celebration.png', 'premium': '4. Premium Celebration.png' },
+        'healing-self-care': { 'mini': '1. Mini Healing.png', 'basic': '2. Basic Healing.png', 'standard': '3. Standard Healing.png', 'premium': '4. Premium Healing.png' }
       };
 
       const imgContainer = document.getElementById('eventImageContainer');
@@ -645,9 +677,41 @@
       if (warning) warning.style.display = 'none';
     }
 
+    function handleEventGroupChange() {
+      const group = document.getElementById('eventGroup').value;
+      const catSelect = document.getElementById('eventCat');
+      
+      const occasionOptions = `
+        <option value="tet">Tết</option>
+        <option value="valentine">Valentine</option>
+        <option value="8-3-20-10">8/3 & 20/10</option>
+        <option value="20-11">20/11 (Nhà Giáo)</option>
+        <option value="trung-thu">Trung Thu</option>
+        <option value="noel">Giáng Sinh (Noel)</option>
+      `;
+      
+      const emotionOptions = `
+        <option value="an-ui-dong-vien">An ủi và động viên</option>
+        <option value="xin-loi-lam-hoa">Xin lỗi và làm hòa</option>
+        <option value="tiep-suc-truyen-dong-luc">Tiếp sức và truyền động lực</option>
+        <option value="yeu-thuong-quan-tam">Yêu thương và quan tâm</option>
+        <option value="chuc-mung-an-mung">Chúc mừng và ăn mừng</option>
+        <option value="healing-self-care">Healing & Self-care</option>
+      `;
+      
+      if (group === 'occasion') {
+        catSelect.innerHTML = occasionOptions;
+      } else {
+        catSelect.innerHTML = emotionOptions;
+      }
+      
+      handleEventPkgChange();
+    }
+
     function openEventModal() {
       document.getElementById('eventModalOverlay').classList.add('active');
-      handleEventPkgChange(); // Init package fields
+      document.getElementById('eventGroup').value = 'occasion';
+      handleEventGroupChange(); // Init fields based on default group
     }
 
     function closeEventModal() {
