@@ -406,9 +406,19 @@
       const prog = document.getElementById('modalProgress');
       const btn = document.getElementById('modalAddBtn');
 
-      prog.innerHTML = count === 0 ? `Có thể chọn thêm tối đa <strong>${max}</strong> món` : `Đã chọn: <strong>${count} / ${max}</strong> món tự chọn`;
-      btn.disabled = false;
-      btn.textContent = 'Thêm vào giỏ hàng';
+      if (count < max) {
+        prog.innerHTML = count === 0 ? `Vui lòng chọn đủ <strong>${max}</strong> món tự chọn` : `Đã chọn: <strong>${count} / ${max}</strong> món tự chọn`;
+        btn.disabled = true;
+        btn.textContent = 'Chọn đủ món để tiếp tục';
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
+      } else {
+        prog.innerHTML = `Đã chọn đủ: <strong>${max} / ${max}</strong> món tự chọn`;
+        btn.disabled = false;
+        btn.textContent = 'Thêm vào giỏ hàng';
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+      }
     }
 
     function togglePick(optName, idx) {
