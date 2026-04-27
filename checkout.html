@@ -385,7 +385,32 @@
     }
 
     function submitOrder() {
+      const form = document.getElementById('checkoutForm');
+      if (!form.reportValidity()) {
+        showToast('⚠ Vui lòng nhập đầy đủ thông tin giao hàng.');
+        return;
+      }
+
       const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+
+      if (selectedPayment === 'card') {
+        const cardInputs = document.querySelectorAll('.card-form .form-input');
+        let isCardValid = true;
+        cardInputs.forEach(input => {
+          if (!input.value.trim()) {
+            isCardValid = false;
+            input.style.borderColor = '#ef4444';
+          } else {
+            input.style.borderColor = 'var(--border)';
+          }
+        });
+        
+        if (!isCardValid) {
+          showToast('⚠ Vui lòng nhập đầy đủ thông tin thẻ ngân hàng.');
+          return;
+        }
+      }
+
       const user = JSON.parse(localStorage.getItem('emobox_user'));
 
       if (selectedPayment === 'wallet') {
