@@ -493,6 +493,16 @@
     }
 
     function openCalendarModal() {
+      const currentUser = JSON.parse(localStorage.getItem('emobox_user'));
+      if (!currentUser || currentUser.plan === 'none' || !currentUser.plan) {
+        if (typeof showToast === 'function') {
+          showToast('Chức năng dành cho người đăng ký thành viên');
+        } else {
+          alert('Chức năng dành cho người đăng ký thành viên');
+        }
+        return;
+      }
+
       currDate = new Date(); // start at current date
       renderCalendar();
       document.getElementById('calendarModalOverlay').classList.add('active');
