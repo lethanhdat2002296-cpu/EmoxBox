@@ -150,9 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-    // Intercept calendar links
-  const calendarLinks = document.querySelectorAll('a[href="calendar.html"]');
-  calendarLinks.forEach(link => {
+  // Intercept calendar and wallet links
+  const protectedLinks = document.querySelectorAll('a[href="calendar.html"], a[href="wallet.html"]');
+  protectedLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       const user = JSON.parse(localStorage.getItem('emobox_user'));
       if (!user || user.plan === 'none' || !user.plan) {
@@ -165,6 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Hard check for wallet page if accessed directly
+  if (window.location.pathname.includes('wallet.html')) {
+    if (!currentUser || currentUser.plan === 'none' || !currentUser.plan) {
+      alert('Chức năng dành cho thành viên. Đang chuyển hướng...');
+      window.location.href = 'index.html';
+    }
+  }
 
   // Update plan buttons in plans.html
   if (window.location.pathname.includes('plans.html') && currentUser) {
