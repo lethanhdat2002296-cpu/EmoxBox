@@ -264,6 +264,18 @@
             </select>
           </div>
 
+          <div class="form-group">
+            <label class="form-label">Thanh toán thêm</label>
+            <select class="form-input" id="eventPaymentMethod" onchange="checkWalletBalance()" required>
+              <option value="cash">Tiền mặt</option>
+              <option value="bank">Ngân hàng</option>
+              <option value="wallet">Ví EmoBox</option>
+            </select>
+            <div id="walletWarning" style="color: #ef4444; font-size: 0.85rem; font-weight: 600; display: none; margin-top: 0.4rem;">
+              ❗ Số dư ví không đủ để thanh toán. Vui lòng nạp thêm tiền hoặc đổi phương thức.
+            </div>
+          </div>
+
           <div class="form-group" id="eventImageContainer" style="display: none; text-align: center; margin-top: 1rem;">
             <img id="eventImage" src="" style="width: 100%; max-height: 250px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); object-fit: contain; background: #f8fafc;">
           </div>
@@ -633,6 +645,25 @@
       `).join('');
       
       updateEventProgress();
+      checkWalletBalance();
+    }
+
+    function checkWalletBalance() {
+      const paymentMethod = document.getElementById('eventPaymentMethod').value;
+      const warning = document.getElementById('walletWarning');
+      
+      if (paymentMethod === 'wallet') {
+        const user = JSON.parse(localStorage.getItem('emobox_user'));
+        const balance = (user && user.balance) ? user.balance : 0;
+        
+        if (eventCurrentPkg && balance < eventCurrentPkg.priceNum) {
+          warning.style.display = 'block';
+        } else {
+          warning.style.display = 'none';
+        }
+      } else {
+        warning.style.display = 'none';
+      }
     }
 
     function toggleEventPick(optName, idx) {
@@ -755,6 +786,7 @@
       const address = document.getElementById('eventAddress').value.trim();
       const phone = document.getElementById('eventPhone').value.trim();
       const email = document.getElementById('eventEmail').value.trim();
+      const paymentMethod = document.getElementById('eventPaymentMethod').value;
       
       if (!recipient || !address || !phone || !email) {
         if (typeof showToast === 'function') showToast('Vui lòng điền đầy đủ thông tin!');
@@ -769,6 +801,15 @@
       if (!email.toLowerCase().endsWith('@gmail.com')) {
         if (typeof showToast === 'function') showToast('Vui lòng sử dụng email @gmail.com!');
         return;
+      }
+
+      if (paymentMethod === 'wallet') {
+        const user = JSON.parse(localStorage.getItem('emobox_user'));
+        const balance = (user && user.balance) ? user.balance : 0;
+        if (eventCurrentPkg && balance < eventCurrentPkg.priceNum) {
+          if (typeof showToast === 'function') showToast('Số dư ví không đủ! Vui lòng chọn phương thức khác.');
+          return;
+        }
       }
       
       const catSelect = document.getElementById('eventCat');
