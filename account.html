@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tài Khoản – EmoBox</title>
+  <title>Tài Khoản - EmoBox</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,21 +12,31 @@
     .account-container { padding-top: 4rem; padding-bottom: 6rem; }
     .account-layout { display: grid; grid-template-columns: 280px 1fr; gap: 3rem; }
     
-    .account-nav { background: white; padding: 1.5rem; border-radius: 24px; border: 1px solid var(--border); height: fit-content; }
-    .acc-nav-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; color: var(--text-muted); transition: all 0.2s; margin-bottom: 0.5rem; }
-    .acc-nav-item:hover { background: #f8fafc; color: var(--text-main); }
-    .acc-nav-item.active { background: #e0f2fe; color: var(--primary); font-weight: 600; }
+    .account-sidebar { background: white; border-radius: 24px; border: 1px solid var(--border); padding: 1.5rem; height: fit-content; }
+    .sidebar-user { text-align: center; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .user-avatar-lg { width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; margin: 0 auto 1rem; }
     
-    .account-content { background: white; padding: 3rem; border-radius: 32px; border: 1px solid var(--border); }
-    .profile-header { display: flex; align-items: center; gap: 2rem; margin-bottom: 3rem; }
-    .profile-avatar { width: 100px; height: 100px; background: linear-gradient(135deg, #38bdf8, #0284c7); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; font-weight: 800; }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav-item { padding: 0.875rem 1rem; border-radius: 12px; cursor: pointer; transition: 0.2s; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 0.75rem; }
+    .sidebar-nav-item:hover { background: #f8fafc; color: var(--text-main); }
+    .sidebar-nav-item.active { background: #f0f9ff; color: var(--primary); font-weight: 700; }
     
-    .order-item { border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border); }
-    .order-status { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; padding: 0.25rem 0.75rem; border-radius: 999px; }
+    .account-content { background: white; border-radius: 24px; border: 1px solid var(--border); padding: 2.5rem; }
+    .content-section { display: none; }
+    .content-section.active { display: block; }
+    
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main); }
+    .form-input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; transition: border-color 0.2s; }
+    .form-input:focus { outline: none; border-color: var(--primary); }
 
     @media (max-width: 992px) {
       .account-layout { grid-template-columns: 1fr; }
+      .account-sidebar { display: flex; overflow-x: auto; padding: 1rem; gap: 1rem; }
+      .sidebar-user { display: none; }
+      .sidebar-nav { display: flex; gap: 0.5rem; }
+      .sidebar-nav-item { white-space: nowrap; }
     }
   </style>
 </head>
@@ -35,8 +45,7 @@
   <nav class="navbar" id="navbar">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">
-        <div class="nav-logo-icon">🎁</div>
-        <span>EmoBox</span>
+        <img src="Logo.png" alt="EmoBox Logo" style="height: 32px; object-fit: contain;">
       </a>
       <div class="nav-links" id="navLinks">
         <a href="index.html" class="nav-link">Trang Chủ</a>
@@ -72,7 +81,7 @@
           <span class="cart-badge" id="cartBadge">0</span>
         </a>
         <button class="btn-icon" onclick="toggleUserMenu()" id="userBtn" title="Tài khoản">👤</button>
-        <div class="user-menu active" id="userMenu">
+        <div class="user-menu" id="userMenu">
           <div class="user-menu-header">
             <div class="user-avatar-sm">U</div>
             <div>
@@ -81,7 +90,7 @@
             </div>
           </div>
           <div class="user-menu-body">
-            <a href="account.html" class="user-menu-item">📋 Hồ sơ</a>
+            <a href="account.html" class="user-menu-item active">📋 Hồ sơ</a>
             <a href="cart.html" class="user-menu-item">📦 Đơn hàng</a>
             <a href="plans.html" class="user-menu-item">💳 Subscription</a>
             <a href="calendar.html" class="user-menu-item">📅 Lịch tặng quà</a>
@@ -95,66 +104,102 @@
 
   <main class="container account-container">
     <div class="account-layout">
-      <!-- Sidebar Nav -->
-      <aside class="account-nav">
-        <a href="#" class="acc-nav-item active">👤 Thông tin cá nhân</a>
-        <a href="#" class="acc-nav-item">📦 Lịch sử đơn hàng</a>
-        <a href="calendar.html" class="acc-nav-item">📅 Lịch Gifting</a>
-        <a href="wallet.html" class="acc-nav-item">💰 Ví của tôi</a>
-        <a href="#" class="acc-nav-item" style="color: #ef4444; margin-top: 2rem;">🚪 Đăng xuất</a>
+      <aside class="account-sidebar">
+        <div class="sidebar-user">
+          <div class="user-avatar-lg" id="userInitial">U</div>
+          <h4 id="userNameDisplay">Người dùng EmoBox</h4>
+          <p class="section-subtitle" style="font-size: 0.82rem; margin-top: 0.25rem;">Thành viên từ 2026</p>
+        </div>
+        <ul class="sidebar-nav">
+          <li class="sidebar-nav-item active" onclick="switchTab('profile', this)">👤 Hồ sơ cá nhân</li>
+          <li class="sidebar-nav-item" onclick="switchTab('orders', this)">📦 Đơn hàng của tôi</li>
+          <li class="sidebar-nav-item" onclick="switchTab('subscription', this)">💳 Gói Subscription</li>
+          <li class="sidebar-nav-item" onclick="switchTab('security', this)">🔒 Bảo mật</li>
+          <li class="sidebar-nav-item" style="color: #ef4444;" onclick="handleLogout()">🚪 Đăng xuất</li>
+        </ul>
       </aside>
 
-      <!-- Main Content -->
       <div class="account-content">
-        <div class="profile-header">
-          <div class="profile-avatar">U</div>
-          <div>
-            <h1 style="font-family: var(--font-serif); font-size: 2rem;">Xin chào, User!</h1>
-            <p style="color: var(--text-muted);">Thành viên EmoBox từ tháng 04, 2026</p>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 4rem;">
-          <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Đơn hàng gần đây</h3>
-          <div class="order-item">
-            <div class="order-header">
-              <div>
-                <span style="font-weight: 700;">#EB-120426</span>
-                <span style="color: var(--text-muted); margin-left: 1rem;">12/04/2026</span>
-              </div>
-              <span class="order-status status-done">Đã hoàn thành</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="display: flex; gap: 1rem;">
-                <div style="width: 50px; height: 50px; background: #f1f5f9; border-radius: 8px;"></div>
-                <div>
-                  <div style="font-weight: 600;">Cái Ôm Chữa Lành</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">Số lượng: 1</div>
-                </div>
-              </div>
-              <div style="font-weight: 700;">499.000 ₫</div>
-            </div>
-          </div>
-        </div>
-
-        <form class="contact-form" style="padding: 0; border: none; box-shadow: none;">
-          <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Cập nhật thông tin</h3>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <!-- Profile Section -->
+        <section id="profile" class="content-section active">
+          <h2 style="margin-bottom: 0.5rem; font-weight: 800;">Hồ sơ cá nhân</h2>
+          <p style="color: var(--text-muted); font-size: 0.875rem;">Cập nhật thông tin của bạn để có trải nghiệm tốt nhất.</p>
+          
+          <div class="form-grid">
             <div class="form-group">
-              <label>Họ và tên</label>
-              <input type="text" class="form-input" value="User Name">
+              <label class="form-label">Họ và tên</label>
+              <input type="text" class="form-input" id="profileName" value="Nguyễn Văn A">
             </div>
             <div class="form-group">
-              <label>Số điện thoại</label>
-              <input type="text" class="form-input" value="0901234567">
+              <label class="form-label">Số điện thoại</label>
+              <input type="tel" class="form-input" id="profilePhone" value="0912 345 678">
             </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="profileEmail" value="user@example.com" readonly style="background: #f1f5f9; cursor: not-allowed;">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Địa chỉ mặc định</label>
+            <input type="text" class="form-input" id="profileAddress" value="123 Đường ABC, Quận X, TP. HCM">
+          </div>
+          
+          <button class="btn btn-primary" onclick="saveProfile()" style="margin-top: 1rem;">Lưu thay đổi</button>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders" class="content-section">
+          <h2 style="margin-bottom: 2rem; font-weight: 800;">Đơn hàng của tôi</h2>
+          <div style="text-align: center; padding: 4rem 0;">
+            <p style="color: var(--text-muted); font-size: 1rem;">Bạn chưa có đơn hàng nào.</p>
+            <a href="index.html" class="btn btn-ghost" style="margin-top: 1rem;">Mua sắm ngay</a>
+          </div>
+        </section>
+
+        <!-- Subscription Section -->
+        <section id="subscription" class="content-section">
+          <h2 style="margin-bottom: 0.5rem; font-weight: 800;">Gói Subscription</h2>
+          <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">Quản lý gói thành viên và quyền lợi của bạn.</p>
+          
+          <div style="background: #f0f9ff; border: 1px solid #bae6fd; padding: 2rem; border-radius: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="display: inline-block; background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.75rem; text-transform: uppercase;">Gói hiện tại</span>
+              <h3 style="color: var(--primary); font-weight: 800; font-size: 1.5rem;" id="currentPlanName">Gói Premium (12 Tháng)</h3>
+              <p style="color: #0369a1; font-size: 0.875rem; margin-top: 0.25rem;">Ngày hết hạn: 12/04/2027</p>
+            </div>
+            <a href="plans.html" class="btn btn-primary">Nâng cấp ngay</a>
+          </div>
+          
+          <div style="margin-top: 3rem;">
+            <h4 style="margin-bottom: 1.25rem; font-weight: 700;">Quyền lợi đang có</h4>
+            <ul style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">✅ Miễn phí vận chuyển 100%</li>
+              <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">✅ Ưu đãi 15% cho mọi hộp quà</li>
+              <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">✅ Tự động đặt lịch 12 sự kiện/năm</li>
+              <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">✅ Quà tặng bất ngờ mỗi quý</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Security Section -->
+        <section id="security" class="content-section">
+          <h2 style="margin-bottom: 2rem; font-weight: 800;">Bảo mật tài khoản</h2>
+          <div class="form-group">
+            <label class="form-label">Mật khẩu hiện tại</label>
+            <input type="password" class="form-input" placeholder="••••••••">
           </div>
           <div class="form-group">
-            <label>Địa chỉ mặc định</label>
-            <input type="text" class="form-input" value="285 Cách Mạng Tháng Tám, Quận 10, TP. HCM">
+            <label class="form-label">Mật khẩu mới</label>
+            <input type="password" class="form-input" placeholder="Nhập mật khẩu mới">
           </div>
-          <button class="btn btn-primary" style="margin-top: 1rem;">Lưu thay đổi</button>
-        </form>
+          <div class="form-group">
+            <label class="form-label">Xác nhận mật khẩu mới</label>
+            <input type="password" class="form-input" placeholder="Nhập lại mật khẩu mới">
+          </div>
+          <button class="btn btn-primary">Cập nhật mật khẩu</button>
+        </section>
       </div>
     </div>
   </main>
@@ -163,12 +208,25 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <span class="footer-logo">🎁 EmoBox</span>
-        <p class="footer-tagline">Chọn đúng quà, trao đúng cảm xúc, đúng sự kiện và đúng người.</p>
+        <span class="footer-logo" style="display: block; margin-bottom: 1rem;">
+          <img src="Logo.png" alt="EmoBox Logo" style="height: 32px; object-fit: contain;">
+        </span>
+        <p class="footer-tagline">Gói tâm tình, gửi tâm giao</p>
         <div class="footer-socials">
-          <a href="#" class="social-btn">f</a>
+          <a href="https://www.facebook.com/profile.php?id=61564729661320" target="_blank" class="social-btn">f</a>
           <a href="#" class="social-btn">in</a>
           <a href="#" class="social-btn">ig</a>
+        </div>
+        <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 0.5rem;">
+            <span>📍</span><span>279 Nguyễn Tri Phương, phường Diên Hồng, TP. HCM</span>
+          </p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+            <span>📧</span><a href="mailto:info.emobox@gmail.com" style="color: var(--text-muted); text-decoration: none;">info.emobox@gmail.com</a>
+          </p>
+          <p style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+            <span>📞</span><a href="tel:0917297709" style="color: var(--text-muted); text-decoration: none;">0917 297 709</a>
+          </p>
         </div>
       </div>
       <div class="footer-col">
@@ -206,6 +264,54 @@
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script>
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      
+      document.querySelectorAll('.sidebar-nav-item').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function initAccount() {
+      const user = JSON.parse(localStorage.getItem('emobox_user'));
+      if (user) {
+        document.getElementById('profileName').value = user.name || '';
+        document.getElementById('profileEmail').value = user.email || '';
+        document.getElementById('profilePhone').value = user.phone || '';
+        document.getElementById('profileAddress').value = user.address || '';
+        document.getElementById('userNameDisplay').textContent = user.name || 'Người dùng EmoBox';
+        document.getElementById('userInitial').textContent = (user.name || 'U').charAt(0).toUpperCase();
+
+        const planNames = {
+          'none': 'Chưa đăng ký',
+          '3-months': 'Gói Essential (3 Tháng)',
+          '6-months': 'Gói Popular (6 Tháng)',
+          '12-months': 'Gói Premium (12 Tháng)'
+        };
+        document.getElementById('currentPlanName').textContent = planNames[user.plan] || 'Chưa đăng ký';
+      }
+    }
+
+    function saveProfile() {
+      const user = JSON.parse(localStorage.getItem('emobox_user')) || {};
+      user.name = document.getElementById('profileName').value;
+      user.phone = document.getElementById('profilePhone').value;
+      user.address = document.getElementById('profileAddress').value;
+      
+      localStorage.setItem('emobox_user', JSON.stringify(user));
+      document.getElementById('userNameDisplay').textContent = user.name;
+      document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+      
+      showToast('✅ Đã cập nhật hồ sơ thành công!');
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('emobox_user');
+      window.location.href = 'login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', initAccount);
+  </script>
 </body>
 </html>
-
