@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Intercept calendar links
+    // Intercept calendar links
   const calendarLinks = document.querySelectorAll('a[href="calendar.html"]');
   calendarLinks.forEach(link => {
     link.addEventListener('click', (e) => {
@@ -165,4 +165,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Update plan buttons in plans.html
+  if (window.location.pathname.includes('plans.html') && currentUser) {
+    const planButtons = document.querySelectorAll('.plan-card button');
+    planButtons.forEach(btn => {
+      if (currentUser.plan === '3-months' && btn.textContent.includes('3 Tháng')) {
+        btn.textContent = 'Đang sử dụng';
+        btn.style.opacity = '0.7';
+        btn.disabled = true;
+      } else if (currentUser.plan === '6-months' && btn.textContent.includes('6 Tháng')) {
+        btn.textContent = 'Đang sử dụng';
+        btn.style.opacity = '0.7';
+        btn.disabled = true;
+      } else if (currentUser.plan === '12-months' && btn.textContent.includes('12 Tháng')) {
+        btn.textContent = 'Đang sử dụng';
+        btn.style.opacity = '0.7';
+        btn.disabled = true;
+      }
+    });
+  }
 });
