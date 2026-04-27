@@ -12,31 +12,58 @@ const EMOTIONS = [
 
 const FEATURED_BOXES = [
   {
-    id: 'box-001',
-    name: 'Cái Ôm Chữa Lành',
-    tagline: 'Khi lời nói không thể diễn tả hết',
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop',
-    price: 499000,
+    id: 'box-standard-love',
+    name: 'Gói Standard Tình Yêu',
+    tagline: 'Món quà ngọt ngào',
+    image: '3. Standard Love.png',
+    price: 399000,
     badge: 'Bán Chạy Nhất',
+    desc: 'Thể hiện tình cảm chân thành với nửa kia qua những món đồ nhỏ xinh nhưng đầy ý nghĩa.'
+  },
+  {
+    id: 'box-standard-healing',
+    name: 'Gói Standard Chữa Lành',
+    tagline: 'Xoa dịu tâm hồn',
+    image: '3. Standard Healing.png',
+    price: 399000,
+    badge: 'Healing',
     desc: 'Một bộ sưu tập ấm áp được thiết kế để xoa dịu tâm hồn và trao tặng một cái ôm tinh thần.'
   },
   {
-    id: 'box-002',
-    name: 'Tia Sáng Đêm Thu',
-    tagline: 'Châm ngòi lửa tình yêu',
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800&auto=format&fit=crop',
-    price: 850000,
-    badge: 'Cao Cấp',
-    desc: 'Bộ sưu tập cực kỳ tinh tế và quyến rũ, để kiến tạo ra bầu không khí lãng mạn hoàn hảo.'
+    id: 'box-standard-support',
+    name: 'Gói Standard Động Viên',
+    tagline: 'Luôn bên cạnh bạn',
+    image: '3. Standard Support.png',
+    price: 399000,
+    badge: 'Phổ Biến',
+    desc: 'Món quà khích lệ tinh thần tuyệt vời nhất dành cho những lúc họ cần một bờ vai để tựa vào.'
   },
   {
-    id: 'box-003',
-    name: 'Tiếp Sức Chiến Binh',
-    tagline: 'Nhiên liệu dồi dào cho não bộ',
-    image: 'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=800&auto=format&fit=crop',
-    price: 350000,
-    badge: 'Phổ Biến',
-    desc: 'Mọi thứ bạn cần để thức xuyên đêm cho những kỳ thi căng thẳng. Cà phê đậm đặc, năng lượng tức thì.'
+    id: 'box-standard-motivation',
+    name: 'Gói Standard Tiếp Sức',
+    tagline: 'Nạp năng lượng tức thì',
+    image: '3. Standard Motivation.png',
+    price: 399000,
+    badge: 'Trending',
+    desc: 'Mọi thứ bạn cần để thức xuyên đêm chạy deadline hay những kỳ thi căng thẳng nhất.'
+  },
+  {
+    id: 'box-standard-celebration',
+    name: 'Gói Standard Ăn Mừng',
+    tagline: 'Bật tung cảm xúc',
+    image: '3. Standard Celebration.png',
+    price: 399000,
+    badge: 'Mới Nhất',
+    desc: 'Cùng chia sẻ niềm vui và chúc mừng những cột mốc đáng nhớ trong cuộc sống.'
+  },
+  {
+    id: 'box-standard-sorry',
+    name: 'Gói Standard Xin Lỗi',
+    tagline: 'Làm hòa nhé',
+    image: '3. Standard Sorry.png',
+    price: 399000,
+    badge: 'Hot',
+    desc: 'Gửi gắm lời xin lỗi từ tận đáy lòng để gắn kết lại những rạn nứt một cách tự nhiên nhất.'
   }
 ];
 
