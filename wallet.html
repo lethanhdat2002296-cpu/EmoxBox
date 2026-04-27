@@ -226,8 +226,15 @@
       
       // Update UI balance
       const balanceEl = document.getElementById('walletBalance');
-      let currentBalance = parseInt(balanceEl.textContent.replace(/\D/g, '')) || 0;
+      const user = JSON.parse(localStorage.getItem('emobox_user'));
+      let currentBalance = (user && user.balance) ? user.balance : 0;
       currentBalance += amount;
+      
+      if (user) {
+        user.balance = currentBalance;
+        localStorage.setItem('emobox_user', JSON.stringify(user));
+      }
+      
       balanceEl.textContent = new Intl.NumberFormat('vi-VN').format(currentBalance) + ' ₫';
       
       // Add transaction record
@@ -253,6 +260,12 @@
       closeDepositModal();
       document.getElementById('depositForm').reset();
     }
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('emobox_user'));
+      if (user && user.balance) {
+        document.getElementById('walletBalance').textContent = new Intl.NumberFormat('vi-VN').format(user.balance) + ' ₫';
+      }
+    });
   </script>
 </body>
 </html>
