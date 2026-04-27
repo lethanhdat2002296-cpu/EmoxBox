@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập / Đăng ký – EmoBox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .auth-container {
+      min-height: calc(100vh - 400px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 1rem;
+      background-color: #f8fafc;
+    }
+
+    .auth-card {
+      background: white;
+      width: 100%;
+      max-width: 480px;
+      padding: 3rem 2rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .auth-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+      margin-bottom: -1rem;
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+    }
+
+    .plan-selector {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .plan-option {
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s;
+    }
+
+    .plan-option:hover {
+      border-color: #bae6fd;
+      background: #f0f9ff;
+    }
+
+    .plan-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+
+    .plan-info {
+      flex: 1;
+    }
+
+    .plan-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .plan-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">🎁</div>
+        <span>EmoBox</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" class="nav-link">Trang Chủ</a>
+        <div class="nav-dropdown">
+          <a href="emotion-gifts.html" class="nav-link">Quà Cảm Xúc <span class="chevron">▾</span></a>
+          <div class="dropdown-menu">
+            <a href="emotion-gifts.html?cat=an-ui-dong-vien" class="dropdown-item">An ủi và động viên</a>
+            <a href="emotion-gifts.html?cat=xin-loi-lam-hoa" class="dropdown-item">Xin lỗi và làm hòa</a>
+            <a href="emotion-gifts.html?cat=tiep-suc-truyen-dong-luc" class="dropdown-item">Tiếp sức và truyền động lực</a>
+            <a href="emotion-gifts.html?cat=yeu-thuong-quan-tam" class="dropdown-item">Yêu thương và quan tâm</a>
+            <a href="emotion-gifts.html?cat=chuc-mung-an-mung" class="dropdown-item">Chúc mừng và ăn mừng</a>
+            <a href="emotion-gifts.html?cat=healing-self-care" class="dropdown-item">Healing & Self-care</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="occasion-gifts.html" class="nav-link">Quà Theo Dịp <span class="chevron">▾</span></a>
+          <div class="dropdown-menu">
+            <a href="occasion-gifts.html?cat=tet" class="dropdown-item">Tết</a>
+            <a href="occasion-gifts.html?cat=valentine" class="dropdown-item">Valentine</a>
+            <a href="occasion-gifts.html?cat=8-3-20-10" class="dropdown-item">8/3 + 20/10</a>
+            <a href="occasion-gifts.html?cat=trung-thu" class="dropdown-item">Trung Thu</a>
+            <a href="occasion-gifts.html?cat=20-11" class="dropdown-item">20/11</a>
+            <a href="occasion-gifts.html?cat=noel" class="dropdown-item">Noel</a>
+          </div>
+        </div>
+        <a href="plans.html" class="nav-link">Subscription</a>
+        <a href="calendar.html" class="nav-link">Đặt Lịch</a>
+        <a href="contact.html" class="nav-link">Liên Hệ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="cart.html" class="btn-icon" id="cartBtn" title="Giỏ hàng">
+          🛍️
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+        <button class="btn-icon" onclick="toggleUserMenu()" id="userBtn" title="Tài khoản">👤</button>
+        <div class="user-menu" id="userMenu">
+          <div class="user-menu-header">
+            <div class="user-avatar-sm" id="navAvatar">U</div>
+            <div>
+              <p class="user-name" id="navUserName">Khách</p>
+              <p class="user-sub" id="navUserPlan">Chưa đăng nhập</p>
+            </div>
+          </div>
+          <div class="user-menu-body">
+            <a href="login.html" class="user-menu-item" id="navLoginLink">Đăng nhập / Đăng ký</a>
+            <a href="#" class="user-menu-item" id="navLogoutLink" style="display:none;" onclick="handleLogout()">Đăng xuất</a>
+            <a href="account.html" class="user-menu-item">📋 Hồ sơ</a>
+            <a href="cart.html" class="user-menu-item">📦 Đơn hàng</a>
+            <a href="plans.html" class="user-menu-item">💳 Subscription</a>
+            <a href="calendar.html" class="user-menu-item">📅 Lịch tặng quà</a>
+            <a href="wallet.html" class="user-menu-item">💰 Ví EmoBox</a>
+          </div>
+        </div>
+        <button class="hamburger" id="hamburger" onclick="toggleNav()">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="auth-title">Chào mừng</h1>
+        <p class="auth-subtitle">Đăng nhập hoặc tạo tài khoản EmoBox mới</p>
+      </div>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchTab('login')">Đăng nhập</div>
+        <div class="auth-tab" onclick="switchTab('register')">Đăng ký</div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email / Tên đăng nhập</label>
+          <input type="text" class="form-input" id="loginUsername" placeholder="Nhập email của bạn" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mật khẩu</label>
+          <input type="password" class="form-input" id="loginPassword" placeholder="Nhập mật khẩu" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-submit">Đăng nhập</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Họ và tên</label>
+          <input type="text" class="form-input" id="regName" placeholder="Nhập họ và tên" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="regEmail" placeholder="Nhập email của bạn" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mật khẩu</label>
+          <input type="password" class="form-input" id="regPassword" placeholder="Tạo mật khẩu" required>
+        </div>
+        
+        <div class="form-group" style="margin-top: 1.5rem;">
+          <label class="form-label">Chọn Loại Tài Khoản</label>
+          <div class="plan-selector">
+            <label class="plan-option" onclick="document.getElementById('plan-none').checked = true">
+              <input type="radio" name="planType" id="plan-none" value="none" checked>
+              <div class="plan-info">
+                <div class="plan-title">Tài khoản thường (Miễn phí)</div>
+                <div class="plan-desc">Mua lẻ từng món, không kèm ưu đãi đặc quyền.</div>
+              </div>
+            </label>
+            <label class="plan-option" onclick="document.getElementById('plan-3m').checked = true">
+              <input type="radio" name="planType" id="plan-3m" value="3-months">
+              <div class="plan-info">
+                <div class="plan-title">Gói 3 Tháng</div>
+                <div class="plan-desc">Linh hoạt đặt lịch trong 3 tháng. Giảm 5% dịp lễ.</div>
+              </div>
+            </label>
+            <label class="plan-option" onclick="document.getElementById('plan-6m').checked = true">
+              <input type="radio" name="planType" id="plan-6m" value="6-months">
+              <div class="plan-info">
+                <div class="plan-title">Gói 6 Tháng</div>
+                <div class="plan-desc">Linh hoạt đặt lịch trong 6 tháng. Giảm 7% dịp lễ.</div>
+              </div>
+            </label>
+            <label class="plan-option" onclick="document.getElementById('plan-12m').checked = true">
+              <input type="radio" name="planType" id="plan-12m" value="12-months">
+              <div class="plan-info">
+                <div class="plan-title">Gói 12 Tháng</div>
+                <div class="plan-desc">Linh hoạt đặt lịch trong 12 tháng. Giảm 10% dịp lễ.</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-submit">Đăng ký tài khoản</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <span class="footer-logo">🎁 EmoBox</span>
+        <p class="footer-tagline">Chọn đúng quà, trao đúng cảm xúc, đúng sự kiện và đúng người.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Khám phá</h4>
+        <ul>
+          <li><a href="finder.html">Tìm Khám Phá Quà</a></li>
+          <li><a href="plans.html">Gói Đăng Ký</a></li>
+          <li><a href="calendar.html">Lịch Tặng Quà</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 EmoBox. Đã đăng ký bản quyền.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.auth-tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(el => el.classList.remove('active'));
+      
+      if(tabId === 'login') {
+        document.querySelectorAll('.auth-tab')[0].classList.add('active');
+        document.getElementById('loginForm').classList.add('active');
+      } else {
+        document.querySelectorAll('.auth-tab')[1].classList.add('active');
+        document.getElementById('registerForm').classList.add('active');
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      
+      // Simulate retrieving user data
+      let storedUsers = JSON.parse(localStorage.getItem('emobox_users') || '[]');
+      let user = storedUsers.find(u => u.email === username || u.name === username);
+      
+      if(!user) {
+        // Fallback fake login
+        user = {
+          name: username,
+          email: username,
+          plan: 'none'
+        };
+      }
+
+      localStorage.setItem('emobox_user', JSON.stringify(user));
+      showToast('Đăng nhập thành công!');
+      
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value;
+      const email = document.getElementById('regEmail').value;
+      const plan = document.querySelector('input[name="planType"]:checked').value;
+      
+      const newUser = {
+        name: name,
+        email: email,
+        plan: plan
+      };
+
+      let storedUsers = JSON.parse(localStorage.getItem('emobox_users') || '[]');
+      storedUsers.push(newUser);
+      localStorage.setItem('emobox_users', JSON.stringify(storedUsers));
+      
+      localStorage.setItem('emobox_user', JSON.stringify(newUser));
+      showToast('Đăng ký thành công!');
+      
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    }
+
+    // Authentication check and logout are now handled globally in app.js
+  </script>
+</body>
+</html>
