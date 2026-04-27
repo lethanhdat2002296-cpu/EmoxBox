@@ -395,14 +395,9 @@
       const prog = document.getElementById('modalProgress');
       const btn = document.getElementById('modalAddBtn');
 
-      prog.innerHTML = `Đã chọn: <strong>${count} / ${max}</strong> món tự chọn`;
-      btn.disabled = count !== max; // Need exactly 'max' picks
-
-      if (count === max) {
-        btn.textContent = 'Thêm vào giỏ hàng';
-      } else {
-        btn.textContent = `Chọn thêm ${max - count} món nữa`;
-      }
+      prog.innerHTML = count === 0 ? `Có thể chọn thêm tối đa <strong>${max}</strong> món` : `Đã chọn: <strong>${count} / ${max}</strong> món tự chọn`;
+      btn.disabled = false;
+      btn.textContent = 'Thêm vào giỏ hàng';
     }
 
     function togglePick(optName, idx) {
@@ -437,12 +432,7 @@
 
     function addPkgToCart() {
       if (!currentPkg) return;
-      if (selectedPicks.length !== currentPkg.picks) {
-        showToast(`Vui lòng chọn đủ ${currentPkg.picks} món`);
-        return;
-      }
 
-      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
       const pkgId = 'pkg_' + Date.now();
       
       cart.push({
@@ -456,7 +446,7 @@
         quantity: 1
       });
 
-      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem('emobox_cart', JSON.stringify(cart));
       if (typeof updateCartBadge === 'function') updateCartBadge();
       
       closePkgModal();
