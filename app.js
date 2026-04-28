@@ -114,11 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentUser = JSON.parse(localStorage.getItem('emobox_user'));
   
   if (userMenuBody) {
-    // Redirect unauthenticated users to login
-    if (!currentUser && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
-      window.location.href = 'login.html';
-      return; // Dừng thực thi các mã phía dưới nếu chuyển hướng
-    }
 
     // Remove existing login/logout links if any
     const existingAuthLinks = userMenuBody.querySelectorAll('a[href="login.html"], a[onclick="handleLogout(event)"], a[onclick="handleLogout()"]');
