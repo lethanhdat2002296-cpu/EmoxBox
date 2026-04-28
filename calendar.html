@@ -10,33 +10,37 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .calendar-container { padding-top: 4rem; padding-bottom: 6rem; }
-    .calendar-layout { display: grid; grid-template-columns: 1fr 350px; gap: 3rem; }
+    .cal-main-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; }
+    .cal-main-header .section-header { margin-bottom: 0; }
+    .cal-main-nav { background: white; padding: 0.5rem 1rem; border-radius: 999px; display: flex; align-items: center; gap: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border); font-weight: 700; font-size: 1.1rem; }
+    .cal-main-nav button { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); padding: 0 0.5rem; transition: color 0.2s; }
+    .cal-main-nav button:hover { color: var(--primary); }
+
+    .main-calendar-card { background: white; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); overflow: hidden; }
+    .cal-grid-lg { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--border); }
+    .cal-grid-lg.header { border-top: none; }
+    .cal-day-name-lg { padding: 1.2rem; text-align: center; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); border-right: 1px solid var(--border); }
+    .cal-day-name-lg:last-child { border-right: none; }
     
-    .event-list { margin-top: 2rem; }
-    .month-header { font-weight: 700; font-size: 1.25rem; color: var(--text-main); margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    .cal-day-lg { min-height: 140px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 0.75rem; position: relative; transition: background 0.2s; cursor: pointer; display: flex; flex-direction: column; }
+    .cal-day-lg:nth-child(7n) { border-right: none; }
+    .cal-day-lg:hover { background: #f8fafc; }
+    .cal-day-lg.empty { color: #cbd5e1; cursor: pointer; }
+    .cal-day-lg.empty:hover { background: #f1f5f9; }
     
-    .event-card { background: white; padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem; transition: all 0.2s; }
-    .event-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+    .cal-day-number { text-align: right; font-size: 0.95rem; margin-bottom: 0.5rem; font-weight: 500; }
+    .cal-day-number.today { color: var(--primary); font-weight: 800; }
     
-    .event-date { width: 60px; height: 60px; background: #f1f5f9; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
-    .event-date .day { font-weight: 800; font-size: 1.25rem; line-height: 1; }
-    .event-date .month { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); }
-    
-    .event-info { flex: 1; }
-    .event-info h4 { font-size: 1.1rem; margin-bottom: 0.25rem; }
-    .event-info p { font-size: 0.875rem; color: var(--text-muted); }
-    
-    .event-status { padding: 0.4rem 1rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-    .status-pending { background: #fffbeb; color: #b45309; }
-    .status-done { background: #ecfdf5; color: #047857; }
-    
-    .sidebar-card { background: white; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); position: sticky; top: 100px; }
-    .sidebar-title { font-weight: 700; margin-bottom: 1.5rem; font-size: 1.2rem; }
-    .add-event-btn { width: 100%; margin-bottom: 2rem; }
+    .cal-event-pill { background: #e0f2fe; border-radius: 8px; padding: 0.5rem 0.75rem; margin-bottom: 0.4rem; transition: all 0.2s; }
+    .cal-event-pill:hover { background: #bae6fd; }
+    .cal-event-pill-title { color: #0284c7; font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.15rem; }
+    .cal-event-pill-sub { color: #0369a1; font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     @media (max-width: 992px) {
-      .calendar-layout { grid-template-columns: 1fr; }
-      .sidebar-card { position: static; order: -1; }
+      .cal-main-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .cal-grid-lg { grid-template-columns: repeat(7, minmax(120px, 1fr)); }
+      .main-calendar-card { overflow-x: auto; }
+      .main-calendar-card > .cal-grid-lg { min-width: 840px; }
     }
 
     /* Modal Styles */
@@ -143,67 +147,33 @@
   </nav>
 
   <main class="container calendar-container">
-    <div class="section-header" style="text-align: left;">
-      <h1 class="section-title">Lịch Tặng Quà Của Bạn</h1>
-      <p class="section-subtitle">Tự động hóa sự quan tâm, không bao giờ bỏ lỡ khoảnh khắc quan trọng.</p>
+    <div class="cal-main-header">
+      <div class="section-header">
+        <h1 class="section-title">Lịch Giao Quà</h1>
+        <p class="section-subtitle">Quản lý và đặt lịch giao các đơn hàng trong tháng. (Nhấn vào một ngày trống để thêm lịch)</p>
+      </div>
+      <div class="cal-main-nav">
+        <button onclick="changeMainMonth(-1)">❮</button>
+        <div id="mainCalMonthYear">Tháng 04 2026</div>
+        <button onclick="changeMainMonth(1)">❯</button>
+      </div>
     </div>
 
-    <div class="calendar-layout">
-      <!-- Main List -->
-      <div class="event-list" id="eventsContainer">
+    <div class="main-calendar-card">
+      <div class="cal-grid-lg header">
+        <div class="cal-day-name-lg">T2</div>
+        <div class="cal-day-name-lg">T3</div>
+        <div class="cal-day-name-lg">T4</div>
+        <div class="cal-day-name-lg">T5</div>
+        <div class="cal-day-name-lg">T6</div>
+        <div class="cal-day-name-lg">T7</div>
+        <div class="cal-day-name-lg">CN</div>
+      </div>
+      <div class="cal-grid-lg" id="mainCalDays">
         <!-- Rendered by JS -->
       </div>
-
-      <!-- Sidebar -->
-      <aside>
-        <div class="sidebar-card">
-          <button class="btn btn-primary add-event-btn" onclick="openCalendarModal()">+ Thêm sự kiện mới</button>
-          
-          <div class="sidebar-title">Gợi ý cho bạn</div>
-          <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-            Sắp tới là ngày <strong>Ngày của Cha (15/06)</strong>. Bạn có muốn chuẩn bị một hộp quà "Biết Ơn" cho Bố không?
-          </div>
-          <button class="btn btn-ghost" style="padding: 0.5rem 0; margin-top: 1rem;">Tạo nhắc nhở ngay 👉</button>
-          
-          <div class="sidebar-title" style="margin-top: 2rem;">Ví EmoBox</div>
-          <div style="background: #f8fafc; padding: 1rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 600;">Số dư:</span>
-            <span style="font-weight: 800; color: var(--primary);" id="sidebarBalance">0 đ</span>
-          </div>
-          <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Sử dụng số dư để thanh toán nhanh cho các sự kiện sắp tới.</p>
-        </div>
-      </aside>
     </div>
   </main>
-
-  <!-- CALENDAR PICKER MODAL -->
-  <div class="modal-overlay" id="calendarModalOverlay" onclick="handleCalendarModalClick(event)">
-    <div class="modal-content" id="calendarModal" style="max-width: 400px;">
-      <div class="modal-header">
-        <h3 class="modal-title">Chọn ngày tặng quà</h3>
-        <button class="modal-close" onclick="closeCalendarModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="cal-header">
-          <button class="cal-nav" onclick="changeMonth(-1)">❮</button>
-          <div class="cal-month-year" id="calMonthYear">Tháng 5 2026</div>
-          <button class="cal-nav" onclick="changeMonth(1)">❯</button>
-        </div>
-        <div class="cal-grid">
-          <div class="cal-day-name">CN</div>
-          <div class="cal-day-name">T2</div>
-          <div class="cal-day-name">T3</div>
-          <div class="cal-day-name">T4</div>
-          <div class="cal-day-name">T5</div>
-          <div class="cal-day-name">T6</div>
-          <div class="cal-day-name">T7</div>
-        </div>
-        <div class="cal-grid" id="calDays">
-          <!-- Days rendered by JS -->
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ADD EVENT MODAL -->
   <div class="modal-overlay" id="eventModalOverlay" onclick="handleEventModalClick(event)">
@@ -454,124 +424,67 @@
       return events;
     }
 
-    function renderEventsList() {
-      const events = loadEvents();
-      events.sort((a, b) => new Date(a.date) - new Date(b.date));
-      
-      const container = document.getElementById('eventsContainer');
-      container.innerHTML = '';
-      
-      let currentMonth = '';
-      
-      events.forEach(evt => {
-        const d = new Date(evt.date);
-        const m = d.getMonth() + 1;
-        const y = d.getFullYear();
-        const monthKey = `Tháng ${m}, ${y}`;
-        
-        if (monthKey !== currentMonth) {
-          container.innerHTML += `<div class="month-header">${monthKey}</div>`;
-          currentMonth = monthKey;
-        }
-        
-        const day = String(d.getDate()).padStart(2, '0');
-        const monthStr = 'Th' + m;
-        
-        // Compute dynamic status based on payment and date
-        if (evt.paid) {
-          const evtDate = new Date(evt.date);
-          evtDate.setHours(0,0,0,0);
-          const today = new Date();
-          today.setHours(0,0,0,0);
-          
-          const diffTime = evtDate - today;
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          
-          if (diffDays <= 4 && diffDays >= 0) {
-            evt.status = 'Đang chuẩn bị quà';
-          } else if (diffDays < 0) {
-            evt.status = 'Đã hoàn thành';
-          } else {
-            evt.status = 'Đã xác nhận thanh toán';
-          }
-        } else {
-          evt.status = 'Chờ thanh toán';
-        }
-        
-        const statusClass = (evt.status === 'Đang chuẩn bị quà' || evt.status === 'Chờ thanh toán') ? 'status-pending' : 'status-done';
-        
-        const pkgSubtext = evt.pkgName ? `<br><span style="font-size: 0.8rem; color: var(--primary);">📦 ${evt.pkgName} - ${evt.price}</span>` : '';
-        
-        container.innerHTML += `
-          <div class="event-card">
-            <div class="event-date">
-              <span class="day">${day}</span>
-              <span class="month">${monthStr}</span>
-            </div>
-            <div class="event-info">
-              <h4>${evt.title}</h4>
-              <p>Người nhận: ${evt.recipient} ${evt.emotion ? '. Cảm xúc: ' + evt.emotion : ''} ${pkgSubtext}</p>
-            </div>
-            <div class="event-status ${statusClass}">${evt.status}</div>
-          </div>
-        `;
-      });
-    }
-
-    function updateSidebarBalance() {
-      const user = JSON.parse(localStorage.getItem('emobox_user'));
-      const bal = (user && user.balance) ? user.balance : 0;
-      document.getElementById('sidebarBalance').textContent = formatPrice(bal);
-    }
-
-    /* CALENDAR MODAL LOGIC */
+    /* MAIN CALENDAR LOGIC */
     let currDate = new Date();
 
-    function renderCalendar() {
+    function renderMainCalendar() {
+      const events = loadEvents();
+      
       const year = currDate.getFullYear();
       const month = currDate.getMonth();
-      document.getElementById('calMonthYear').textContent = `Tháng ${month + 1}, ${year}`;
+      document.getElementById('mainCalMonthYear').textContent = `Tháng ${String(month + 1).padStart(2, '0')} ${year}`;
       
-      const firstDay = new Date(year, month, 1).getDay();
+      let firstDay = new Date(year, month, 1).getDay();
+      firstDay = firstDay === 0 ? 6 : firstDay - 1; // 0 is Monday
+      
       const daysInMonth = new Date(year, month + 1, 0).getDate();
-      
-      const calDays = document.getElementById('calDays');
+      const calDays = document.getElementById('mainCalDays');
       let html = '';
       
+      const today = new Date();
+      const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+      
+      // Empty cells
       for (let i = 0; i < firstDay; i++) {
-        html += `<div class="cal-day empty"></div>`;
+        html += `<div class="cal-day-lg empty"></div>`;
       }
       
       for (let i = 1; i <= daysInMonth; i++) {
         const fullDateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-        html += `<div class="cal-day" onclick="selectDate('${fullDateStr}')">${i}</div>`;
+        const dayEvents = events.filter(e => e.date === fullDateStr);
+        let eventsHtml = '';
+        
+        dayEvents.forEach(evt => {
+          eventsHtml += `
+            <div class="cal-event-pill" onclick="event.stopPropagation(); openEventModal('${fullDateStr}')">
+              <div class="cal-event-pill-title">${evt.recipient}</div>
+              <div class="cal-event-pill-sub">${evt.pkgName ? evt.pkgName : 'Sự kiện'}</div>
+            </div>
+          `;
+        });
+        
+        const isTodayClass = (isCurrentMonth && today.getDate() === i) ? 'today' : '';
+        
+        html += `
+          <div class="cal-day-lg" onclick="openEventModal('${fullDateStr}')">
+            <div class="cal-day-number ${isTodayClass}">${i}</div>
+            ${eventsHtml}
+          </div>
+        `;
       }
+      
+      const totalCells = firstDay + daysInMonth;
+      const remainingCells = (7 - (totalCells % 7)) % 7;
+      for (let i = 0; i < remainingCells; i++) {
+        html += `<div class="cal-day-lg empty"></div>`;
+      }
+      
       calDays.innerHTML = html;
     }
 
-    function changeMonth(dir) {
+    function changeMainMonth(dir) {
       currDate.setMonth(currDate.getMonth() + dir);
-      renderCalendar();
-    }
-
-    function openCalendarModal() {
-      const currentUser = JSON.parse(localStorage.getItem('emobox_user'));
-      if (!currentUser || currentUser.plan === 'none' || !currentUser.plan) {
-        showToast('Chức năng dành cho người đăng ký thành viên');
-        return;
-      }
-
-      currDate = new Date(); // start at current date
-      renderCalendar();
-      document.getElementById('calendarModalOverlay').classList.add('active');
-    }
-
-    function closeCalendarModal() {
-      document.getElementById('calendarModalOverlay').classList.remove('active');
-    }
-
-    function handleCalendarModalClick(e) {
-      if (e.target.id === 'calendarModalOverlay') closeCalendarModal();
+      renderMainCalendar();
     }
 
     function selectDate(dateStr) {
@@ -750,10 +663,22 @@
       handleEventPkgChange();
     }
 
-    function openEventModal() {
+    function openEventModal(dateStr) {
+      const currentUser = JSON.parse(localStorage.getItem('emobox_user'));
+      if (!currentUser || currentUser.plan === 'none' || !currentUser.plan) {
+        showToast('Chức năng dành cho người đăng ký thành viên');
+        return;
+      }
+      
       document.getElementById('eventModalOverlay').classList.add('active');
       document.getElementById('eventGroup').value = 'occasion';
       handleEventGroupChange(); // Init fields based on default group
+      
+      if (dateStr && typeof dateStr === 'string') {
+        document.getElementById('eventDate').value = dateStr;
+      } else {
+        document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
+      }
     }
 
     function closeEventModal() {
@@ -864,13 +789,11 @@
       
       showToast('📅 Đã lưu lịch tặng quà thành công!');
       closeEventModal();
-      renderEventsList();
-      updateSidebarBalance();
+      renderMainCalendar();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      renderEventsList();
-      updateSidebarBalance();
+      renderMainCalendar();
     });
   </script>
 </body>
