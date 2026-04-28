@@ -236,7 +236,6 @@
           <div class="form-group">
             <label class="form-label">Thanh toán bằng</label>
             <select class="form-input" id="eventPaymentMethod" onchange="checkWalletBalance()" required>
-              <option value="cash">Tiền mặt</option>
               <option value="bank">Ngân hàng</option>
               <option value="wallet">Ví EmoBox</option>
             </select>
@@ -263,9 +262,10 @@
             <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;" id="eventPriceDisplay">99.000 đ</span>
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+          <button type="button" class="btn-cancel" id="btnDeleteEvent" style="display: none; background: #fee2e2; color: #ef4444; border: none; padding: 0.75rem 1rem; border-radius: 999px; cursor: pointer; font-weight: 600;" onclick="deleteEvent()">Xóa sự kiện</button>
           <button type="button" class="btn-cancel" onclick="closeEventModal()">Hủy</button>
-          <button type="submit" class="btn btn-primary">Lưu sự kiện</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveEvent">Lưu sự kiện</button>
         </div>
       </form>
     </div>
@@ -455,10 +455,32 @@
         let eventsHtml = '';
         
         dayEvents.forEach(evt => {
+          // Compute status
+          if (evt.paid) {
+            const evtDate = new Date(evt.date);
+            evtDate.setHours(0,0,0,0);
+            const t = new Date();
+            t.setHours(0,0,0,0);
+            const diffDays = Math.ceil((evtDate - t) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays <= 4 && diffDays >= 0) {
+              evt.status = 'Đang chuẩn bị quà';
+            } else if (diffDays < 0) {
+              evt.status = 'Đã hoàn thành';
+            } else {
+              evt.status = 'Đã thanh toán';
+            }
+          } else {
+            evt.status = 'Chờ thanh toán';
+          }
+          
+          const statusColor = evt.status === 'Chờ thanh toán' || evt.status === 'Đang chuẩn bị quà' ? '#b45309' : '#047857';
+
           eventsHtml += `
-            <div class="cal-event-pill" onclick="event.stopPropagation(); openEventModal('${fullDateStr}')">
+            <div class="cal-event-pill" onclick="event.stopPropagation(); openEventModal('${fullDateStr}', '${evt.id}')">
               <div class="cal-event-pill-title">${evt.recipient}</div>
               <div class="cal-event-pill-sub">${evt.pkgName ? evt.pkgName : 'Sự kiện'}</div>
+              <div style="font-size: 0.7rem; color: ${statusColor}; font-weight: 600; margin-top: 0.2rem;">• ${evt.status}</div>
             </div>
           `;
         });
@@ -663,7 +685,9 @@
       handleEventPkgChange();
     }
 
-    function openEventModal(dateStr) {
+    let currentEditingEventId = null;
+
+    function openEventModal(dateStr, eventId) {
       const currentUser = JSON.parse(localStorage.getItem('emobox_user'));
       if (!currentUser || currentUser.plan === 'none' || !currentUser.plan) {
         showToast('Chức năng dành cho người đăng ký thành viên');
@@ -671,14 +695,72 @@
       }
       
       document.getElementById('eventModalOverlay').classList.add('active');
-      document.getElementById('eventGroup').value = 'occasion';
-      handleEventGroupChange(); // Init fields based on default group
+      currentEditingEventId = eventId || null;
       
-      if (dateStr && typeof dateStr === 'string') {
-        document.getElementById('eventDate').value = dateStr;
+      if (currentEditingEventId) {
+        document.querySelector('#eventModal .modal-title').textContent = 'Sửa lịch tặng quà';
+        document.getElementById('btnSaveEvent').textContent = 'Cập nhật sự kiện';
+        document.getElementById('btnDeleteEvent').style.display = 'block';
+        
+        const events = loadEvents();
+        const evt = events.find(e => e.id === currentEditingEventId);
+        if (evt) {
+          document.getElementById('eventDate').value = evt.date;
+          document.getElementById('eventRecipient').value = evt.recipient || '';
+          document.getElementById('eventAddress').value = evt.address || '';
+          document.getElementById('eventPhone').value = evt.phone || '';
+          document.getElementById('eventEmail').value = evt.email || '';
+          
+          if (evt.group && evt.cat && evt.tier) {
+            document.getElementById('eventGroup').value = evt.group;
+            handleEventGroupChange();
+            document.getElementById('eventCat').value = evt.cat;
+            handleEventPkgChange();
+            document.getElementById('eventTier').value = evt.tier;
+            handleEventPkgChange();
+          } else {
+            document.getElementById('eventGroup').value = 'occasion';
+            handleEventGroupChange();
+          }
+        }
       } else {
-        document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
+        document.querySelector('#eventModal .modal-title').textContent = 'Thêm sự kiện mới';
+        document.getElementById('btnSaveEvent').textContent = 'Lưu sự kiện';
+        document.getElementById('btnDeleteEvent').style.display = 'none';
+        
+        document.getElementById('eventRecipient').value = '';
+        document.getElementById('eventAddress').value = '';
+        document.getElementById('eventPhone').value = '';
+        document.getElementById('eventEmail').value = '';
+        
+        document.getElementById('eventGroup').value = 'occasion';
+        handleEventGroupChange();
+        
+        if (dateStr && typeof dateStr === 'string') {
+          document.getElementById('eventDate').value = dateStr;
+        } else {
+          document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
+        }
       }
+    }
+    
+    function deleteEvent() {
+      if (!currentEditingEventId) return;
+      if (!confirm('Bạn có chắc muốn xóa sự kiện này?')) return;
+      
+      let events = loadEvents();
+      events = events.filter(e => e.id !== currentEditingEventId);
+      localStorage.setItem('emobox_events', JSON.stringify(events));
+      
+      // Remove from cart if it exists
+      let cartData = JSON.parse(localStorage.getItem('emobox_cart') || '[]');
+      cartData = cartData.filter(item => item.id !== currentEditingEventId);
+      localStorage.setItem('emobox_cart', JSON.stringify(cartData));
+      if(typeof updateCartBadge === 'function') updateCartBadge();
+      
+      showToast('Đã xóa sự kiện thành công!');
+      closeEventModal();
+      renderMainCalendar();
     }
 
     function closeEventModal() {
@@ -741,8 +823,10 @@
         return;
       }
 
+      const groupValue = document.getElementById('eventGroup').value;
+
       const newEvent = {
-        id: 'evt_' + Date.now(),
+        id: currentEditingEventId ? currentEditingEventId : 'evt_' + Date.now(),
         date: date,
         title: 'Quà cho ' + recipient,
         recipient: recipient,
@@ -750,6 +834,9 @@
         phone: phone,
         email: email,
         paid: false,
+        group: groupValue,
+        cat: catValue,
+        tier: tierValue,
         pkgName: pkg.name + ' (' + catValue.charAt(0).toUpperCase() + catValue.slice(1) + ')',
         price: pkg.price,
         priceNum: pkg.priceNum,
@@ -768,7 +855,9 @@
         newEvent.paid = true;
       } else {
         // Redirect to cart or add to cart
-        cart.push({
+        // Check if already in cart
+        const cartIndex = cart.findIndex(item => item.id === newEvent.id);
+        const cartItem = {
           id: newEvent.id,
           isPkg: true,
           name: newEvent.pkgName,
@@ -777,19 +866,54 @@
           priceNum: newEvent.priceNum,
           fixedItems: newEvent.fixedItems,
           selectedPicks: newEvent.selectedPicks,
-          quantity: 1
-        });
+          quantity: 1,
+          recipient: newEvent.recipient,
+          address: newEvent.address,
+          phone: newEvent.phone
+        };
+        
+        if (cartIndex > -1) {
+          cart[cartIndex] = cartItem;
+        } else {
+          cart.push(cartItem);
+        }
+        
         localStorage.setItem('emobox_cart', JSON.stringify(cart));
         updateCartBadge();
       }
 
-      const events = loadEvents();
-      events.push(newEvent);
+      let events = loadEvents();
+      if (currentEditingEventId) {
+        const idx = events.findIndex(e => e.id === currentEditingEventId);
+        if (idx > -1) events[idx] = newEvent;
+      } else {
+        events.push(newEvent);
+      }
       localStorage.setItem('emobox_events', JSON.stringify(events));
       
-      showToast('📅 Đã lưu lịch tặng quà thành công!');
       closeEventModal();
       renderMainCalendar();
+
+      if (paymentMethod === 'bank') {
+        const cartItemToCheckout = {
+          id: newEvent.id,
+          isPkg: true,
+          name: newEvent.pkgName,
+          image: newEvent.image,
+          pkgPrice: newEvent.price,
+          priceNum: newEvent.priceNum,
+          fixedItems: newEvent.fixedItems,
+          selectedPicks: newEvent.selectedPicks,
+          quantity: 1,
+          recipient: newEvent.recipient,
+          address: newEvent.address,
+          phone: newEvent.phone
+        };
+        localStorage.setItem('emobox_checkout_items', JSON.stringify([cartItemToCheckout]));
+        window.location.href = 'checkout.html';
+      } else {
+        showToast(currentEditingEventId ? '📅 Đã cập nhật lịch tặng quà!' : '📅 Đã lưu lịch tặng quà thành công!');
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
