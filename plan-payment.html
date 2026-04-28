@@ -51,6 +51,9 @@
       <div class="plan-summary">
         <div class="plan-name" id="displayPlanName">Đang tải...</div>
         <div class="plan-price" id="displayPlanPrice">0 đ</div>
+        <div id="balanceCalculation" style="margin-top: 1rem; font-size: 0.9rem; color: #334155; background: white; padding: 0.75rem; border-radius: 8px; border: 1px dashed #bae6fd; text-align: left;">
+          <!-- Content injected via JS -->
+        </div>
       </div>
 
       <div class="payment-methods">
@@ -104,6 +107,25 @@
       const plan = planDetails[pending];
       document.getElementById('displayPlanName').textContent = plan.name;
       document.getElementById('displayPlanPrice').textContent = formatPrice(plan.price);
+      
+      const currentBalance = user.balance || 0;
+      const newBalance = currentBalance + plan.price;
+      
+      document.getElementById('balanceCalculation').innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+          <span>Số dư Ví hiện tại:</span>
+          <strong>${formatPrice(currentBalance)}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem; color: #059669;">
+          <span>+ Cấp thêm từ gói mới:</span>
+          <strong>${formatPrice(plan.price)}</strong>
+        </div>
+        <hr style="border: none; border-top: 1px solid var(--border); margin: 0.5rem 0;">
+        <div style="display: flex; justify-content: space-between; font-weight: 700; color: #0284c7;">
+          <span>= Tổng số dư sau thanh toán:</span>
+          <span>${formatPrice(newBalance)}</span>
+        </div>
+      `;
     });
 
     function selectPayment(labelEl) {
