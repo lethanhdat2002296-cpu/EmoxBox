@@ -167,7 +167,7 @@
             <div>
               <span style="display: inline-block; background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.75rem; text-transform: uppercase;">Gói hiện tại</span>
               <h3 style="color: var(--primary); font-weight: 800; font-size: 1.5rem;" id="currentPlanName">Gói Premium (12 Tháng)</h3>
-              <p style="color: #0369a1; font-size: 0.875rem; margin-top: 0.25rem;">Ngày hết hạn: 12/04/2027</p>
+              <p style="color: #0369a1; font-size: 0.875rem; margin-top: 0.25rem;" id="planExpiryDate">Ngày hết hạn: --</p>
             </div>
             <a href="plans.html" class="btn btn-primary">Nâng cấp ngay</a>
           </div>
@@ -332,6 +332,23 @@
           '12-months': 'Gói Premium (12 Tháng)'
         };
         document.getElementById('currentPlanName').textContent = planNames[user.plan] || 'Chưa đăng ký';
+
+        // Compute expiry date from registeredAt + plan months
+        const planMonths = { 'none': 0, '3-months': 3, '6-months': 6, '12-months': 12 };
+        const months = planMonths[user.plan] || 0;
+        const expiryEl = document.getElementById('planExpiryDate');
+        if (months > 0 && user.registeredAt) {
+          const reg = new Date(user.registeredAt);
+          reg.setMonth(reg.getMonth() + months);
+          const day = String(reg.getDate()).padStart(2, '0');
+          const month = String(reg.getMonth() + 1).padStart(2, '0');
+          const year = reg.getFullYear();
+          expiryEl.textContent = `Ngày hết hạn: ${day}/${month}/${year}`;
+        } else if (months === 0) {
+          expiryEl.textContent = 'Chưa có gói nào hoạt động';
+        } else {
+          expiryEl.textContent = 'Ngày hết hạn: Không xác định';
+        }
       }
     }
 
