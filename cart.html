@@ -249,65 +249,88 @@
 
       let total = 0;
 
-      list.innerHTML = cart.map(item => {
-        let name = '';
-        let desc = '';
-        let image = '';
-        let itemPrice = 0;
-        let itemTotal = 0;
+      function renderItems(itemsArray) {
+        return itemsArray.map(item => {
+          let name = '';
+          let desc = '';
+          let image = '';
+          let itemPrice = 0;
+          let itemTotal = 0;
 
-        if (item.isPkg) {
-          name = item.name;
-          image = item.image ? `<img src="${item.image}" class="cart-item-img">` : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,#e0f2fe,#bae6fd);">🎁</div>`;
-          
-          if (item.id && item.id.startsWith('evt_')) {
-            desc = `<span style="color:#0284c7;font-size:0.85rem;font-weight:600;">📅 Đặt lịch quà tặng cho: ${item.recipient || 'Người nhận'}</span>`;
+          if (item.isPkg) {
+            name = item.name;
+            image = item.image ? `<img src="${item.image}" class="cart-item-img">` : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,#e0f2fe,#bae6fd);">🎁</div>`;
+            
+            if (item.id && item.id.startsWith('evt_')) {
+              let details = [...(item.fixedItems || []), ...(item.selectedPicks || [])].filter(Boolean).join(', ');
+              desc = `
+                <span style="color:#0284c7;font-size:0.85rem;font-weight:600;">📅 Đặt lịch quà tặng cho: ${item.recipient || 'Người nhận'}</span>
+                <span style="display:block; color:var(--text-muted); font-size:0.8rem; margin-top:0.35rem;">📍 ${item.address || 'Chưa cập nhật địa chỉ'} | 📞 ${item.phone || 'Chưa có SĐT'}</span>
+                <span style="display:block; color:var(--text-muted); font-size:0.8rem; margin-top:0.25rem;">🎁 Chi tiết: ${details || 'Chưa rõ'}</span>
+              `;
+            } else {
+              desc = `<span style="color:var(--text-muted);font-size:0.85rem;">Màu: Màu Sắc Đặc Trưng • Giấy Kraft Truyền Thống</span>`;
+            }
+            
+            if (item.priceNum || item.pkgPrice) {
+              itemPrice = item.priceNum || item.pkgPrice;
+              itemTotal = itemPrice * item.quantity;
+              if (item.selected !== false) {
+                total += itemTotal;
+              }
+            }
           } else {
+            const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
+            name = box.name;
+            image = `<img src="${box.image}" class="cart-item-img">`;
             desc = `<span style="color:var(--text-muted);font-size:0.85rem;">Màu: Màu Sắc Đặc Trưng • Giấy Kraft Truyền Thống</span>`;
-          }
-          
-          if (item.priceNum || item.pkgPrice) {
-            itemPrice = item.priceNum || item.pkgPrice;
+            itemPrice = box.price;
             itemTotal = itemPrice * item.quantity;
             if (item.selected !== false) {
               total += itemTotal;
             }
           }
-        } else {
-          const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
-          name = box.name;
-          image = `<img src="${box.image}" class="cart-item-img">`;
-          desc = `<span style="color:var(--text-muted);font-size:0.85rem;">Màu: Màu Sắc Đặc Trưng • Giấy Kraft Truyền Thống</span>`;
-          itemPrice = box.price;
-          itemTotal = itemPrice * item.quantity;
-          if (item.selected !== false) {
-            total += itemTotal;
-          }
-        }
 
-        const isChecked = item.selected !== false ? 'checked' : '';
+          const isChecked = item.selected !== false ? 'checked' : '';
 
-        return `
-          <div class="cart-item">
-            <input type="checkbox" class="cart-item-check" ${isChecked} onchange="toggleSelect('${item.id}', this.checked)" style="width: 20px; height: 20px; cursor: pointer;">
-            ${image}
-            <div class="cart-item-info">
-              <h4>${name}</h4>
-              <p>${desc}</p>
-              
-              <div class="cart-item-actions">
-                <div class="cart-qty">
-                  <button class="qty-btn" onclick="updateQty('${item.id}', -1)">−</button>
-                  <span style="font-weight: 600; font-size: 0.95rem; width: 20px; text-align: center;">${item.quantity}</span>
-                  <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
+          return `
+            <div class="cart-item">
+              <input type="checkbox" class="cart-item-check" ${isChecked} onchange="toggleSelect('${item.id}', this.checked)" style="width: 20px; height: 20px; cursor: pointer;">
+              ${image}
+              <div class="cart-item-info">
+                <h4>${name}</h4>
+                <p>${desc}</p>
+                
+                <div class="cart-item-actions">
+                  <div class="cart-qty">
+                    <button class="qty-btn" onclick="updateQty('${item.id}', -1)">−</button>
+                    <span style="font-weight: 600; font-size: 0.95rem; width: 20px; text-align: center;">${item.quantity}</span>
+                    <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
+                  </div>
+                  <div class="cart-item-price">${formatPrice(itemTotal)}</div>
                 </div>
-                <div class="cart-item-price">${formatPrice(itemTotal)}</div>
               </div>
+              <button class="delete-btn" onclick="removeFromCart('${item.id}')" title="Xóa sản phẩm">🗑️</button>
             </div>
-            <button class="delete-btn" onclick="removeFromCart('${item.id}')" title="Xóa sản phẩm">🗑️</button>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      }
+
+      let scheduledItems = cart.filter(i => i.id && i.id.startsWith('evt_'));
+      let normalItems = cart.filter(i => !(i.id && i.id.startsWith('evt_')));
+
+      let html = '';
+      if (normalItems.length > 0) {
+        html += `<h3 style="font-size:1.1rem; color:#0f172a; margin-bottom: 1rem;">🛍️ Sản phẩm mua ngay</h3>`;
+        html += renderItems(normalItems);
+      }
+      
+      if (scheduledItems.length > 0) {
+        html += `<h3 style="font-size:1.1rem; color:#0f172a; margin-bottom: 1rem; margin-top: ${normalItems.length > 0 ? '1.5rem' : '0'}">📅 Sản phẩm đặt lịch</h3>`;
+        html += renderItems(scheduledItems);
+      }
+
+      list.innerHTML = html;
 
       document.getElementById('subtotal').textContent = formatPrice(total);
       document.getElementById('totalPrice').textContent = formatPrice(total);
