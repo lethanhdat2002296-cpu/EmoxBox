@@ -349,6 +349,24 @@
       const submitBtn = document.getElementById('submitBtn');
       const codLabel = document.getElementById('codPaymentLabel');
       
+      // Check if all items are scheduled (evt_) type
+      const allScheduled = cartData.every(i => i.id && i.id.startsWith('evt_'));
+      
+      if (allScheduled) {
+        // Only scheduled items: hide COD
+        if (codLabel) codLabel.style.display = 'none';
+        // Make sure card is selected by default
+        const cardRadio = document.querySelector('input[name="payment"][value="card"]');
+        if (cardRadio) {
+          cardRadio.checked = true;
+          cardRadio.closest('.payment-opt').classList.add('active');
+          document.querySelector('input[name="payment"][value="cod"]')?.closest('.payment-opt')?.classList.remove('active');
+        }
+      } else {
+        // Normal items: show COD
+        if (codLabel) codLabel.style.display = '';
+      }
+      
       if (hasPkg) {
         if (codLabel) {
           codLabel.style.display = 'none'; // Disable COD if there are scheduled packages
