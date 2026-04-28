@@ -183,20 +183,160 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update plan buttons in plans.html
   if (window.location.pathname.includes('plans.html') && currentUser) {
     const planButtons = document.querySelectorAll('.plan-card button');
+    
+    const planLevels = { 'none': 0, '3-months': 1, '6-months': 2, '12-months': 3 };
+    const currentLevel = planLevels[currentUser.plan] || 0;
+    
     planButtons.forEach(btn => {
-      if (currentUser.plan === '3-months' && btn.textContent.includes('3 Tháng')) {
+      let btnPlan = 'none';
+      if (btn.textContent.includes('3 Tháng') || btn.getAttribute('onclick')?.includes('3-months')) btnPlan = '3-months';
+      else if (btn.textContent.includes('6 Tháng') || btn.getAttribute('onclick')?.includes('6-months')) btnPlan = '6-months';
+      else if (btn.textContent.includes('12 Tháng') || btn.getAttribute('onclick')?.includes('12-months')) btnPlan = '12-months';
+      
+      const btnLevel = planLevels[btnPlan];
+      
+      if (btnLevel === currentLevel && currentLevel > 0) {
         btn.textContent = 'Đang sử dụng';
         btn.style.opacity = '0.7';
         btn.disabled = true;
-      } else if (currentUser.plan === '6-months' && btn.textContent.includes('6 Tháng')) {
-        btn.textContent = 'Đang sử dụng';
-        btn.style.opacity = '0.7';
-        btn.disabled = true;
-      } else if (currentUser.plan === '12-months' && btn.textContent.includes('12 Tháng')) {
-        btn.textContent = 'Đang sử dụng';
-        btn.style.opacity = '0.7';
+      } else if (btnLevel < currentLevel && btnLevel > 0) {
+        btn.textContent = 'Chỉ được nâng cấp';
+        btn.style.opacity = '0.5';
         btn.disabled = true;
       }
     });
   }
+
+  // Khởi chạy kiểm tra hết hạn gói
+  checkPlanExpiration();
+
+  // Thêm nút DEV để test chức năng hết hạn
+  if (currentUser && currentUser.plan !== 'none') {
+    const devBtnHtml = `<button onclick="devForceExpire()" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; cursor: pointer; opacity: 0.8; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">[Dev] Giả lập Hết hạn</button>`;
+    document.body.insertAdjacentHTML('beforeend', devBtnHtml);
+  }
 });
+
+// --- LOGIC HẾT HẠN & GIA HẠN GÓI ---
+function checkPlanExpiration() {
+  const user = JSON.parse(localStorage.getItem('emobox_user'));
+  if (!user || user.plan === 'none' || !user.registeredAt) return;
+
+  // Giả lập dev force expire
+  const isForceExpired = localStorage.getItem('dev_force_expire') === 'true';
+
+  const planDurations = { '3-months': 90, '6-months': 180, '12-months': 365 };
+  const planPrices = { '3-months': 299000, '6-months': 499000, '12-months': 799000 };
+  
+  const daysToAdd = planDurations[user.plan] || 0;
+  const regDate = new Date(user.registeredAt);
+  const expirationDate = new Date(regDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+  
+  if (new Date() > expirationDate || isForceExpired) {
+    if (isForceExpired) localStorage.removeItem('dev_force_expire'); // Reset flag
+    
+    const price = planPrices[user.plan] || 0;
+    if (user.balance >= price) {
+      // Tự động gia hạn (Trừ phí gia hạn, sau đó cấp lại điểm tương ứng -> Net = 0)
+      // Để hiển thị rõ ràng, ta log việc trừ và cộng, nhưng kết quả balance không đổi.
+      user.registeredAt = new Date().toISOString();
+      localStorage.setItem('emobox_user', JSON.stringify(user));
+      showToast('Gói thành viên của bạn đã hết hạn và được TỰ ĐỘNG GIA HẠN. Phí gia hạn đã được trừ vào ví EmoBox.');
+    } else {
+      showExpirationModal(user.plan, price, user.balance);
+    }
+  }
+}
+
+function showExpirationModal(plan, price, balance) {
+  const modalHtml = `
+    <div id="expirationModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+      <div style="background: white; padding: 2rem; border-radius: 24px; max-width: 450px; width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+        <h2 style="font-weight: 800; color: #0f172a; margin-bottom: 1rem;">Gói thành viên đã hết hạn!</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Số dư ví EmoBox hiện tại của bạn (<strong style="color: #0f172a;">${formatPrice(balance)}</strong>) không đủ để tự động gia hạn gói (<strong style="color: #ef4444;">${formatPrice(price)}</strong>).</p>
+        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem;">Bạn có muốn thanh toán qua Ngân hàng để tiếp tục sử dụng các đặc quyền không?</p>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <button onclick="gotoRenewPayment('${plan}')" class="btn btn-primary" style="width: 100%; height: 48px;">Thanh toán Ngân hàng</button>
+          <button onclick="showWithdrawModal()" class="btn" style="width: 100%; height: 48px; background: transparent; border: 1px solid var(--border); color: var(--text-muted);">Không gia hạn & Rút tiền dư</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function gotoRenewPayment(plan) {
+  const user = JSON.parse(localStorage.getItem('emobox_user'));
+  user.pendingPlan = plan;
+  localStorage.setItem('emobox_user', JSON.stringify(user));
+  window.location.href = 'plan-payment.html';
+}
+
+function showWithdrawModal() {
+  const oldModal = document.getElementById('expirationModal');
+  if (oldModal) oldModal.remove();
+
+  const user = JSON.parse(localStorage.getItem('emobox_user'));
+  const balance = user.balance || 0;
+
+  const modalHtml = `
+    <div id="withdrawModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+      <div style="background: white; padding: 2rem; border-radius: 24px; max-width: 450px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+        <h2 style="font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; text-align: center;">Rút Tiền Ví EmoBox</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; text-align: center; font-size: 0.9rem;">Số tiền hoàn trả: <strong style="color: #0ea5e9; font-size: 1.1rem;">${formatPrice(balance)}</strong></p>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Ngân hàng</label>
+          <input type="text" id="wdBank" placeholder="VD: Vietcombank" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Số tài khoản</label>
+          <input type="text" id="wdAcc" placeholder="Nhập số tài khoản" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Chủ tài khoản</label>
+          <input type="text" id="wdName" placeholder="Tên in hoa không dấu" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px;">
+        </div>
+
+        <button onclick="confirmWithdraw()" class="btn btn-primary" style="width: 100%; height: 48px;">Xác nhận rút tiền</button>
+        <button onclick="cancelWithdraw()" class="btn" style="width: 100%; height: 40px; background: transparent; border: none; color: var(--text-muted); margin-top: 0.5rem;">Đóng</button>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function confirmWithdraw() {
+  const bank = document.getElementById('wdBank').value;
+  const acc = document.getElementById('wdAcc').value;
+  const name = document.getElementById('wdName').value;
+  
+  if (!bank || !acc || !name) {
+    alert("Vui lòng điền đầy đủ thông tin ngân hàng!");
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem('emobox_user'));
+  user.balance = 0;
+  user.plan = 'none';
+  user.registeredAt = null;
+  localStorage.setItem('emobox_user', JSON.stringify(user));
+
+  document.getElementById('withdrawModal').remove();
+  showToast('🎉 Đã gửi lệnh rút tiền thành công! Gói của bạn đã bị hủy.');
+  
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 2000);
+}
+
+function cancelWithdraw() {
+  document.getElementById('withdrawModal').remove();
+  // Nếu hủy rút tiền, có thể quay lại index.html hoặc giữ nguyên trạng thái expired
+  window.location.href = 'index.html';
+}
+
+function devForceExpire() {
+  localStorage.setItem('dev_force_expire', 'true');
+  window.location.reload();
+}
