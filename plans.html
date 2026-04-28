@@ -249,18 +249,17 @@
   <script>
     function choosePlan(plan, amount) {
       const user = JSON.parse(localStorage.getItem('emobox_user'));
-      if (!user) {
-        showToast('Vui lòng đăng nhập để đăng ký gói!');
-        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+      
+      // Nếu không có tài khoản hoặc là Khách Thường (email rỗng)
+      if (!user || user.email === '') {
+        window.location.href = 'register.html?plan=' + plan;
         return;
       }
-      user.plan = plan;
-      user.registeredAt = new Date().toISOString();
-      // Add balance equal to plan amount
-      user.balance = (user.balance || 0) + amount;
+      
+      // Nếu là thành viên (đã có email), chuyển hướng đến màn hình thanh toán gói
+      user.pendingPlan = plan;
       localStorage.setItem('emobox_user', JSON.stringify(user));
-      showToast('🎉 Đăng ký gói thành công! Số dư ví đã được cộng.');
-      setTimeout(() => { window.location.href = 'wallet.html'; }, 2000);
+      window.location.href = 'plan-payment.html';
     }
   </script>
 </body>
