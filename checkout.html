@@ -186,21 +186,8 @@
             <textarea class="form-textarea" placeholder="Chúng tôi sẽ viết tay lời nhắn này trên một tấm thiệp lộng lẫy..."></textarea>
           </div>
 
-          <!-- Section 3 -->
-          <div class="form-section">
-            <h3 class="form-section-title" style="margin-bottom: 1.25rem;">Khi nào chúng tôi nên giao hàng?</h3>
-            <div class="delivery-options">
-              <div class="delivery-opt active" onclick="selectDelivery(this)">
-                <div class="delivery-opt-title">Càng Sớm Càng Tốt</div>
-                <div class="delivery-opt-sub">Ngày mai</div>
-              </div>
-              <div class="delivery-opt" onclick="selectDelivery(this)">
-                <div class="delivery-opt-title">Ngày Cụ Thể</div>
-                <div class="delivery-opt-sub">Chọn ngày</div>
-              </div>
-            </div>
-            <p style="font-size: 0.85rem; color: #059669; font-weight: 600;">🎉 Đơn hàng trên 500.000đ, bạn được miễn phí giao hàng!</p>
-          </div>
+          <!-- Tiện ích giao hàng -->
+          <p style="font-size: 0.85rem; color: #059669; font-weight: 600; margin-top: 1.5rem;">🎉 Đơn hàng trên 500.000đ, bạn được miễn phí giao hàng!</p>
         </form>
       </div>
 
@@ -267,7 +254,7 @@
 
           <div class="calc-row">
             <span>Phí Giao Hàng</span>
-            <span style="color: #059669; font-weight: 600;">Miễn phí</span>
+            <span id="shippingFeeDisplay" style="color: #059669; font-weight: 600;">Miễn phí</span>
           </div>
 
           <div class="calc-row total">
@@ -293,6 +280,7 @@
   <script src="app.js"></script>
   <script>
     let checkoutCartTotal = 0;
+    let checkoutFinalTotal = 0;
 
     function initCheckout() {
       // 1. Fetch Cart Data
@@ -337,8 +325,33 @@
       listContainer.innerHTML = itemsHTML;
       checkoutCartTotal = total;
 
-      document.getElementById('checkoutTotal').textContent = formatPrice(total);
-      document.getElementById('btnTotal').textContent = formatPrice(total);
+      // Tính phí vận chuyển
+      const user = JSON.parse(localStorage.getItem('emobox_user'));
+      let shippingFee = 0;
+      
+      if (user && user.plan !== 'none') {
+        shippingFee = 0; // Thành viên luôn miễn phí
+      } else if (total >= 500000) {
+        shippingFee = 0; // Đơn >= 500k miễn phí
+      } else {
+        shippingFee = 30000; // Còn lại 30k
+      }
+
+      const shippingDisplay = document.getElementById('shippingFeeDisplay');
+      if (shippingDisplay) {
+        if (shippingFee === 0) {
+          shippingDisplay.textContent = 'Miễn phí';
+          shippingDisplay.style.color = '#059669';
+        } else {
+          shippingDisplay.textContent = formatPrice(shippingFee);
+          shippingDisplay.style.color = '#0f172a';
+        }
+      }
+
+      checkoutFinalTotal = total + shippingFee;
+
+      document.getElementById('checkoutTotal').textContent = formatPrice(checkoutFinalTotal);
+      document.getElementById('btnTotal').textContent = formatPrice(checkoutFinalTotal);
 
       // 2. Fetch User Wallet Balance
       const user = JSON.parse(localStorage.getItem('emobox_user'));
@@ -368,7 +381,7 @@
       if (selectedPayment === 'wallet') {
         const user = JSON.parse(localStorage.getItem('emobox_user'));
         const balance = (user && user.balance) ? user.balance : 0;
-        if (balance < checkoutCartTotal) {
+        if (balance < checkoutFinalTotal) {
           warning.style.display = 'block';
           submitBtn.style.opacity = '0.5';
           submitBtn.style.cursor = 'not-allowed';
@@ -415,12 +428,12 @@
 
       if (selectedPayment === 'wallet') {
         const balance = (user && user.balance) ? user.balance : 0;
-        if (balance < checkoutCartTotal) {
+        if (balance < checkoutFinalTotal) {
           showToast('⚠ Số dư ví EmoBox không đủ để thanh toán.');
           return;
         }
         // Deduct balance
-        user.balance -= checkoutCartTotal;
+        user.balance -= checkoutFinalTotal;
         localStorage.setItem('emobox_user', JSON.stringify(user));
       }
 
