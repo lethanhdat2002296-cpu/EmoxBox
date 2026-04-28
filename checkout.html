@@ -295,7 +295,7 @@
       let total = 0;
       let itemsHTML = '';
       
-      let hasPkg = false;
+      let hasScheduledEvt = false;
       let addresses = new Set();
       let firstPkg = null;
 
@@ -306,20 +306,18 @@
         let itemDesc = '';
 
         if (item.isPkg) {
-          hasPkg = true;
-          if (item.address) {
-            addresses.add(item.address.trim().toLowerCase());
-          }
-          if (!firstPkg) firstPkg = item;
           name = item.name;
-          if (item.id && item.id.startsWith('evt_')) {
-            name = `📅 [Lịch] ${name} (cho ${item.recipient || 'Người nhận'})`;
-            let details = [...(item.fixedItems || []), ...(item.selectedPicks || [])].filter(Boolean).join(', ');
-            itemDesc = `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; font-weight: normal; line-height: 1.4;">📍 ${item.address || ''} | 📞 ${item.phone || ''}<br>🎁 ${details}</div>`;
-          }
           itemPrice = item.priceNum || item.pkgPrice || item.price || 0;
           if (typeof itemPrice === 'string') {
             itemPrice = parseInt(itemPrice.replace(/\D/g, ''), 10) || 0;
+          }
+          if (item.id && item.id.startsWith('evt_')) {
+            hasScheduledEvt = true;
+            if (item.address) addresses.add(item.address.trim().toLowerCase());
+            if (!firstPkg) firstPkg = item;
+            name = `📅 [Lịch] ${name} (cho ${item.recipient || 'Người nhận'})`;
+            let details = [...(item.fixedItems || []), ...(item.selectedPicks || [])].filter(Boolean).join(', ');
+            itemDesc = `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; font-weight: normal; line-height: 1.4;">📍 ${item.address || ''} | 📞 ${item.phone || ''}<br>🎁 ${details}</div>`;
           }
         } else {
           const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
@@ -355,7 +353,6 @@
       if (allScheduled) {
         // Only scheduled items: hide COD
         if (codLabel) codLabel.style.display = 'none';
-        // Make sure card is selected by default
         const cardRadio = document.querySelector('input[name="payment"][value="card"]');
         if (cardRadio) {
           cardRadio.checked = true;
@@ -363,26 +360,20 @@
           document.querySelector('input[name="payment"][value="cod"]')?.closest('.payment-opt')?.classList.remove('active');
         }
       } else {
-        // Normal items: show COD
+        // Normal items only: show COD
         if (codLabel) codLabel.style.display = '';
       }
       
-      if (hasPkg) {
-        if (codLabel) {
-          codLabel.style.display = 'none'; // Disable COD if there are scheduled packages
-        }
-        
+      if (hasScheduledEvt) {
         if (addresses.size > 1) {
-          showToast('⚠ Giỏ hàng có nhiều món quà gửi đến các địa chỉ khác nhau. Vui lòng tách đơn để thanh toán!');
+          showToast('⚠ Đơn có nhiều món quà gửi đến các địa chỉ khác nhau. Vui lòng tách đơn để thanh toán!');
           submitBtn.disabled = true;
           submitBtn.style.opacity = '0.5';
           submitBtn.style.cursor = 'not-allowed';
         } else if (firstPkg) {
-          // Auto-fill form
           const nameInput = document.getElementById('shippingName');
           const phoneInput = document.getElementById('shippingPhone');
           const addrInput = document.getElementById('shippingAddress');
-          
           if (nameInput && firstPkg.recipient) nameInput.value = firstPkg.recipient;
           if (phoneInput && firstPkg.phone) phoneInput.value = firstPkg.phone;
           if (addrInput && firstPkg.address) addrInput.value = firstPkg.address;
