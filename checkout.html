@@ -161,22 +161,22 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Tên người nhận <span>*</span></label>
-                <input type="text" class="form-input" placeholder="Họ và tên" required>
+                <input type="text" id="shippingName" class="form-input" placeholder="Họ và tên" required>
               </div>
               <div class="form-group">
                 <label class="form-label">Số điện thoại <span>*</span></label>
-                <input type="tel" class="form-input" placeholder="Để liên lạc khi giao hàng" required>
+                <input type="tel" id="shippingPhone" class="form-input" placeholder="Để liên lạc khi giao hàng" required>
               </div>
             </div>
             
             <div class="form-group">
               <label class="form-label">Email liên hệ <span>*</span></label>
-              <input type="email" class="form-input" placeholder="Để nhận hóa đơn và cập nhật đơn hàng" required>
+              <input type="email" id="shippingEmail" class="form-input" placeholder="Để nhận hóa đơn và cập nhật đơn hàng" required>
             </div>
             
             <div class="form-group">
               <label class="form-label">Địa chỉ giao hàng <span>*</span></label>
-              <input type="text" class="form-input" placeholder="Số nhà, đường, ngõ, phường, tòa nhà" required>
+              <input type="text" id="shippingAddress" class="form-input" placeholder="Số nhà, đường, ngõ, phường, tòa nhà" required>
             </div>
           </div>
 
@@ -198,7 +198,7 @@
           
           <div class="payment-methods">
             <!-- COD -->
-            <label class="payment-opt" onclick="selectPayment(this)">
+            <label class="payment-opt" id="codPaymentLabel" onclick="selectPayment(this)">
               <input type="radio" name="payment" value="cod">
               <div class="payment-opt-content">
                 <div class="payment-opt-label">Tiền mặt khi nhận hàng (COD)</div>
@@ -283,8 +283,8 @@
     let checkoutFinalTotal = 0;
 
     function initCheckout() {
-      // 1. Fetch Cart Data
-      const cartData = JSON.parse(localStorage.getItem('emobox_cart') || '[]');
+      // 1. Fetch Checkout Items Data
+      const cartData = JSON.parse(localStorage.getItem('emobox_checkout_items') || '[]');
       if (cartData.length === 0) {
         alert("Giỏ hàng của bạn đang trống! Đang quay lại trang trước.");
         window.location.href = 'cart.html';
@@ -294,14 +294,26 @@
       const listContainer = document.getElementById('checkoutItems');
       let total = 0;
       let itemsHTML = '';
+      
+      let hasPkg = false;
+      let addresses = new Set();
+      let firstPkg = null;
 
       cartData.forEach(item => {
         let name = '';
         let itemPrice = 0;
 
         if (item.isPkg) {
+          hasPkg = true;
+          if (item.address) {
+            addresses.add(item.address.trim().toLowerCase());
+          }
+          if (!firstPkg) firstPkg = item;
           name = item.name;
-          itemPrice = item.priceNum || 0;
+          itemPrice = item.priceNum || item.pkgPrice || item.price || 0;
+          if (typeof itemPrice === 'string') {
+            itemPrice = parseInt(itemPrice.replace(/\D/g, ''), 10) || 0;
+          }
         } else {
           const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
           name = box.name;
@@ -323,6 +335,31 @@
       });
 
       listContainer.innerHTML = itemsHTML;
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const codLabel = document.getElementById('codPaymentLabel');
+      
+      if (hasPkg) {
+        if (codLabel) {
+          codLabel.style.display = 'none'; // Disable COD if there are scheduled packages
+        }
+        
+        if (addresses.size > 1) {
+          showToast('⚠ Giỏ hàng có nhiều món quà gửi đến các địa chỉ khác nhau. Vui lòng tách đơn để thanh toán!');
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.5';
+          submitBtn.style.cursor = 'not-allowed';
+        } else if (firstPkg) {
+          // Auto-fill form
+          const nameInput = document.getElementById('shippingName');
+          const phoneInput = document.getElementById('shippingPhone');
+          const addrInput = document.getElementById('shippingAddress');
+          
+          if (nameInput && firstPkg.recipient) nameInput.value = firstPkg.recipient;
+          if (phoneInput && firstPkg.phone) phoneInput.value = firstPkg.phone;
+          if (addrInput && firstPkg.address) addrInput.value = firstPkg.address;
+        }
+      }
       checkoutCartTotal = total;
 
       // Tính phí vận chuyển
@@ -354,7 +391,6 @@
       document.getElementById('btnTotal').textContent = formatPrice(checkoutFinalTotal);
 
       // 2. Fetch User Wallet Balance
-      const user = JSON.parse(localStorage.getItem('emobox_user'));
       if (user && user.balance !== undefined) {
         document.getElementById('walletBalanceDisplay').textContent = formatPrice(user.balance);
       }
@@ -439,10 +475,11 @@
 
       // Mark calendar events as paid if they exist in cart
       let events = JSON.parse(localStorage.getItem('emobox_events') || '[]');
+      let checkoutItems = JSON.parse(localStorage.getItem('emobox_checkout_items') || '[]');
       let cartData = JSON.parse(localStorage.getItem('emobox_cart') || '[]');
       let eventsUpdated = false;
 
-      cartData.forEach(item => {
+      checkoutItems.forEach(item => {
         if (item.isPkg && item.id.startsWith('evt_')) {
           const evt = events.find(e => e.id === item.id);
           if (evt) {
@@ -450,14 +487,17 @@
             eventsUpdated = true;
           }
         }
+        // Remove from cartData
+        cartData = cartData.filter(c => c.id !== item.id);
       });
 
       if (eventsUpdated) {
         localStorage.setItem('emobox_events', JSON.stringify(events));
       }
 
-      // Empty the cart
-      localStorage.setItem('emobox_cart', '[]');
+      // Empty the checkout items and update cart
+      localStorage.setItem('emobox_cart', JSON.stringify(cartData));
+      localStorage.setItem('emobox_checkout_items', '[]');
       if (typeof updateCartBadge === 'function') updateCartBadge();
 
       showToast('🎉 Thanh toán thành công! Đơn hàng của bạn đang được xử lý.');
