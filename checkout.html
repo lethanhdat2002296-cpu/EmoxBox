@@ -303,6 +303,8 @@
         let name = '';
         let itemPrice = 0;
 
+        let itemDesc = '';
+
         if (item.isPkg) {
           hasPkg = true;
           if (item.address) {
@@ -312,6 +314,8 @@
           name = item.name;
           if (item.id && item.id.startsWith('evt_')) {
             name = `📅 [Lịch] ${name} (cho ${item.recipient || 'Người nhận'})`;
+            let details = [...(item.fixedItems || []), ...(item.selectedPicks || [])].filter(Boolean).join(', ');
+            itemDesc = `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; font-weight: normal; line-height: 1.4;">📍 ${item.address || ''} | 📞 ${item.phone || ''}<br>🎁 ${details}</div>`;
           }
           itemPrice = item.priceNum || item.pkgPrice || item.price || 0;
           if (typeof itemPrice === 'string') {
@@ -327,12 +331,15 @@
         total += itemTotal;
 
         itemsHTML += `
-          <div class="order-item-row">
-            <div>
-              <div class="order-item-name">${name}</div>
-              <span class="order-item-qty">x${item.quantity}</span>
+          <div class="order-item-row" style="align-items: flex-start;">
+            <div style="flex: 1; padding-right: 1rem;">
+              <div class="order-item-name" style="margin-bottom: 0;">${name}</div>
+              ${itemDesc}
             </div>
-            <div class="order-item-price">${formatPrice(itemTotal)}</div>
+            <div style="text-align: right;">
+              <div class="order-item-qty" style="display: block; margin-bottom: 0.25rem;">x${item.quantity}</div>
+              <div class="order-item-price">${formatPrice(itemTotal)}</div>
+            </div>
           </div>
         `;
       });
