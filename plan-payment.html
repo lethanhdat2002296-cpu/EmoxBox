@@ -65,12 +65,12 @@
               <span>💳</span>
             </div>
             <div class="card-form">
-              <input type="text" class="form-input" placeholder="Số thẻ (0000 0000 0000 0000)">
+              <input type="text" id="bankCardNum" class="form-input" placeholder="Số thẻ (0000 0000 0000 0000)">
               <div style="display: flex; gap: 0.5rem;">
-                <input type="text" class="form-input" placeholder="MM/YY" style="flex: 1;">
-                <input type="text" class="form-input" placeholder="CVC" style="width: 80px;">
+                <input type="text" id="bankCardExp" class="form-input" placeholder="MM/YY" style="flex: 1;">
+                <input type="text" id="bankCardCvc" class="form-input" placeholder="CVC" style="width: 80px;">
               </div>
-              <input type="text" class="form-input" placeholder="Tên in trên thẻ" style="margin-bottom: 0;">
+              <input type="text" id="bankCardName" class="form-input" placeholder="Tên in trên thẻ" style="margin-bottom: 0;">
             </div>
           </div>
         </label>
@@ -136,6 +136,16 @@
     function confirmPayment() {
       if (!user || !pending || !planDetails[pending]) return;
       
+      const cardNum = document.getElementById('bankCardNum').value.trim();
+      const cardExp = document.getElementById('bankCardExp').value.trim();
+      const cardCvc = document.getElementById('bankCardCvc').value.trim();
+      const cardName = document.getElementById('bankCardName').value.trim();
+      
+      if (!cardNum || !cardExp || !cardCvc || !cardName) {
+        showToast('Vui lòng nhập đầy đủ thông tin thẻ ngân hàng!');
+        return;
+      }
+      
       const plan = planDetails[pending];
       
       // Update user details
@@ -154,7 +164,7 @@
 
     function skipPayment() {
       if (user) {
-        user.plan = 'none';
+        // Chỉ xóa lệnh nâng cấp tạm thời (pendingPlan), giữ nguyên gói cũ (user.plan)
         delete user.pendingPlan;
         localStorage.setItem('emobox_user', JSON.stringify(user));
       }
