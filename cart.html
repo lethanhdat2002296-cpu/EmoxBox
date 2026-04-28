@@ -372,6 +372,15 @@
         showToast('Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!');
         return;
       }
+      
+      const hasScheduled = selectedItems.some(i => i.id && i.id.startsWith('evt_'));
+      const hasNormal = selectedItems.some(i => !(i.id && i.id.startsWith('evt_')));
+      
+      if (hasScheduled && hasNormal) {
+        showToast('⚠️ Không thể thanh toán chung “Sản phẩm mua ngay” và “Sản phẩm đặt lịch”. Vui lòng chọn từng nhóm để thanh toán riêng!', 5000);
+        return;
+      }
+      
       localStorage.setItem('emobox_checkout_items', JSON.stringify(selectedItems));
       window.location.href = 'checkout.html';
     }
