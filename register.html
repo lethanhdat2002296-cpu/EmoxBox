@@ -113,6 +113,18 @@
       labelEl.classList.add('active');
     }
 
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const planParam = urlParams.get('plan');
+      if (planParam) {
+        const radio = document.querySelector(`input[name="plan"][value="${planParam}"]`);
+        if (radio) {
+          radio.checked = true;
+          selectPlan(radio.closest('.plan-opt'));
+        }
+      }
+    });
+
     function handleRegister(e) {
       e.preventDefault();
       const name = document.getElementById('regName').value;
