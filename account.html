@@ -174,12 +174,7 @@
           
           <div style="margin-top: 3rem;">
             <h4 style="margin-bottom: 1.25rem; font-weight: 700;">Quyền lợi đang có</h4>
-            <ul style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-              <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">✅ Miễn phí vận chuyển 100%</li>
-              <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">✅ Ưu đãi 15% cho mọi hộp quà</li>
-              <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">✅ Tự động đặt lịch 12 sự kiện/năm</li>
-              <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;">✅ Quà tặng bất ngờ mỗi quý</li>
-            </ul>
+            <ul id="planBenefitsList" style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem;"></ul>
           </div>
         </section>
 
@@ -282,6 +277,53 @@
         document.getElementById('profileAddress').value = user.address || '';
         document.getElementById('userNameDisplay').textContent = user.name || 'Người dùng EmoBox';
         document.getElementById('userInitial').textContent = (user.name || 'U').charAt(0).toUpperCase();
+
+        const planBenefits = {
+          'none': [],
+          '3-months': [
+            'Đặt lịch tặng quà linh hoạt trong suốt 3 tháng',
+            'Ưu đãi giảm 5% cho các sản phẩm vào dịp lễ',
+            'Miễn phí giao hàng cho tất cả đơn hàng',
+            'Truy cập tính năng “Build Your Own Box” để tự thiết kế hộp quà theo nhu cầu'
+          ],
+          '6-months': [
+            'Đặt lịch tặng quà linh hoạt trong suốt 6 tháng',
+            'Ưu đãi giảm 7% cho các sản phẩm vào dịp lễ',
+            'Miễn phí giao hàng cho tất cả đơn hàng',
+            'Truy cập tính năng “Build Your Own Box” để tự thiết kế hộp quà theo nhu cầu'
+          ],
+          '12-months': [
+            'Đặt lịch tặng quà linh hoạt trong suốt 12 tháng',
+            'Ưu đãi giảm 10% cho các sản phẩm vào dịp lễ',
+            'Miễn phí giao hàng cho tất cả đơn hàng',
+            'Truy cập tính năng “Build Your Own Box” để tự thiết kế hộp quà theo nhu cầu'
+          ]
+        };
+
+        const planPrices = {
+          'none': '',
+          '3-months': '299.000 đ/gói',
+          '6-months': '499.000 đ/gói',
+          '12-months': '799.000 đ/gói'
+        };
+
+        const benefitsList = document.getElementById('planBenefitsList');
+        const benefits = planBenefits[user.plan] || [];
+        if (benefits.length > 0) {
+          benefitsList.innerHTML = benefits.map(b =>
+            `<li style="display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9rem;">
+              <span style="color: #059669; font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem;">✅</span>
+              <span>${b}</span>
+            </li>`
+          ).join('');
+          
+          const price = planPrices[user.plan];
+          if (price) {
+            benefitsList.insertAdjacentHTML('beforebegin', `<p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Giá gói: <strong style="color: #0284c7;">${price}</strong></p>`);
+          }
+        } else {
+          benefitsList.innerHTML = '<li style="color: var(--text-muted);">Bạn chưa đăng ký gói nào. <a href="plans.html" style="color: var(--primary);">Xem các gói</a></li>';
+        }
 
         const planNames = {
           'none': 'Chưa đăng ký',
