@@ -52,7 +52,6 @@
           <input type="password" class="form-input" id="loginPass" placeholder="••••••••" required>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; height: 50px; font-size: 1rem; margin-top: 1rem;">Đăng nhập</button>
-        <button type="button" class="btn" style="width: 100%; height: 50px; font-size: 1rem; margin-top: 0.75rem; background: transparent; border: 1px solid var(--border); color: var(--text-main); font-weight: 600;" onclick="handleGuestLogin()">Đăng nhập Khách thường</button>
       </form>
 
       <div class="auth-footer">
@@ -97,26 +96,6 @@
           window.location.href = 'index.html';
         }
       }, 1500);
-    }
-
-    function handleGuestLogin() {
-      const user = {
-        name: 'Khách Thường',
-        email: '',
-        phone: '',
-        address: '',
-        balance: 0,
-        plan: 'none',
-        pendingPlan: null,
-        registeredAt: new Date().toISOString()
-      };
-      
-      localStorage.setItem('emobox_user', JSON.stringify(user));
-      showToast('🎉 Đăng nhập tư cách Khách! Đang chuyển hướng...');
-      
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1000);
     }
   </script>
 </body>
