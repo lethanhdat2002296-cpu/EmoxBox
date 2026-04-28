@@ -127,10 +127,24 @@
 
     function handleRegister(e) {
       e.preventDefault();
-      const name = document.getElementById('regName').value;
-      const email = document.getElementById('regEmail').value;
-      const phone = document.getElementById('regPhone').value;
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const pass = document.getElementById('regPass').value;
       const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+      
+      // Basic Validation
+      if (pass.length < 6) {
+        showToast('Mật khẩu phải có ít nhất 6 ký tự!');
+        return;
+      }
+      
+      // Phone validation (exactly 10 digits)
+      const phoneRegex = /^[0-9]{10}$/;
+      if (!phoneRegex.test(phone)) {
+        showToast('Số điện thoại không hợp lệ (phải gồm 10 chữ số)!');
+        return;
+      }
       
       const user = {
         name: name,
