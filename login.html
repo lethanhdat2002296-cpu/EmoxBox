@@ -38,16 +38,7 @@
         <p style="color: var(--text-muted);">Gói trọn cảm xúc, gửi trao yêu thương</p>
       </div>
 
-      <div class="social-auth">
-        <button class="social-btn">G Google</button>
-        <button class="social-btn">f Facebook</button>
-      </div>
-
-      <div style="text-align: center; margin-bottom: 2rem; position: relative;">
-        <span style="background: white; padding: 0 1rem; color: var(--text-muted); font-size: 0.75rem; position: relative; z-index: 1;">Hoặc đăng nhập bằng email</span>
-        <hr style="position: absolute; top: 50%; left: 0; right: 0; border: none; border-top: 1px solid var(--border); margin: 0;">
-      </div>
-
+      <div style="margin-top: 1rem;"></div>
       <form onsubmit="handleLogin(event)">
         <div class="form-group">
           <label class="form-label">Địa chỉ Email</label>
@@ -61,10 +52,11 @@
           <input type="password" class="form-input" id="loginPass" placeholder="••••••••" required>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; height: 50px; font-size: 1rem; margin-top: 1rem;">Đăng nhập</button>
+        <button type="button" class="btn" style="width: 100%; height: 50px; font-size: 1rem; margin-top: 0.75rem; background: transparent; border: 1px solid var(--border); color: var(--text-main); font-weight: 600;" onclick="handleGuestLogin()">Đăng nhập Khách thường</button>
       </form>
 
       <div class="auth-footer">
-        Bạn chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+        Bạn chưa có tài khoản? <a href="register.html">Đăng ký ngay</a>
       </div>
     </div>
   </div>
@@ -78,23 +70,53 @@
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       
-      // Fake login success
-      const user = {
-        name: 'Nguyễn Văn A',
-        email: email,
-        phone: '0917 297 709',
-        address: '279 Nguyễn Tri Phương, phường Diên Hồng, TP. HCM',
-        balance: 2450000,
-        plan: '12-months',
-        registeredAt: new Date().toISOString()
-      };
+      // Lấy tài khoản từ localStorage nếu có
+      let user = JSON.parse(localStorage.getItem('emobox_user'));
+      
+      // Nếu không có tài khoản hoặc email không khớp, tạo mock user
+      if (!user || user.email !== email) {
+        user = {
+          name: 'Khách Hàng',
+          email: email,
+          phone: '',
+          address: '',
+          balance: 0,
+          plan: 'none',
+          pendingPlan: null,
+          registeredAt: new Date().toISOString()
+        };
+      }
       
       localStorage.setItem('emobox_user', JSON.stringify(user));
       showToast('🎉 Đăng nhập thành công! Chào mừng bạn quay lại.');
       
       setTimeout(() => {
-        window.location.href = 'index.html';
+        if (user.pendingPlan && user.pendingPlan !== 'none') {
+          window.location.href = 'plan-payment.html';
+        } else {
+          window.location.href = 'index.html';
+        }
       }, 1500);
+    }
+
+    function handleGuestLogin() {
+      const user = {
+        name: 'Khách Thường',
+        email: '',
+        phone: '',
+        address: '',
+        balance: 0,
+        plan: 'none',
+        pendingPlan: null,
+        registeredAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('emobox_user', JSON.stringify(user));
+      showToast('🎉 Đăng nhập tư cách Khách! Đang chuyển hướng...');
+      
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
     }
   </script>
 </body>
