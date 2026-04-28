@@ -310,6 +310,9 @@
           }
           if (!firstPkg) firstPkg = item;
           name = item.name;
+          if (item.id && item.id.startsWith('evt_')) {
+            name = `📅 [Lịch] ${name} (cho ${item.recipient || 'Người nhận'})`;
+          }
           itemPrice = item.priceNum || item.pkgPrice || item.price || 0;
           if (typeof itemPrice === 'string') {
             itemPrice = parseInt(itemPrice.replace(/\D/g, ''), 10) || 0;
