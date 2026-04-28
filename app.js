@@ -1,5 +1,11 @@
 // js/app.js
 
+// Xóa dữ liệu 1 lần theo yêu cầu
+if (!localStorage.getItem('data_cleared_v1')) {
+  localStorage.clear();
+  localStorage.setItem('data_cleared_v1', 'true');
+  console.log("Đã xóa toàn bộ dữ liệu User, Giỏ hàng, Lịch sử!");
+}
 // Khởi tạo giỏ hàng từ localStorage
 let cart = JSON.parse(localStorage.getItem('emobox_cart')) || [];
 
@@ -24,14 +30,14 @@ function addToCart(boxId) {
   showToast('Đã thêm vào giỏ hàng!');
 }
 
-function showToast(msg) {
+function showToast(msg, duration) {
   const toast = document.getElementById('toast');
   if (toast) {
     toast.textContent = msg;
     toast.classList.add('show');
     setTimeout(() => {
       toast.classList.remove('show');
-    }, 3000);
+    }, duration || 3000);
   }
 }
 
