@@ -140,9 +140,9 @@
             <span id="totalPrice" style="color: #0284c7; font-size: 1.75rem; font-weight: 800;">0 đ</span>
           </div>
 
-          <a href="checkout.html" class="btn" style="width: 100%; height: 56px; margin-top: 1.5rem; font-size: 1.05rem; font-weight: 600; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 12px;">
+          <button onclick="gotoCheckout()" class="btn" style="width: 100%; height: 56px; margin-top: 1.5rem; font-size: 1.05rem; font-weight: 600; background: #0f172a; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px; transition: 0.2s;">
             Tiến đến Thanh Toán <span style="font-size: 1.2rem;">→</span>
-          </a>
+          </button>
           
           <div style="text-align: center; margin-top: 1.25rem;">
             <a href="index.html" style="color: var(--text-muted); font-size: 0.9rem; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">← Tiếp tục khám phá</a>
@@ -259,11 +259,19 @@
         if (item.isPkg) {
           name = item.name;
           image = item.image ? `<img src="${item.image}" class="cart-item-img">` : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,#e0f2fe,#bae6fd);">🎁</div>`;
-          desc = `<span style="color:var(--text-muted);font-size:0.85rem;">Màu: Màu Sắc Đặc Trưng • Giấy Kraft Truyền Thống</span>`;
-          if (item.priceNum) {
-            itemPrice = item.priceNum;
+          
+          if (item.id && item.id.startsWith('evt_')) {
+            desc = `<span style="color:#0284c7;font-size:0.85rem;font-weight:600;">📅 Đặt lịch quà tặng cho: ${item.recipient || 'Người nhận'}</span>`;
+          } else {
+            desc = `<span style="color:var(--text-muted);font-size:0.85rem;">Màu: Màu Sắc Đặc Trưng • Giấy Kraft Truyền Thống</span>`;
+          }
+          
+          if (item.priceNum || item.pkgPrice) {
+            itemPrice = item.priceNum || item.pkgPrice;
             itemTotal = itemPrice * item.quantity;
-            total += itemTotal;
+            if (item.selected !== false) {
+              total += itemTotal;
+            }
           }
         } else {
           const box = FEATURED_BOXES.find(b => b.id === item.id) || FEATURED_BOXES[0];
@@ -272,11 +280,16 @@
           desc = `<span style="color:var(--text-muted);font-size:0.85rem;">Màu: Màu Sắc Đặc Trưng • Giấy Kraft Truyền Thống</span>`;
           itemPrice = box.price;
           itemTotal = itemPrice * item.quantity;
-          total += itemTotal;
+          if (item.selected !== false) {
+            total += itemTotal;
+          }
         }
+
+        const isChecked = item.selected !== false ? 'checked' : '';
 
         return `
           <div class="cart-item">
+            <input type="checkbox" class="cart-item-check" ${isChecked} onchange="toggleSelect('${item.id}', this.checked)" style="width: 20px; height: 20px; cursor: pointer;">
             ${image}
             <div class="cart-item-info">
               <h4>${name}</h4>
@@ -319,6 +332,25 @@
       localStorage.setItem('emobox_cart', JSON.stringify(cart));
       updateCartBadge();
       renderCart();
+    }
+
+    function toggleSelect(id, checked) {
+      const item = cart.find(i => i.id === id);
+      if (item) {
+        item.selected = checked;
+        localStorage.setItem('emobox_cart', JSON.stringify(cart));
+        renderCart();
+      }
+    }
+
+    function gotoCheckout() {
+      const selectedItems = cart.filter(i => i.selected !== false);
+      if (selectedItems.length === 0) {
+        showToast('Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!');
+        return;
+      }
+      localStorage.setItem('emobox_checkout_items', JSON.stringify(selectedItems));
+      window.location.href = 'checkout.html';
     }
 
     document.addEventListener('DOMContentLoaded', renderCart);
