@@ -14,7 +14,9 @@
     .cat-title { font-family: var(--font-serif); font-size: 3rem; margin-bottom: 1rem; }
 
     /* Package Cards */
-    .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; margin-top: 1rem; }
+    .packages-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1rem; }
+    @media (min-width: 640px) { .packages-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
+    @media (min-width: 1024px) { .packages-grid { grid-template-columns: repeat(4, 1fr); } }
     .pkg-card { background: white; border-radius: 24px; border: 1px solid var(--border); padding: 2rem 1.75rem; display: flex; flex-direction: column; transition: all 0.3s; position: relative; overflow: hidden; }
     .pkg-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.12); }
     .pkg-card.highlight { border: 2px solid var(--primary); box-shadow: 0 8px 24px rgba(2,132,199,0.12); }
@@ -277,8 +279,8 @@
 
     const TIER_CONFIG = {
       mini:     { accent: 'linear-gradient(90deg,#bae6fd,#7dd3fc)', highlight: false, btnClass: 'pkg-btn-outline', btnStyle: 'width:100%;',                              badge: null },
-      basic:    { accent: 'linear-gradient(90deg,#6ee7b7,#34d399)', highlight: false, btnClass: 'pkg-btn-outline', btnStyle: 'width:100%;',                              badge: null },
-      standard: { accent: 'linear-gradient(90deg,#0284c7,#38bdf8)', highlight: true,  btnClass: 'pkg-btn-primary', btnStyle: 'width:100%;',                              badge: 'Phổ biến' },
+      basic:    { accent: 'linear-gradient(90deg,#6ee7b7,#34d399)', highlight: true,  btnClass: 'pkg-btn-primary', btnStyle: 'width:100%;',                              badge: 'Phổ biến' },
+      standard: { accent: 'linear-gradient(90deg,#0284c7,#38bdf8)', highlight: false, btnClass: 'pkg-btn-outline', btnStyle: 'width:100%;',                              badge: null },
       premium:  { accent: 'linear-gradient(90deg,#a78bfa,#7c3aed)', highlight: false, btnClass: 'pkg-btn-outline', btnStyle: 'width:100%; border-color:#a78bfa; color:#7c3aed;', badge: 'Plus', badgeStyle: 'background:#7c3aed;' }
     };
 
