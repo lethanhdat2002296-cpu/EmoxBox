@@ -481,7 +481,7 @@ ul {
 /* GRID LAYOUTS */
 .emotion-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
   gap: 1.5rem;
 }
 
@@ -522,7 +522,7 @@ ul {
 /* GIFTS GRID */
 .gifts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 2rem;
 }
 
@@ -869,6 +869,7 @@ ul {
     top: 64px;
     left: 0;
     width: 100%;
+    transform: none; /* Fix the left -50% shifting */
     background: white;
     flex-direction: column;
     padding: 1rem;
