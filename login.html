@@ -23,6 +23,7 @@
     .auth-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
     
     .social-auth { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+    @media (max-width: 600px) { .social-auth { grid-template-columns: 1fr; } }
     .social-btn { border: 1px solid var(--border); padding: 0.75rem; border-radius: 12px; background: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 600; font-size: 0.875rem; }
     .social-btn:hover { background: #f8fafc; }
   </style>
